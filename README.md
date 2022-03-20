@@ -28,6 +28,10 @@ Open your browser and go to [http://localhost:3000](http://localhost:3000)
 
 If you get any errors, try deleting `package-lock.json` and running `npm install`, then `npm start` again.
 
+## How to Contribute
+
+[Read the Contributing Guidelines](https://github.com/umgc-cmsc-495-group-1/image-sharing-app/blob/master/CONTRIBUTING.md)
+
 ## Understanding the Example Components
 
 These are not part of the application plan, I have just placed them in the app for you to play with and understand 
