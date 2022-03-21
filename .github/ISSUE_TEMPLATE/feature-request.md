@@ -26,4 +26,3 @@ Is what I am requesting very similar to something that already exists? Probably 
 Is what I am requesting going to increase the workload for the team with little change to the application? Probably not needed...
 
 **Additional context**
-Add any other context or screenshots about the feature request here.
