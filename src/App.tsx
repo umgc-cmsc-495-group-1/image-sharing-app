@@ -10,6 +10,9 @@ import ExampleUserIndex from './components/examples/ExampleUserIndex';
 import ExampleUserPage from './components/examples/ExampleUserPage';
 import Example404 from './components/examples/Example404';
 
+const test: string = "name";
+test = 5;
+
 
 export default function App() {
 
