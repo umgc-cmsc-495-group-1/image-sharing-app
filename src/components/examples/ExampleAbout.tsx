@@ -3,12 +3,12 @@ import React from "react";
 /**
  * This is just and example to show how components can work together
  */
-export default function ExampleHome() {
+export default function ExampleAbout() {
     return (
         <div>
             <main>
-                <h2>Homepage</h2>
-                <p>This is the home page</p>
+                <h2>About</h2>
+                <p>This is the about page</p>
             </main>
         </div>
     );

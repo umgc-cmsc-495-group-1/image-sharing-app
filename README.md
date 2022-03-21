@@ -12,11 +12,23 @@ To check if you have node installed run the following command `node -v`
 
 ### Cloning the Repo and Install Modules
 
+Clone the repository into your preferred directory
+
 `git clone https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git`
+
+change directories into the cloned repository
 
 `cd image-sharing-app`
 
+intall all of the dependencies
+
 `npm install`
+
+run the precommit initializer script
+
+`./git-hooks/init`
+
+Congratulations, you are now ready to begin working on the code! Read the contributing guidlines to learn more about helping out.
 
 ### Launch the Application
 
@@ -43,87 +55,116 @@ All Components require PascalCase naming convention - `ExampleHome` or `AnotherE
 
 This is to distinguish them from variables in JavaScript, which have camelCase naming conventions - `exampleOne` or `anotherExample`.
 
+### ExampleNav.tsx
+
+This is the heading navigation component which allows for navigation throughout the app.
+
+```tsx
+import React from "react";
+import { Link, Outlet } from "react-router-dom";
+
+/**
+ * This is just and example to show how components can work together
+ */
+export default function ExampleNav() {
+    return (
+        <div>
+            <nav>
+                <Link to="/">Home</Link>
+                <br/>
+                <Link to="/about">About</Link>
+                <br/>
+                <Link to="/users">Users</Link>
+            </nav>
+
+            <hr />
+
+            <Outlet />
+        </div>
+    );
+}
+```
+
 ### ExampleHome.jsx
 
-This is our `Home Page` component, it will render the following html to the DOM when the router determines 
-this component has been called. 
+This is our `Home Page` component.
 
-```jsx
+```tsx
 import React from "react";
 
 export default function ExampleHome() {
     return (
         <div>
             <main>
-                <h2>Homepage</h2>
-                <p>This is the home page</p>
+                <h2>Home</h2>
+                <p>This is the Home page</p>
             </main>
         </div>
     );
 }
 ```
 
-### ExampleAbout.jsx
+### ExampleAbout.tsx
 
-This is the same as the previous example, except it is our `About Page`, and the link will send us back to the `Home Page`.
+This is the same as the previous example, except it is our `About Page`.
 
-```jsx
+```tsx
 import React from "react";
 
 export default function ExampleAbout() {
     return (
-        <>
+        <div>
             <main>
                 <h2>About</h2>
                 <p>This is the about page</p>
             </main>
-        </>
+        </div>
     );
 }
 ```
 
 ### ExampleUserLink.jsx
 
-Here we are generating links for the user to click on, there is a `prop` called users which gets its data from the constant
-`users`.
+Here we are giving an index for the children components to reference. This is the parent component for all the `ExampleUserPage.tsx`. This is why we need the `Outlet` component to hold the place for everything.
 
-```jsx
+```tsx
 import React from "react";
-import UserIndex from "./ExampleUserIndex"
-import {getUsers} from "../../__tests__/test_data";
+import { Outlet } from "react-router-dom";
 
 export default function ExampleUserLink() {
-    const users = getUsers();
     return (
         <div>
             <h1>List of Users</h1>
-            <ul>
-                <UserIndex
-                    users={users}
-                />
-            </ul>
+            
+            <Outlet />
         </div>
     );
 }
 ```
 
-### ExampleUserIndex.jsx
+### ExampleUserIndex.tsx
 
-We can see the result of passing the props to the component in the previous example. We are mapping the data 
-dynamically generating individual list items based on the length of the list. Each link will have a unique path which
-will create a unique url for routing. 
+We are mapping the data dynamically generating individual list items based on the length of the list. Each link will have a unique path which will create a unique url for routing. The interface here is used throughout the rest of the application for User objects, but it could be in `test_date.ts` for cleaner code.
 
-```jsx
+```tsx
 import React from "react";
 import {Link} from "react-router-dom";
+import { getUsers } from "../../tests/test_data"
 
-export default function UserIndex(props) {
+export interface User {
+    id: number,
+    first: string,
+    last: string
+}
+
+export default function ExampleUserIndex() {
+    const users = getUsers();
     return (
         <div>
-            {props.users.map((user) => (
+            {users.map((user: User) => (
                 <li key={`${user.id}-${user.first}-${user.last}`}>
                     <Link
-                        to={`/users/${user.first.toLowerCase()}-${user.last.toLowerCase()}`}
+                        to={`/users/${user.id - 1}`}
                         state={{
                             id: user.id,
                             first: user.first,
@@ -137,35 +178,35 @@ export default function UserIndex(props) {
 }
 ```
 
+### ExampleUserPage.tsx
 
+This is a simple User Page, we can see the information which can be gathered paths. This is passed through the routes and gathered but the `useParams` method. Then with the help of a function in the example users file we are able to locate the user and assign it to a `User` object, which has specific properties.
 
-### ExampleUserPage.jsx
-
-This is a simple User Page, we can see the information which can be gathered from location state. This is passed through
-the routes by links.
-
-```jsx
+```tsx
 import React from "react";
-import {useLocation} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import { getUserById } from "../../tests/test_data";
+import { User } from "./ExampleUserIndex";
 
 export default function ExampleUserPage() {
-    const location = useLocation();
+    const { id } = useParams<"id">()
+    const user: User = getUserById(id);
     return (
         <>
             <main>
-                <h2>Welcome, {location.state.first} {location.state.last}!</h2>
-                <p>You are the Number {location.state.id} user on the application!</p>
+                <h2>Welcome, {user.first} {user.last}!</h2>
+                <p>You are the Number {user.id} user on the application!</p>
             </main>
         </>
     );
 }
 ```
 
-### Example404.jsx
+### Example404.tsx
 
 This is just a simple 404-page example - but we keep this at the bottom of the routes, for route cannot be found it will render.
 
-```jsx
+```tsx
 import React from "react";
 
 export default function Example404 () {
@@ -178,70 +219,78 @@ export default function Example404 () {
 }
 ```
 
+### App.tsx
 
-### App.js
+This is where we will import all of our components for routing. We build the routing structure of the application here. Notice how the `:id` slug for the user comes before the `users` route. This is to ensure when routing to an individual user it will get hit first. React routes from the index page first, and all paths are exact, but using `:something` can assist with dynamic routing.
 
-This is where we will import all of our components for routing. We build the routing structure of the application here.
-Notice how the `:name` slug for the user comes before the `users` route. This is to ensure when routing to an individual
-user it will get hit first. React routes from the index page first, and all paths are exact, but using `:something` can 
-assist with dynamic routing.
+The routes constant, which is a `RoutesObject` array, allows us to specifically define out routes in object form. going through parent index for some components, and dynamic changing routes depending on the information passing through. We pass this constant to the `useRoutes` method, and place it as an object in the div. This will be rendered as the app in the html for the page, depending on which component is rendered to the page at the time.
 
-```js
-import React from "react";
+```tsx
+import React from 'react';
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link
+  RouteObject, useRoutes
 } from "react-router-dom";
-import ExampleHome from "./components/examples/ExampleHome";
-import ExampleAbout from "./components/examples/ExampleAbout";
-import ExampleUserLink from "./components/examples/ExampleUserLink";
-import Example404 from "./components/examples/Example404";
-import ExampleUserPage from "./components/examples/ExampleUserPage";
+import ExampleHome from './components/examples/ExampleHome';
+import ExampleAbout from './components/examples/ExampleAbout';
+import ExampleNav from './components/examples/ExampleNav';
+import ExampleUserLink from './components/examples/ExampleUserLink';
+import ExampleUserIndex from './components/examples/ExampleUserIndex';
+import ExampleUserPage from './components/examples/ExampleUserPage';
+import Example404 from './components/examples/Example404';
 
-function App() {
-    return (
-        <div>
-            <Router>
-                <nav>
-                    <Link to="/">Home</Link>
-                    <br/>
-                    <Link to="/about">About</Link>
-                    <br/>
-                    <Link to="/users">Users</Link>
-                </nav>
 
-                <Routes>
-                    <Route path="/" element={<ExampleHome />} />
-                    <Route path="/about" element={<ExampleAbout />} />
-                    <Route path="/users/:name" element={<ExampleUserPage />} />
-                    <Route path="/users" element={<ExampleUserLink />} />
-                    <Route path="*" element={<Example404 />} />
-                </Routes>
-            </Router>
-        </div>
-    );
+export default function App() {
+
+  const routes: RouteObject[] = [
+      {
+          path: "/",
+          element: <ExampleNav />,
+          children: [
+              { index: true, element: <ExampleHome /> },
+              { path: "/about", element: <ExampleAbout /> },
+              {
+                  path: "/users", element: <ExampleUserLink />,
+                  children: [
+                      { index: true, element: <ExampleUserIndex /> },
+                      { path: "/users/:id", element: <ExampleUserPage /> }
+                  ]
+              },
+              { path: "*", element: <Example404 /> }
+          ],
+      },
+  ];
+
+  const element = useRoutes(routes);
+
+  return (
+    <div className="App">
+      {element}
+    </div>
+  );
 }
 ```
 
-### Index.js
+### index.tsx
 
-This component is the base of the component tree, it will render all the components passed to the App component.
+This component is the base of the component tree, it will render all the components passed to the App component. The BrowserRouter Component wraps the App component, providing the application with client side routing.
 
-```js
+```tsx
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import './css/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
@@ -250,6 +299,12 @@ reportWebVitals();
 ```
 
 ## Documentation Links
+
+[React](https://reactjs.org/docs/getting-started.html) - The framework for building UI components
+
+[Typescript](https://www.typescriptlang.org/docs/) - Typescript, a superset of JavaScript, but any JavaScript is valid typescript. This will just help catch errors, so feel free to write what you are more comfortable with.
+
+[React Typescript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup) - Will help learn best practices and methods for working with React and Typescript together. There are also great resources for VS Code extensions to improve workflow.
 
 [React Router](https://reactrouter.com/docs/en/v6) - Used for navigating between pages
 
@@ -277,3 +332,16 @@ You may also see any lint errors in the console.
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm fix-lint-errors`
+
+Running this will run the following command from the available scripts `eslint . --fix`. By running this command
+you are checking your code for errors based on the linter I have set up. This is to help improve the code base and
+prevent any issues being pushed to the master branch.
+
+### `npm stage`
+
+This is similar to the previous script, where it will run a pre-commit script, checking your source code for errors
+if there are any errors it will attempt to fix them. If there are too many errors it will reject the commit and tell you to correct the code before committing to the repository. There will be hints to assist with what you need to correct.
+
+After this has run you will need to commit the files if it succeeds. `git commit -m "[FILES UPDATED AND CHANGES MADE]"`. You will not need to add the files as this script will add any files for you.
