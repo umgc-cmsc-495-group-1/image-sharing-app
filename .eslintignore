@@ -1,0 +1,17 @@
+# dont lint build output folder
+build
+
+# dont lint node modules
+node_modules
+
+# dont lint the hooks folder
+git-hooks
+
+# dont lint idea settings
+.idea
+
+# dont lint github settings
+.github
+
+# dont lint vscode settings
+.vscode

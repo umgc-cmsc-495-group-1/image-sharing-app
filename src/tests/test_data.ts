@@ -1,4 +1,6 @@
-let users = [
+import { User } from "../components/examples/ExampleUserIndex";
+
+const users = [
     {
         id: 1,
         first: "John",
@@ -33,4 +35,12 @@ let users = [
 
 export function getUsers() {
     return users;
+}
+
+export function getUserById(id: string | undefined): User {
+    if (id === undefined) {
+        throw new Error("Id cannot be undefined");
+    }
+    const parsedValue: number = parseInt(id);
+    return users[parsedValue];
 }

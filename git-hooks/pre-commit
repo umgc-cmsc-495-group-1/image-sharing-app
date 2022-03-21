@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# check for errors
+npm run fix-errors
+# determine error code
+ESLINT_EXIT="$?"
+# check the response from linter
+if [[ "${ESLINT_EXIT}" == 0 ]]; then
+  # stage for commit
+  PROJECT_STAGED_FILES=($(git diff --diff-filter=d --name-only ./ | grep -E '^.*src\/.*\.(js|jsx|tsx|ts)$'))
+
+  # echo $PROJECT_STAGED_FILES
+  STAGED_FILES=$PROJECT_STAGED_FILES
+  for i in "${!STAGED_FILES[@]}"; do
+    DATA=${STAGED_FILES[$i]}
+    echo ${STAGED_FILES[$i]}
+    git add ${STAGED_FILES[$i]}
+    pattern="src/"
+    DATA=${DATA/$pattern/}
+    STAGED_FILES[$i]=$DATA
+  done
+  
+  printf "\n\033[42mSTAGE SUCCEEDED - PROCEED TO COMMIT\033[0m\n"
+else
+  # deny commit
+  printf "\n\033[41mSTAGE FAILED:\033[0m Fix eslint errors and try again\n"
+  exit 1
+fi
+
+echo $?
+exit $?

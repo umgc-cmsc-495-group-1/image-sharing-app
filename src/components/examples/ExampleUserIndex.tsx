@@ -1,13 +1,21 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import { getUsers } from "../../tests/test_data"
 
-export default function UserIndex(props) {
+export interface User {
+    id: number,
+    first: string,
+    last: string
+}
+
+export default function ExampleUserIndex() {
+    const users = getUsers();
     return (
         <div>
-            {props.users.map((user) => (
+            {users.map((user: User) => (
                 <li key={`${user.id}-${user.first}-${user.last}`}>
                     <Link
-                        to={`/users/${user.first.toLowerCase()}-${user.last.toLowerCase()}`}
+                        to={`/users/${user.id - 1}`}
                         state={{
                             id: user.id,
                             first: user.first,
