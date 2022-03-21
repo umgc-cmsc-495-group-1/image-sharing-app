@@ -46,13 +46,6 @@ jobs:
         uses: github/super-linter@v4.9.0
         env:
           VALIDATE_ALL_CODEBASE: false
-          TYPESCRIPT_ES_CONFIG_FILE: true
-          TYPESCRIPT_STANDARD_TSCONFIG_FILE: true
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_JSON: true
-          VALIDATE_JSX: true
-          VALIDATE_TSX: true
-          VALIDATE_TYPESCRIPT_ES: true
           # Change to 'master' if your main branch differs
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
