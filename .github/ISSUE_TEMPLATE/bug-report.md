@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to 'the file where the issue is happening
 2. Click on '....'
 3. Scroll down to '....'
@@ -24,9 +25,7 @@ A clear and concise description of what you expected to happen.
 Include screenshots of what you are seeing on your machine
 
 **Desktop (please complete the following information):**
- - OS: [MacOS, Linux, Windows - include version]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
 
-**Additional context**
-
+- OS: MacOS, Linux, Windows include version
+- Browser [e.g. chrome, safari]
+- Version [e.g. 22]
