@@ -25,7 +25,15 @@ A clear and concise description of what you expected to happen.
 Include screenshots of what you are seeing on your machine
 
 **Desktop (please complete the following information):**
+<<<<<<< HEAD
 
 - OS: MacOS, Linux, Windows include version
 - Browser [e.g. chrome, safari]
 - Version [e.g. 22]
+=======
+ - OS: [MacOS, Linux, Windows - include version]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
+
+**Additional context**
+>>>>>>> bf7fddc436125a26c3a578cc34c9476032e88dcc
