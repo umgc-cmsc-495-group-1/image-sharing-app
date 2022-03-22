@@ -29,4 +29,3 @@ Include screenshots of what you are seeing on your machine
  - Version [e.g. 22]
 
 **Additional context**
-
