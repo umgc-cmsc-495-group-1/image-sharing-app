@@ -21,11 +21,7 @@ This is what will go into the issue body
 
 As a user, I want [FUNCTION] so that [BENEFIT]
 
-<<<<<<< HEAD
 **Example:**
-=======
-***Example:***
->>>>>>> bf7fddc436125a26c3a578cc34c9476032e88dcc
 
 As a user, I want to be able to update my profile photo so that It can reflect my personality no matter how often I deem that my change.
 
