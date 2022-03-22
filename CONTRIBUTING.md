@@ -24,11 +24,27 @@ run the precommit initializer script
 
 ## Fetch and Pull
 
-<b><u>Always fetch and pull before starting any coding</u></b>, you dont know if a pull request has been made. There may have been updates to the codebase and this will update your code.
+If you are working on a feature that has yet to be added to the repository, then you need to only check and see what has been updated. You can run a few commands to see this.
+
+`git status` will tell you how far behind or ahead of the master branch you are.
+
+`git log` will show you all of the commits, merge, and pull requests to the branch, and who made them. There is also a SHA hashed string that you can look up through the repository to locate the exact item.
+
+If you need to update your local branch after the master has had updates then run the following items. Just ensure that you are in your local branch before doing so - `git checkout YOUR_FULL_NAME`
+
+`git fetch origin master`
+
+`git pull origin master`
+
+If someone has helped you out with something in your branch, then pushed code to your repository and you need to update your local branch, you can run the following commands. Same concept applies, ensure you are in your branch by running the checkout command above.
 
 `git fetch`
 
 `git pull`
+
+At no point should anyone be working in the master branch, if you run the command `git branch` and it has the asterisk `*` next to the word master -> `* master`, you need to switch to your feature branch (your name).
+
+The goal is to have everyone work on their own branch, and push the work to the repository, then merge into master once it passes the tests.
 
 ## Creating Your Own Branch
 
