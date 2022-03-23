@@ -1,4 +1,37 @@
-# Image Sharing App
+# Hoot
+
+- [Hoot](#hoot)
+  - [Environment Setup](#environment-setup)
+    - [Nodejs](#nodejs)
+    - [Cloning the Repo and Install Modules](#cloning-the-repo-and-install-modules)
+    - [Launch the Application](#launch-the-application)
+    - [Errors](#errors)
+  - [How to Contribute](#how-to-contribute)
+  - [Understanding the Example Components](#understanding-the-example-components)
+    - [Naming Conventions](#naming-conventions)
+    - [ExampleNav.tsx](#examplenavtsx)
+    - [ExampleHome.jsx](#examplehomejsx)
+    - [ExampleAbout.tsx](#exampleabouttsx)
+    - [ExampleUserLink.jsx](#exampleuserlinkjsx)
+    - [ExampleUserIndex.tsx](#exampleuserindextsx)
+    - [ExampleUserPage.tsx](#exampleuserpagetsx)
+    - [Example404.tsx](#example404tsx)
+    - [App.tsx](#apptsx)
+    - [index.tsx](#indextsx)
+  - [Documentation Links](#documentation-links)
+    - [React](#react)
+    - [Typescript](#typescript)
+    - [React Typescript Cheatsheet](#react-typescript-cheatsheet)
+    - [React Router](#react-router)
+    - [Material UI](#material-ui)
+    - [Jest Testing Library](#jest-testing-library)
+    - [Firebase](#firebase)
+    - [Firebase Emulator Suite](#firebase-emulator-suite)
+  - [Available Scripts](#available-scripts)
+    - [npm start](#npm-start)
+    - [npm test](#npm-test)
+    - [npm fix-lint-errors](#npm-fix-lint-errors)
+    - [npm stage](#npm-stage)
 
 ## Environment Setup
 
@@ -46,7 +79,7 @@ If you get any errors, try deleting `package-lock.json` and running `npm install
 
 ## Understanding the Example Components
 
-These are not part of the application plan, I have just placed them in the app for you to play with and understand 
+These are not part of the application plan, I have just placed them in the app for you to play with and understand
 how components work within a React application.
 
 ### Naming Conventions
@@ -300,19 +333,35 @@ reportWebVitals();
 
 ## Documentation Links
 
+### React
+
 [React](https://reactjs.org/docs/getting-started.html) - The framework for building UI components
+
+### Typescript
 
 [Typescript](https://www.typescriptlang.org/docs/) - Typescript, a superset of JavaScript, but any JavaScript is valid typescript. This will just help catch errors, so feel free to write what you are more comfortable with.
 
+### React Typescript Cheatsheet
+
 [React Typescript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup) - Will help learn best practices and methods for working with React and Typescript together. There are also great resources for VS Code extensions to improve workflow.
+
+### React Router
 
 [React Router](https://reactrouter.com/docs/en/v6) - Used for navigating between pages
 
+### Material UI
+
 [Material UI](https://mui.com/getting-started/installation/) - Used for Components and simplifying CSS
+
+### Jest Testing Library
 
 [Jest](https://jestjs.io/docs/tutorial-react) - Testing framework to ensure component structure
 
+### Firebase
+
 [Firebase](https://firebase.google.com/docs/web/setup) - Used for our backend data storage and User authentication
+
+### Firebase Emulator Suite
 
 [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) - Used for testing backend locally without needing to deploy to the cloud
 
