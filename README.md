@@ -389,7 +389,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ### `npm fix-lint-errors`
 
 Running this will run the following command from the available scripts `eslint . --fix`. By running this command
-you are checking your code for errors based on the linter I have set up. This is to help improve the code-base and
+you are checking your code for errors based on the linter I have set up. This is to help improve the codebase and
 prevent any issues being pushed to the master branch.
 
 ### `npm stage`
