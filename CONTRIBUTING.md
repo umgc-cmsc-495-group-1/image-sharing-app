@@ -2,6 +2,15 @@
 
 Follow these requirements for contributing to the repository. If we need to consistently rebase your code, I will have you send me it to manually review and will push it myself.
 
+- [Contributing Guidelines](#contributing-guidelines)
+  - [Cloning The Repository](#cloning-the-repository)
+  - [Fetch and Pull](#fetch-and-pull)
+  - [Creating Your Own Branch](#creating-your-own-branch)
+  - [Make Edits](#make-edits)
+  - [Stage and Commit](#stage-and-commit)
+  - [Make a Pull Request](#make-a-pull-request)
+  - [Reviewing a Pull Request](#reviewing-a-pull-request)
+
 ## Cloning The Repository
 
 Clone the repository into your preferred directory

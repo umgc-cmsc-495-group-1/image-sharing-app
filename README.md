@@ -1,16 +1,49 @@
-# Image Sharing App
+# Hoot
+
+- [Hoot](#hoot)
+  - [Environment Setup](#environment-setup)
+    - [Node.js](#nodejs)
+    - [Cloning the Reposoitory and Install Modules](#cloning-the-repository-and-install-modules)
+    - [Launch the Application](#launch-the-application)
+    - [Errors](#errors)
+  - [How to Contribute](#how-to-contribute)
+  - [Understanding the Example Components](#understanding-the-example-components)
+    - [Naming Conventions](#naming-conventions)
+    - [ExampleNav.tsx](#examplenavtsx)
+    - [ExampleHome.jsx](#examplehomejsx)
+    - [ExampleAbout.tsx](#exampleabouttsx)
+    - [ExampleUserLink.jsx](#exampleuserlinkjsx)
+    - [ExampleUserIndex.tsx](#exampleuserindextsx)
+    - [ExampleUserPage.tsx](#exampleuserpagetsx)
+    - [Example404.tsx](#example404tsx)
+    - [App.tsx](#apptsx)
+    - [index.tsx](#indextsx)
+  - [Documentation Links](#documentation-links)
+    - [React](#react)
+    - [TypeScript](#typescript)
+    - [React TypeScript Cheatsheet](#react-typescript-cheatsheet)
+    - [React Router](#react-router)
+    - [Material UI](#material-ui)
+    - [Jest Testing Library](#jest-testing-library)
+    - [Firebase](#firebase)
+    - [Firebase Emulator Suite](#firebase-emulator-suite)
+  - [Available Scripts](#available-scripts)
+    - [npm start](#npm-start)
+    - [npm test](#npm-test)
+    - [npm fix-lint-errors](#npm-fix-lint-errors)
+    - [npm stage](#npm-stage)
 
 ## Environment Setup
 
-### Nodejs
+### Node.js
 
-If you do not have nodejs installed, then head to the following link and download the LTS version of [node](https://nodejs.org/).
+If you do not have Node.js installed, then head to the following link and download the LTS version [here](https://nodejs.org/).
 
 The current LTS version as of writing this is `16.14.2` but any stable version should work `16.14.x`
 
-To check if you have node installed run the following command `node -v`
+To check if you have Node.js installed run the following command `node -v`
 
-### Cloning the Repo and Install Modules
+### Cloning the Repository and Install Modules
 
 Clone the repository into your preferred directory
 
@@ -46,7 +79,7 @@ If you get any errors, try deleting `package-lock.json` and running `npm install
 
 ## Understanding the Example Components
 
-These are not part of the application plan, I have just placed them in the app for you to play with and understand 
+These are not part of the application plan, I have just placed them in the app for you to play with and understand
 how components work within a React application.
 
 ### Naming Conventions
@@ -144,7 +177,7 @@ export default function ExampleUserLink() {
 
 ### ExampleUserIndex.tsx
 
-We are mapping the data dynamically generating individual list items based on the length of the list. Each link will have a unique path which will create a unique url for routing. The interface here is used throughout the rest of the application for User objects, but it could be in `test_date.ts` for cleaner code.
+We are mapping the data dynamically generating individual list items based on the length of the list. Each link will have a unique path which will create a unique URL for routing. The interface here is used throughout the rest of the application for User objects, but it could be in `test_date.ts` for cleaner code.
 
 ```tsx
 import React from "react";
@@ -221,9 +254,13 @@ export default function Example404 () {
 
 ### App.tsx
 
-This is where we will import all of our components for routing. We build the routing structure of the application here. Notice how the `:id` slug for the user comes before the `users` route. This is to ensure when routing to an individual user it will get hit first. React routes from the index page first, and all paths are exact, but using `:something` can assist with dynamic routing.
+This is where we will import all of our components for routing. We build the routing structure of the application here. Notice how the `:id` slug for the user comes before the `users` route.
 
-The routes constant, which is a `RoutesObject` array, allows us to specifically define out routes in object form. going through parent index for some components, and dynamic changing routes depending on the information passing through. We pass this constant to the `useRoutes` method, and place it as an object in the div. This will be rendered as the app in the html for the page, depending on which component is rendered to the page at the time.
+This is to ensure when routing to an individual user it will get hit first. React routes from the index page first, and all paths are exact, but using `:something` can assist with dynamic routing.
+
+The routes constant, which is a `RoutesObject` array, allows us to specifically define out routes in object form going through parent index for some components, and dynamic changing routes depending on the information passing through.
+
+We pass this constant to the `useRoutes` method, and place it as an object in the div. This will be rendered as the app in the HTML for the page, depending on which component is rendered to the page at the time.
 
 ```tsx
 import React from 'react';
@@ -272,7 +309,7 @@ export default function App() {
 
 ### index.tsx
 
-This component is the base of the component tree, it will render all the components passed to the App component. The BrowserRouter Component wraps the App component, providing the application with client side routing.
+This component is the base of the component tree, it will render all the components passed to the App component. The BrowserRouter Component wraps the App component, providing the application with client-side routing.
 
 ```tsx
 import React from 'react';
@@ -300,19 +337,35 @@ reportWebVitals();
 
 ## Documentation Links
 
+### React
+
 [React](https://reactjs.org/docs/getting-started.html) - The framework for building UI components
 
-[Typescript](https://www.typescriptlang.org/docs/) - Typescript, a superset of JavaScript, but any JavaScript is valid typescript. This will just help catch errors, so feel free to write what you are more comfortable with.
+### TypeScript
 
-[React Typescript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup) - Will help learn best practices and methods for working with React and Typescript together. There are also great resources for VS Code extensions to improve workflow.
+[TypeScript](https://www.typescriptlang.org/docs/) - TypeScript, a superset of JavaScript, but any JavaScript is valid TypeScript. This will just help catch errors, so feel free to write what you are more comfortable with.
+
+### React TypeScript Cheatsheet
+
+[React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup) - Will help learn best practices and methods for working with React and TypeScript together. There are also great resources for VS Code extensions to improve workflow.
+
+### React Router
 
 [React Router](https://reactrouter.com/docs/en/v6) - Used for navigating between pages
 
+### Material UI
+
 [Material UI](https://mui.com/getting-started/installation/) - Used for Components and simplifying CSS
+
+### Jest Testing Library
 
 [Jest](https://jestjs.io/docs/tutorial-react) - Testing framework to ensure component structure
 
+### Firebase
+
 [Firebase](https://firebase.google.com/docs/web/setup) - Used for our backend data storage and User authentication
+
+### Firebase Emulator Suite
 
 [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) - Used for testing backend locally without needing to deploy to the cloud
 
@@ -336,7 +389,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ### `npm fix-lint-errors`
 
 Running this will run the following command from the available scripts `eslint . --fix`. By running this command
-you are checking your code for errors based on the linter I have set up. This is to help improve the code base and
+you are checking your code for errors based on the linter I have set up. This is to help improve the codebase and
 prevent any issues being pushed to the master branch.
 
 ### `npm stage`
