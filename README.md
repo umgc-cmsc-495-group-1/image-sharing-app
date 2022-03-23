@@ -2,8 +2,8 @@
 
 - [Hoot](#hoot)
   - [Environment Setup](#environment-setup)
-    - [Nodejs](#nodejs)
-    - [Cloning the Repo and Install Modules](#cloning-the-repo-and-install-modules)
+    - [Node.js](#nodejs)
+    - [Cloning the Reposoitory and Install Modules](#cloning-the-repository-and-install-modules)
     - [Launch the Application](#launch-the-application)
     - [Errors](#errors)
   - [How to Contribute](#how-to-contribute)
@@ -20,8 +20,8 @@
     - [index.tsx](#indextsx)
   - [Documentation Links](#documentation-links)
     - [React](#react)
-    - [Typescript](#typescript)
-    - [React Typescript Cheatsheet](#react-typescript-cheatsheet)
+    - [TypeScript](#typescript)
+    - [React TypeScript Cheatsheet](#react-typescript-cheatsheet)
     - [React Router](#react-router)
     - [Material UI](#material-ui)
     - [Jest Testing Library](#jest-testing-library)
@@ -35,15 +35,15 @@
 
 ## Environment Setup
 
-### Nodejs
+### Node.js
 
-If you do not have nodejs installed, then head to the following link and download the LTS version of [node](https://nodejs.org/).
+If you do not have Node.js installed, then head to the following link and download the LTS version [here](https://nodejs.org/).
 
 The current LTS version as of writing this is `16.14.2` but any stable version should work `16.14.x`
 
-To check if you have node installed run the following command `node -v`
+To check if you have Node.js installed run the following command `node -v`
 
-### Cloning the Repo and Install Modules
+### Cloning the Repository and Install Modules
 
 Clone the repository into your preferred directory
 
@@ -177,7 +177,7 @@ export default function ExampleUserLink() {
 
 ### ExampleUserIndex.tsx
 
-We are mapping the data dynamically generating individual list items based on the length of the list. Each link will have a unique path which will create a unique url for routing. The interface here is used throughout the rest of the application for User objects, but it could be in `test_date.ts` for cleaner code.
+We are mapping the data dynamically generating individual list items based on the length of the list. Each link will have a unique path which will create a unique URL for routing. The interface here is used throughout the rest of the application for User objects, but it could be in `test_date.ts` for cleaner code.
 
 ```tsx
 import React from "react";
@@ -254,9 +254,13 @@ export default function Example404 () {
 
 ### App.tsx
 
-This is where we will import all of our components for routing. We build the routing structure of the application here. Notice how the `:id` slug for the user comes before the `users` route. This is to ensure when routing to an individual user it will get hit first. React routes from the index page first, and all paths are exact, but using `:something` can assist with dynamic routing.
+This is where we will import all of our components for routing. We build the routing structure of the application here. Notice how the `:id` slug for the user comes before the `users` route.
 
-The routes constant, which is a `RoutesObject` array, allows us to specifically define out routes in object form. going through parent index for some components, and dynamic changing routes depending on the information passing through. We pass this constant to the `useRoutes` method, and place it as an object in the div. This will be rendered as the app in the html for the page, depending on which component is rendered to the page at the time.
+This is to ensure when routing to an individual user it will get hit first. React routes from the index page first, and all paths are exact, but using `:something` can assist with dynamic routing.
+
+The routes constant, which is a `RoutesObject` array, allows us to specifically define out routes in object form going through parent index for some components, and dynamic changing routes depending on the information passing through.
+
+We pass this constant to the `useRoutes` method, and place it as an object in the div. This will be rendered as the app in the HTML for the page, depending on which component is rendered to the page at the time.
 
 ```tsx
 import React from 'react';
@@ -305,7 +309,7 @@ export default function App() {
 
 ### index.tsx
 
-This component is the base of the component tree, it will render all the components passed to the App component. The BrowserRouter Component wraps the App component, providing the application with client side routing.
+This component is the base of the component tree, it will render all the components passed to the App component. The BrowserRouter Component wraps the App component, providing the application with client-side routing.
 
 ```tsx
 import React from 'react';
@@ -337,13 +341,13 @@ reportWebVitals();
 
 [React](https://reactjs.org/docs/getting-started.html) - The framework for building UI components
 
-### Typescript
+### TypeScript
 
-[Typescript](https://www.typescriptlang.org/docs/) - Typescript, a superset of JavaScript, but any JavaScript is valid typescript. This will just help catch errors, so feel free to write what you are more comfortable with.
+[TypeScript](https://www.typescriptlang.org/docs/) - TypeScript, a superset of JavaScript, but any JavaScript is valid TypeScript. This will just help catch errors, so feel free to write what you are more comfortable with.
 
-### React Typescript Cheatsheet
+### React TypeScript Cheatsheet
 
-[React Typescript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup) - Will help learn best practices and methods for working with React and Typescript together. There are also great resources for VS Code extensions to improve workflow.
+[React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup) - Will help learn best practices and methods for working with React and TypeScript together. There are also great resources for VS Code extensions to improve workflow.
 
 ### React Router
 
@@ -385,7 +389,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ### `npm fix-lint-errors`
 
 Running this will run the following command from the available scripts `eslint . --fix`. By running this command
-you are checking your code for errors based on the linter I have set up. This is to help improve the code base and
+you are checking your code for errors based on the linter I have set up. This is to help improve the code-base and
 prevent any issues being pushed to the master branch.
 
 ### `npm stage`
