@@ -27,6 +27,8 @@
     - [Jest Testing Library](#jest-testing-library)
     - [Firebase](#firebase)
     - [Firebase Emulator Suite](#firebase-emulator-suite)
+    - [TensorFlow.js](#tensorflowjs)
+    - [MobileNet](#mobilenet)
   - [Available Scripts](#available-scripts)
     - [npm start](#npm-start)
     - [npm test](#npm-test)
@@ -62,6 +64,8 @@ run the precommit initializer script
 `./git-hooks/init`
 
 Congratulations, you are now ready to begin working on the code! Read the contributing guidlines to learn more about helping out.
+
+Head over to the contributing guidelines to learn [more](#how-to-contribute)
 
 ### Launch the Application
 
@@ -368,6 +372,14 @@ reportWebVitals();
 ### Firebase Emulator Suite
 
 [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) - Used for testing backend locally without needing to deploy to the cloud
+
+### TensorFlow.js
+
+[TensorFlow.js](https://www.tensorflow.org/js) - machine learning library in JavaScript, will be used for recommendation engine
+
+### MobileNet
+
+[MobileNet](https://github.com/tensorflow/tfjs-models/tree/master/mobilenet) - Image classification model used by TensorFlow.js
 
 ## Available Scripts
 
