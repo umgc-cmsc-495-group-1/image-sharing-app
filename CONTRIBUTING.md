@@ -29,7 +29,7 @@ You will then need to go to your local account and clone the repository.
 
 Clone the repository into your preferred directory
 
-`git clone YOUR_ACCOUNT_URL` -> EX: git clone https://github.com/d-bryan/image-sharing-app.git
+`git clone YOUR_ACCOUNT_URL` -> EX: git clone `https://github.com/d-bryan/image-sharing-app.git`
 
 change directories into the cloned repository
 
