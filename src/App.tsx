@@ -2,6 +2,7 @@ import React from 'react';
 import {
   RouteObject, useRoutes
 } from "react-router-dom";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ExampleHome from './components/examples/ExampleHome';
 import ExampleAbout from './components/examples/ExampleAbout';
 import ExampleNav from './components/examples/ExampleNav';
@@ -9,6 +10,8 @@ import ExampleUserLink from './components/examples/ExampleUserLink';
 import ExampleUserIndex from './components/examples/ExampleUserIndex';
 import ExampleUserPage from './components/examples/ExampleUserPage';
 import Example404 from './components/examples/Example404';
+import HootAppBar from './components/HootAppBar';
+import { CssBaseline } from '@mui/material';
 
 // const test: string = "name";
 // test = 5;
@@ -37,9 +40,24 @@ export default function App() {
 
   const element = useRoutes(routes);
 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#bfa760',
+      },
+      secondary: {
+        main: '#039be5',
+      },
+    },
+  });
+
   return (
-    <div className="App">
-      {element}
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <HootAppBar />
+      <div className="App">
+        {element}
+      </div>
+    </ThemeProvider>
   );
 }
