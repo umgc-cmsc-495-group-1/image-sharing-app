@@ -6,6 +6,7 @@ Follow these requirements for contributing to the repository. If we need to cons
   - [Fork the Repository](#fork-the-repository)
   - [Cloning The Repository](#cloning-the-repository)
   - [Checkout Your Teams Branch](#checkout-your-teams-branch)
+    - [Add Remote For Organization Repository](#add-remote-for-organization-repository)
   - [Fetch and Pull](#fetch-and-pull)
   - [Make Edits](#make-edits)
   - [Stage and Commit](#stage-and-commit)
@@ -48,6 +49,12 @@ run the precommit initializer script
 ## Checkout Your Teams Branch
 
 `git checkout TEAM` -> EXAMPLE: git checkout components
+
+### Add Remote for Organization Repository
+
+Setup the link to the organization reposiotry by running the following command:
+
+`git remote add upstream https://github.com/d-bryan/image-sharing-app.git`
 
 ## Fetch and Pull
 
@@ -110,8 +117,7 @@ On the compare page, click `compare across forks`
 
 ![compare across forks](./.github/images/compare-across-forks.png)
 
-When comparing changes, the `base repository` will say `umgc-cmsc-495-group-1/image-sharing-app`. The base should be 
-whatever team you are on, never `master` or `dev`.
+When comparing changes, the `base repository` will say `umgc-cmsc-495-group-1/image-sharing-app`. The base should be whatever team you are on, never `master` or `dev`.
 
 For example - If you are on the data team then it would look like the following:
 `base repository: umgc-cmsc-495-group-1/image-sharing-app` `base: data`
