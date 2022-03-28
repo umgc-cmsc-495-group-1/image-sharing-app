@@ -3,7 +3,7 @@
 - [Hoot](#hoot)
   - [Environment Setup](#environment-setup)
     - [Node.js](#nodejs)
-    - [Cloning the Reposoitory and Install Modules](#cloning-the-repository-and-install-modules)
+    - [Cloning the Repository and Install Modules](#cloning-the-repository-and-install-modules)
     - [Launch the Application](#launch-the-application)
     - [Errors](#errors)
   - [How to Contribute](#how-to-contribute)
