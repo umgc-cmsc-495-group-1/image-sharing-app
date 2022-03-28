@@ -110,7 +110,7 @@ On the compare page, click `compare across forks`
 
 ![compare across forks](./.github/images/compare-across-forks.png)
 
-When comparing changes, the `base repository` will say `umgc-cmsc-495-group-1/image-sharing-app`. The base should be 
+When comparing changes, the `base repository` will say `umgc-cmsc-495-group-1/image-sharing-app`. The base should be
 whatever team you are on, never `master` or `dev`.
 
 For example - If you are on the data team then it would look like the following:
