@@ -4,6 +4,7 @@ Follow these requirements for contributing to the repository. If we need to cons
 
 - [Contributing Guidelines](#contributing-guidelines)
   - [Cloning The Repository](#cloning-the-repository)
+    - [Add Remote For Organization Repository](#add-remote-for-organization-repository)
   - [Fetch and Pull](#fetch-and-pull)
   - [Checkout Your Teams Branch](#creating-your-own-branch)
   - [Make Edits](#make-edits)
@@ -31,6 +32,12 @@ run the precommit initializer script
 `./git-hooks/init`
 
 <b><u>Ensure that you have initialized this script</u></b>
+
+### Add Remote for Organization Repository
+
+Setup the link to the organization reposiotry by running the following command:
+
+`git remote add upstream https://github.com/d-bryan/image-sharing-app.git`
 
 ## Fetch and Pull
 
