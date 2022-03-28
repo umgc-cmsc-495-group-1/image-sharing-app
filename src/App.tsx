@@ -9,6 +9,8 @@ import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
 import HootNav from './components/HootNav';
 import HootSignup from './components/HootSignup';
+import HootUser from './components/HootUser';
+import HootUserSettings from './components/HootUserSettings';
 import { CssBaseline } from '@mui/material';
 
 export default function App() {
@@ -34,7 +36,25 @@ export default function App() {
                     path: "/feed",
                     element: <HootFeed />
                 },
-                { path: "*", element: <Example404 /> }
+                {
+                    path: "/user",
+                    children: [
+                        {
+                            path: ":userId",
+                            children: [
+                                {
+                                    path: "profile",
+                                    element: <HootUser />
+                                },
+                                {
+                                    path: "settings",
+                                    element: <HootUserSettings />
+                                },
+                            ]
+                        },
+                    ],
+                },
+                { path: "*", element: <Example404 /> },
             ],
         },
     ];
