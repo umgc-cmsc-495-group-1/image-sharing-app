@@ -35,6 +35,9 @@ change directories into the cloned repository
 
 `cd image-sharing-app`
 
+checkout your team's branch
+`git checkout TEAM` -> EXAMPLE: `git checkout components`
+
 install all the dependencies
 
 `npm install`
@@ -44,10 +47,6 @@ run the precommit initializer script
 `./git-hooks/init`
 
 <b><u>Ensure that you have initialized this script</u></b>
-
-## Checkout Your Teams Branch
-
-`git checkout TEAM` -> EXAMPLE: git checkout components
 
 ## Fetch and Pull
 
