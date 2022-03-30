@@ -3,9 +3,6 @@
 - [Hoot](#hoot)
   - [Environment Setup](#environment-setup)
     - [Node.js](#nodejs)
-    - [Cloning the Repository and Install Modules](#cloning-the-repository-and-install-modules)
-    - [Launch the Application](#launch-the-application)
-    - [Errors](#errors)
   - [How to Contribute](#how-to-contribute)
   - [Understanding the Example Components](#understanding-the-example-components)
     - [Naming Conventions](#naming-conventions)
@@ -44,38 +41,6 @@ If you do not have Node.js installed, then head to the following link and downlo
 The current LTS version as of writing this is `16.14.2` but any stable version should work `16.14.x`
 
 To check if you have Node.js installed run the following command `node -v`
-
-### Cloning the Repository and Install Modules
-
-Clone the repository into your preferred directory
-
-`git clone https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git`
-
-change directories into the cloned repository
-
-`cd image-sharing-app`
-
-intall all of the dependencies
-
-`npm install`
-
-run the precommit initializer script
-
-`./git-hooks/init`
-
-Congratulations, you are now ready to begin working on the code! Read the contributing guidlines to learn more about helping out.
-
-Head over to the contributing guidelines to learn [more](#how-to-contribute)
-
-### Launch the Application
-
-`npm start`
-
-Open your browser and go to [http://localhost:3000](http://localhost:3000)
-
-### Errors
-
-If you get any errors, try deleting `package-lock.json` and running `npm install`, then `npm start` again.
 
 ## How to Contribute
 
@@ -398,15 +363,8 @@ You may also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm fix-lint-errors`
+### `npm fix-errors`
 
 Running this will run the following command from the available scripts `eslint . --fix`. By running this command
 you are checking your code for errors based on the linter I have set up. This is to help improve the codebase and
 prevent any issues being pushed to the master branch.
-
-### `npm stage`
-
-This is similar to the previous script, where it will run a pre-commit script, checking your source code for errors
-if there are any errors it will attempt to fix them. If there are too many errors it will reject the commit and tell you to correct the code before committing to the repository. There will be hints to assist with what you need to correct.
-
-After this has run you will need to commit the files if it succeeds. `git commit -m "[FILES UPDATED AND CHANGES MADE]"`. You will not need to add the files as this script will add any files for you.
