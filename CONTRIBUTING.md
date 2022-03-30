@@ -40,12 +40,6 @@ install all the dependencies
 
 `npm install`
 
-run the precommit initializer script
-
-`./git-hooks/init`
-
-<b><u>Ensure that you have initialized this script</u></b>
-
 ## Checkout Your Teams Branch
 
 `git checkout TEAM` -> EXAMPLE: git checkout components
@@ -55,6 +49,8 @@ run the precommit initializer script
 Setup the link to the organization reposiotry by running the following command:
 
 `git remote add upstream https://github.com/d-bryan/image-sharing-app.git`
+
+`git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
 ## Fetch and Pull
 
@@ -66,9 +62,9 @@ If you are working on a feature that has yet to be added to the repository, then
 
 If you need to update your local branch after the master has had updates then run the following items. Just ensure that you are in your local branch before doing so - `git checkout TEAM`
 
-`git fetch origin master`
+`git fetch upstream TEAM`
 
-`git pull origin master`
+`git pull upstream TEAM`
 
 If someone has helped you out with something in your branch, then pushed code to your repository and you need to update your local branch, you can run the following commands. Same concept applies, ensure you are in your branch by running the checkout command above.
 
@@ -88,7 +84,9 @@ Make any necessary edits to the documents that you think should be contributed
 
 ## Stage and Commit
 
-`npm run stage`
+`npm run fix-errors`
+
+`git add .`
 
 `git commit -m "ENTER YOUR CHANGES HERE"`
 
@@ -101,7 +99,7 @@ You will on have to do this the first time, then moving forward you can just do 
 
 ## Make a Pull Request
 
-Go to GitHub organization repository for the application and make a pull request and request.
+Go to your local GitHub repository for the application and make a pull request.
 
 ### Important
 
