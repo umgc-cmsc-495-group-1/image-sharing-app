@@ -30,8 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "fix-errors": "eslint . --fix",
-    "stage": "./git-hooks/pre-commit"
+    "fix-errors": "eslint . --fix"
   },
   "eslintConfig": {
     "extends": [
