@@ -1,7 +1,7 @@
 import 'firebase/storage';
 import firebase from "firebase/compat/app";
 import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
-import { firestore } from "../dbHandlers/fs_emulator_connect";
+import { firestore } from "../firebaseSetup";
 import { newUser } from './authFunctons';
 
 /***********************************************************
