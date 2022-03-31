@@ -13,6 +13,8 @@ export default function ExampleNav() {
                 <Link to="/about">About</Link>
                 <br/>
                 <Link to="/users">Users</Link>
+                <br/>
+                <Link to="signup">Sign Up</Link>
             </nav>
 
             <hr />
