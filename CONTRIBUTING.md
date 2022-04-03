@@ -3,6 +3,7 @@
 Follow these requirements for contributing to the repository. If we need to consistently rebase your code, I will have you send me it to manually review and will push it myself.
 
 - [Contributing Guidelines](#contributing-guidelines)
+  - [Basics Review](#basics-review)
   - [Fork the Repository](#fork-the-repository)
   - [Cloning The Repository](#cloning-the-repository)
   - [Checkout Your Teams Branch](#checkout-your-teams-branch)
@@ -14,6 +15,10 @@ Follow these requirements for contributing to the repository. If we need to cons
     - [Important](#important)
     - [Example](#example)
   - [Reviewing a Pull Request](#reviewing-a-pull-request)
+
+## Basics Review
+
+If you need a quick review on how to use the terminal or wish to learn more about how GitHub works watch this [video](https://www.youtube.com/watch?v=IRuPHS1hukI)
 
 ## Fork The Repository
 
@@ -40,15 +45,11 @@ install all the dependencies
 
 `npm install`
 
-## Checkout Your Teams Branch
-
-`git checkout TEAM` -> EXAMPLE: git checkout components
-
 ### Add Remote for Organization Repository
 
 Setup the link to the organization reposiotry by running the following command:
 
-`git remote add upstream https://github.com/d-bryan/image-sharing-app.git`
+`git remote add upstream https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git`
 
 `git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
