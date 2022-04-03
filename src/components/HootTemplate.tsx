@@ -1,18 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Typography } from '@mui/material';
 
-type State = Record<string, unknown>;
-type Props = Record<string, unknown>;
-
-
-class HootTemplate extends Component<Props, State>{
-   render() {
-       return(
-           <Typography>
-               Test
-           </Typography>
-       )
-   }
+export default function HootTemplate () {
+    return(
+        <Typography>
+            Template Page
+        </Typography>
+    )
 }
-
-export default HootTemplate;

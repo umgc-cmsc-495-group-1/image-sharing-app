@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
 
 export default function HootLogin() {
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
         console.log({
-            email: data.get('email'),
-            password: data.get('password'),
+            email,
+            password,
         });
         navigate("../", { replace: true });
     };
@@ -37,6 +39,9 @@ const navigate = useNavigate();
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
+                                onChange = {(event) => {
+                                    setEmail(event.target.value);
+                                }}
                                 required
                                 fullWidth
                                 id="email"
@@ -47,6 +52,9 @@ const navigate = useNavigate();
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                onChange = {(event) => {
+                                    setPassword(event.target.value);
+                                }}
                                 required
                                 fullWidth
                                 name="password"
