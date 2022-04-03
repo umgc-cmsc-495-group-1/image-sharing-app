@@ -57,6 +57,8 @@ Setup the link to the organization reposiotry by running the following command:
 
 `git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
+`git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
+
 ## Fetch and Pull
 
 If you are working on a feature that has yet to be added to the repository, then you need to only check and see what has been updated. You can run a few commands to see this.
