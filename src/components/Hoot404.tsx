@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 
-export default function HootFeed() {
-    return (
+export default function Hoot404 () {
+    return(
         <Typography>
-            This is the feed page
+            Template Page
         </Typography>
     )
 }
