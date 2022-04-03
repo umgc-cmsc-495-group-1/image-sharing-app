@@ -9,6 +9,7 @@ import HootLogin from './components/HootLogin';
 import HootNav from './components/HootNav';
 import HootSignup from './components/HootSignup';
 import HootUser from './components/HootUser';
+import Hoot404 from './components/Hoot404';
 import HootUserSettings from './components/HootUserSettings';
 import { CssBaseline } from '@mui/material';
 
@@ -53,7 +54,7 @@ export default function App() {
                         },
                     ],
                 },
-                { path: "*", element: <Example404 /> },
+                { path: "*", element: <Hoot404 /> },
             ],
         },
     ];
