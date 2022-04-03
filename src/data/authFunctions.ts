@@ -9,8 +9,8 @@ import { createUser } from "./userData";
  ************************************************/
 
 export interface newUser {
-  first: string,
-  last: string,
+  firstName: string,
+  lastName: string,
   username: string,
   email: string,
   password: string
@@ -27,11 +27,9 @@ export const signup = async (user: newUser) => {
     .auth()
     .createUserWithEmailAndPassword(user.email, user.password);
   const addedUser = res.user;
-  //await user.updateUser({ username: `${username}` });
   if (!addedUser) {
     return addedUser;
   }
-
   createUser(addedUser, user);
   return addedUser;
 };
@@ -41,7 +39,6 @@ export const logout = () => {
   // this may be newer syntax
   // return signOut(getAuth);
 };
-
 // TODO: add Google login option this is popup option
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();

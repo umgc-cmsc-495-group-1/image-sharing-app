@@ -17,6 +17,7 @@ export interface appUser {
   lastName: string,
   username: string,
   email: string,
+  bio: string,
   friends: Array<string>[],
   likes: Array<string>[]
 }
@@ -32,10 +33,11 @@ export const createUser = async (user: firebase.User, userInfo: newUser) => {
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
-      firstName: userInfo.first,
-      lastName: userInfo.last,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
       username: userInfo.username,
       email: user.email,
+      bio: '',
       friends: [],
       likes: []
     });
@@ -60,6 +62,7 @@ export const getUserById = async (userId: string) => {
     firstName: data.first,
     lastName: data.last,
     email: data.email,
+    bio: data.bio,
     likes: data.likes,
     friends: data.friends
   };
@@ -72,7 +75,7 @@ export const updateUser = async (user: appUser) => {
   //const docRef = firestore.doc(`/users/${user.uid}`);
   //const docRef = doc(firestore, "users", `${user.uid}`);
   //const docSnap = await getDoc(docRef);
-  const usersRef = doc(firestore, 'users', 'BJ');
+  const usersRef = doc(firestore, 'users', `${user.uid}`);
   await setDoc(usersRef, { user }, { merge: true });
 
   //return docRef.update(user);

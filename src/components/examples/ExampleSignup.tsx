@@ -47,21 +47,21 @@ function ExampleSignupPage() {
             onSubmit={async (e: React.SyntheticEvent) => {
               e.preventDefault();
               const user = e.target as typeof e.target & {
-                first: { value: string };
-                last: { value: string };
+                firstName: { value: string };
+                lastName: { value: string };
                 username: { value: string };
                 email: { value: string };
                 password: { value: string };
               };
 
-              const first = user.first.value;
-              const last = user.last.value;
+              const firstName = user.firstName.value;
+              const lastName = user.lastName.value;
               const username = user.username.value;
               const email = user.email.value; // typechecks!
               const password = user.password.value; // typechecks!
               const newUser = {
-                first: first[0].toUpperCase() + first.substring(1),
-                last: last[0].toUpperCase() + last.substring(1),
+                firstName: firstName[0].toUpperCase() + firstName.substring(1),
+                lastName: lastName[0].toUpperCase() + lastName.substring(1),
                 username: username,
                 email: email,
                 password: password
@@ -83,14 +83,14 @@ function ExampleSignupPage() {
 
             <input
               type="text"
-              name="first"
+              name="firstName"
               placeholder="first name"
 
             />
 
             <input
               type="text"
-              name="last"
+              name="lastName"
               placeholder="last name"
             >
             </input>
