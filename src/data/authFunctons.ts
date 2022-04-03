@@ -1,7 +1,8 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { createUser } from "./userData";
-
+import { auth } from '../firebaseSetup';
+import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 /*************************************************
  * Sign Up, Log In, and Log Out Functions
  ************************************************/
@@ -21,9 +22,19 @@ export interface returnUser {
 
 //export const signup = async ({ firstName, lastName, email, password, username }) => {   //orig. code
 export const signup = async (user: newUser) => {
-  const res = await firebase
-    .auth()
-    .createUserWithEmailAndPassword(user.email, user.password);
+  
+  let res : UserCredential
+
+  try {
+    res = await createUserWithEmailAndPassword(
+      auth,
+      user.email,
+      user.password,
+    );
+  } catch (e) {
+    console.log(e);
+    return;
+  }
   const addedUser = res.user;
   //await user.updateUser({ username: `${username}` });
   if (!addedUser) {

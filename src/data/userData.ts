@@ -1,8 +1,8 @@
 import 'firebase/storage';
-import firebase from "firebase/compat/app";
 import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
-import { firestore } from "../firebaseSetup";
+import { fireStore } from "../firebaseSetup";
 import { newUser } from './authFunctons';
+import { User } from 'firebase/auth';
 
 /***********************************************************
  * User Functions: Create New User, Delete User (not tested)
@@ -21,11 +21,11 @@ export interface appUser {
 }
 
 // Gets reference to the User collection
-const usersRef = collection(firestore, "users");
+const usersRef = collection(fireStore, "users");
 
 // add a new user
-export const createUser = async (user: firebase.User, userInfo: newUser) => {
-  // write to firestore db
+export const createUser = async (user: User, userInfo: newUser) => {
+  // write to fireStore db
   await setDoc(doc(usersRef, `${user.uid}`), {
     uid: user.uid,
     firstName: userInfo.first,
@@ -39,22 +39,22 @@ export const createUser = async (user: firebase.User, userInfo: newUser) => {
 
 // update user profile - find correct syntax
 export const updateUser = async (user: appUser) => {
-  //const docRef = firestore.doc(`/users/${user.uid}`);
-  //const docRef = doc(firestore, "users", `${user.uid}`);
+  //const docRef = fireStore.doc(`/users/${user.uid}`);
+  //const docRef = doc(fireStore, "users", `${user.uid}`);
   //const docSnap = await getDoc(docRef);
-  const usersRef = doc(firestore, 'users', 'BJ');
+  const usersRef = doc(fireStore, 'users', 'BJ');
   await setDoc(usersRef, { user }, { merge: true });
 
   //return docRef.update(user);
 };
 // Delete user
 export const deleteUser = async (user: appUser) => {
-  await deleteDoc(doc(firestore ,"users", `${user.uid}`))
+  await deleteDoc(doc(fireStore ,"users", `${user.uid}`))
 };
 
 // Gets all users
 export const getAllUsers = async () => {
-  const querySnapshot = await getDocs(collection(firestore, "users"));
+  const querySnapshot = await getDocs(collection(fireStore, "users"));
   querySnapshot.forEach((doc) => {
    doc.data() //is never undefined for query doc snapshots
   console.log(doc.id, " => ", doc.data());
