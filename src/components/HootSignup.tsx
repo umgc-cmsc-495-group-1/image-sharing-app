@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { newUser, signup } from '../data/authFunctons'; 
 
 export default function HootSignup() {
 
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -40,7 +40,7 @@ export default function HootSignup() {
             password,
             verifyPassword,
         });
-        //navigate("../", { replace: true });
+        navigate("../", { replace: true });
     };
     return (
         <Container component="main" maxWidth="xs">
