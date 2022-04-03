@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
+import { newUser, signup } from '../data/authFunctons'; 
 
 export default function HootSignup() {
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -14,9 +15,23 @@ export default function HootSignup() {
     const [password, setPassword] = useState("");
     const [verifyPassword, setVerifyPassword] = useState("");
         
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const newUser: newUser  = {
+            first: firstName,
+            last: lastName,
+            username: username,
+            email: email,
+            password: password,
+        }
+
+        try {
+            console.log(JSON.stringify(newUser));
+            await signup(newUser);
+        } catch (error){
+            console.log(error)
+        }
+
         console.log({
             firstName,
             lastName,
@@ -25,7 +40,7 @@ export default function HootSignup() {
             password,
             verifyPassword,
         });
-        navigate("../", { replace: true });
+        //navigate("../", { replace: true });
     };
     return (
         <Container component="main" maxWidth="xs">
