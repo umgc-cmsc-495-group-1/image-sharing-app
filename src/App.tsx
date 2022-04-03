@@ -3,7 +3,6 @@ import {
     RouteObject, useRoutes
 } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Example404 from './components/examples/Example404';
 import HootFeed from './components/HootFeed';
 import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
