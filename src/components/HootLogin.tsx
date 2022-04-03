@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function HootLogin() {
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
@@ -76,4 +76,5 @@ const navigate = useNavigate();
             </Box>
         </Container>
     )
-            }
+
+}

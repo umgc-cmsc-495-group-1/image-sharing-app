@@ -4,10 +4,6 @@ import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import ExampleAbout from '../components/examples/ExampleAbout';
 
-// function renderLoginForm() {
-//   return render(<ExampleAbout />);
-// }
-
 describe('About page tests', () => {
   afterAll(() => {
     cleanup()
