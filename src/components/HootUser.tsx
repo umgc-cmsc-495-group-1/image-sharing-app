@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-function HootUser() {
+export default function HootUser() {
     const { userId  } = useParams();
    return(
     <Typography>
@@ -10,5 +10,3 @@ function HootUser() {
     </Typography>
    ); 
 }
-
-export default HootUser;
