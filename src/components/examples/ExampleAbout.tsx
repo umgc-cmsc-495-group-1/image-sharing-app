@@ -5,10 +5,10 @@ import React from "react";
  */
 export default function ExampleAbout() {
     return (
-        <div>
-            <main>
+        <div data-testid="main-div">
+            <main data-testid="main-container">
                 <h2>About</h2>
-                <p>This is the about page</p>
+                <p data-testid="paragraph">This is the about page</p>
             </main>
         </div>
     );
