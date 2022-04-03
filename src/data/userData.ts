@@ -1,8 +1,9 @@
 import 'firebase/storage';
 import firebase from "firebase/compat/app";
-import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, deleteDoc, getDoc } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
-import { newUser } from './authFunctons';
+import { newUser } from './authFunctions';
+//import { getAuth } from 'firebase/auth';
 
 /***********************************************************
  * User Functions: Create New User, Delete User (not tested)
@@ -12,13 +13,15 @@ import { newUser } from './authFunctons';
 
 export interface appUser {
   uid: string,
-  first: string,
-  last: string,
+  firstName: string,
+  lastName: string,
   username: string,
   email: string,
-  friends: [],
-  likes: []
+  friends: Array<string>[],
+  likes: Array<string>[]
 }
+
+type firestore = firebase.firestore.Firestore | null;
 
 // Gets reference to the User collection
 const usersRef = collection(firestore, "users");
@@ -26,15 +29,42 @@ const usersRef = collection(firestore, "users");
 // add a new user
 export const createUser = async (user: firebase.User, userInfo: newUser) => {
   // write to firestore db
-  await setDoc(doc(usersRef, `${user.uid}`), {
-    uid: user.uid,
-    firstName: userInfo.first,
-    lastName: userInfo.last,
-    userName: userInfo.username,
-    email: user.email,
-    friends: [],
-    likes: []
-  });
+  try {
+    await setDoc(doc(usersRef, `${user.uid}`), {
+      uid: user.uid,
+      firstName: userInfo.first,
+      lastName: userInfo.last,
+      username: userInfo.username,
+      email: user.email,
+      friends: [],
+      likes: []
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserById = async (userId: string) => {
+  const userRef = doc(firestore, 'users', userId);
+  const docSnap = await getDoc(userRef);
+
+  if(!docSnap.exists()) {
+    console.log("No user document found");
+    return;
+  }
+
+  const data = docSnap.data();
+  const current = {
+    uid: data.uid,
+    username: data.username,
+    firstName: data.first,
+    lastName: data.last,
+    email: data.email,
+    likes: data.likes,
+    friends: data.friends
+  };
+  console.log("user data: ", current.username);
+  return current;
 };
 
 // update user profile - find correct syntax
@@ -48,6 +78,7 @@ export const updateUser = async (user: appUser) => {
   //return docRef.update(user);
 };
 // Delete user
+// TODO: user should have to enter auth info before delete
 export const deleteUser = async (user: appUser) => {
   await deleteDoc(doc(firestore ,"users", `${user.uid}`))
 };
@@ -61,6 +92,16 @@ export const getAllUsers = async () => {
   });
 };
 
+// Get URL of user's avatar
+/*
+function getAvatarUrl() {
+  let url;
+  const user = getAuth().currentUser;
+  if (user) {
+    return  user.photoURL || '/path/of/placeholder.png';
+  }
+}
+*/
 
 // upload an avatar --
 //TODO: fix

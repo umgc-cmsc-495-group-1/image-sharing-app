@@ -2,7 +2,7 @@ import React from 'react';
 import {
   RouteObject, useRoutes
 } from "react-router-dom";
-import ExampleSignupPage from './components/examples/ExampleSignup';
+import TestPage  from './components/examples/TestPage';
 import ExampleHome from './components/examples/ExampleHome';
 import ExampleAbout from './components/examples/ExampleAbout';
 import ExampleNav from './components/examples/ExampleNav';
@@ -24,7 +24,7 @@ export default function App() {
           children: [
               { index: true, element: <ExampleHome /> },
               { path: "/about", element: <ExampleAbout /> },
-              { path: "/signup", element: <ExampleSignupPage />},
+              { path: "/signup", element: <TestPage />},
               {
                   path: "/users", element: <ExampleUserLink />,
                   children: [

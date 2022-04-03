@@ -1,7 +1,9 @@
 import React from "react";
 //import { useNavigate } from "react-router-dom";
-import { signup } from "../../data/authFunctons";
-
+import { signup, logout } from "../../data/authFunctions";
+import { useFirebaseAuth } from "../../context/AuthContext";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+//import { deleteUser } from "../../data/userData";
 
 /****************************************************
 * fake form for testing user sign up with emulator *
@@ -9,117 +11,154 @@ import { signup } from "../../data/authFunctons";
 
 
 
-function ExampleSignupPage(props: any) {
-    //const useForm form react-hook-form?
-   // const [isLoading, setLoading] = useState(false);
-    //let navigate = useNavigate();
-    console.log(props);
+function ExampleSignupPage() {
 
-    const onSubmit = async (data: any) => {
-        let newUser;
-        //setLoading(true);
-        console.log("loading");
-        try {
-            newUser = await signup(data);
-            console.log(JSON.stringify(data));
-            //reset();
-        } catch (error) {
-            console.log(error);
-        }
-        if (newUser) {
-            //navigate(`/ExampleUserPage/${newUser.uid}`, { replace: true });
-        } else {
-            //setLoading(false);
-        }
-    };
-    //const formClassName = `ui form ${isLoading ? 'loading' : ''}`;
+  //const [email, setEmail] = useState({email: ''});
+  //const [password, setPassword] = useState({password:''});
 
-    return (
+  const userLogout = async () => {
+    await logout();
+    //navigate('/login', { replace: true });
+    //history.push('/signup');
+  };
+
+  // Deleting an account should require repeating
+  // authentication
+  const deleteAccount = async () => {
+    //await deleteUser(user.uid);
+    //navigate('/login', { replace: true });
+    //history.push('/signup');
+  };
+
+  const currentUser = useCurrentUser();
+  const user = (useFirebaseAuth() || "not authenticated");
+
+  console.log("user: ", user);
+
+
+
+  return (
+    <>
+      <main>
         <>
-            <main>
-                <form
-                    onSubmit={async (e: React.SyntheticEvent) => {
-                        e.preventDefault();
-                        const user = e.target as typeof e.target & {
-                            first: { value: string };
-                            last: { value: string };
-                            username: { value: string };
-                            email: { value: string };
-                            password: { value: string };
-                        };
+        {currentUser ?
+            <h1>{currentUser.username}</h1>  : <h1>The current user is null</h1>}
+          <form
+            onSubmit={async (e: React.SyntheticEvent) => {
+              e.preventDefault();
+              const user = e.target as typeof e.target & {
+                first: { value: string };
+                last: { value: string };
+                username: { value: string };
+                email: { value: string };
+                password: { value: string };
+              };
 
-                        const first = user.first.value;
-                        const last = user.last.value;
-                        const username = user.username.value;
-                        const email = user.email.value; // typechecks!
-                        const password = user.password.value; // typechecks!
-                        const newUser = {
-                            first: first[0].toUpperCase() + first.substring(1),
-                            last: last[0].toUpperCase() + last.substring(1),
-                            username: username,
-                            email: email,
-                            password: password
-                        }
-                        // etc...
-                        try {
-                            console.log(JSON.stringify(newUser));
-                            await signup(newUser);
-                        } catch (error) {
-                            console.log(JSON.stringify(newUser));
-                            console.log(error);
-                            alert("signup failed");
-                        } finally {
+              const first = user.first.value;
+              const last = user.last.value;
+              const username = user.username.value;
+              const email = user.email.value; // typechecks!
+              const password = user.password.value; // typechecks!
+              const newUser = {
+                first: first[0].toUpperCase() + first.substring(1),
+                last: last[0].toUpperCase() + last.substring(1),
+                username: username,
+                email: email,
+                password: password
+              }
+              // etc...
+              try {
+                await signup(newUser);
 
-                            alert("signed up");
-                        }
-                    }}
-                >
+              } catch (error) {
+                console.log(JSON.stringify(newUser));
+                console.log(error);
+                alert(`signup failed: ${error}`);
+              } finally {
 
-                    <input
-                        type="text"
-                        name="first"
-                        placeholder="first name"
+                alert("signed up");
+              }
+            }}
+          >
 
-                    />
+            <input
+              type="text"
+              name="first"
+              placeholder="first name"
 
-                    <input
-                        type="text"
-                        name="last"
-                        placeholder="last name"
-                    >
-                    </input>
+            />
 
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="username"
-                    >
-                    </input>
+            <input
+              type="text"
+              name="last"
+              placeholder="last name"
+            >
+            </input>
 
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="password"
-                    >
-                    </input>
+            <input
+              type="text"
+              name="username"
+              placeholder="username"
+            >
+            </input>
 
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="email"
-                    >
-                    </input>
+            <input
+              type="password"
+              name="password"
+              placeholder="password"
+            >
+            </input>
 
-                    <button
-                        type="submit"
-                        onCanPlay={onSubmit}
-                        value="sign up">
-                        Sign Up
-                    </button>
+            <input
+              type="email"
+              name="email"
+              placeholder="email"
+            >
+            </input>
 
-                </form>
-            </main>
+            <button
+              type="submit"
+              //onClick={onSubmit}
+              value="sign up">
+              Sign Up
+            </button>
+
+          </form>
+          <br />
+
+          <button
+            onClick={deleteAccount}>
+            delete account
+          </button>
+          <br />
+          {user != 'not authenticated' ?
+            <button onClick={userLogout}>Logout</button> : <button>Login</button>}
         </>
-    );
+        <form>
+
+          <input
+            type="email"
+            name="email"
+            placeholder="email"
+          >
+          </input>
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+          >
+          </input>
+
+          <button
+            type="submit"
+            //onClick={onSubmit}
+            value="login">
+            Log In
+          </button>
+
+        </form>
+      </main>
+    </>
+  );
 }
 export default ExampleSignupPage;

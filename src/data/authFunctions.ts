@@ -1,3 +1,5 @@
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../firebaseSetup";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { createUser } from "./userData";
@@ -36,9 +38,18 @@ export const signup = async (user: newUser) => {
 
 export const logout = () => {
   return firebase.auth().signOut();
+  // this may be newer syntax
+  // return signOut(getAuth);
 };
 
-export const login = async (user: returnUser) => {
+// TODO: add Google login option this is popup option
+export const loginWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(auth, provider);
+};
+
+// Password and email login
+export const loginWithPassword = async (user: returnUser) => {
   const res = await firebase.auth().signInWithEmailAndPassword(user.email, user.password);
   return res.user;
 };
