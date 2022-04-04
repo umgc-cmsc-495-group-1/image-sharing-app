@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   RouteObject, useRoutes
-} from "react-router-dom";
+} from 'react-router-dom';
 import TestPage  from './components/examples/TestPage';
 import ExampleHome from './components/examples/ExampleHome';
 import ExampleAbout from './components/examples/ExampleAbout';
@@ -11,7 +11,7 @@ import ExampleUserIndex from './components/examples/ExampleUserIndex';
 import ExampleUserPage from './components/examples/ExampleUserPage';
 import Example404 from './components/examples/Example404';
 
-// const test: string = "name";
+// const test: string = 'name';
 // test = 5;
 
 
@@ -19,20 +19,20 @@ export default function App() {
 
   const routes: RouteObject[] = [
       {
-          path: "/",
+          path: '/',
           element: <ExampleNav />,
           children: [
               { index: true, element: <ExampleHome /> },
-              { path: "/about", element: <ExampleAbout /> },
-              { path: "/signup", element: <TestPage />},
+              { path: '/about', element: <ExampleAbout /> },
+              { path: '/signup', element: <TestPage />},
               {
-                  path: "/users", element: <ExampleUserLink />,
+                  path: '/users', element: <ExampleUserLink />,
                   children: [
                       { index: true, element: <ExampleUserIndex /> },
-                      { path: "/users/:id", element: <ExampleUserPage /> }
+                      { path: '/users/:id', element: <ExampleUserPage /> }
                   ]
               },
-              { path: "*", element: <Example404 /> }
+              { path: '*', element: <Example404 /> }
           ],
       },
   ];
@@ -40,7 +40,7 @@ export default function App() {
   const element = useRoutes(routes);
 
   return (
-    <div className="App">
+    <div className='App'>
       {element}
     </div>
   );

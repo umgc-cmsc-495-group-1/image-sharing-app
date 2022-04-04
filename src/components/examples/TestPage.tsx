@@ -1,6 +1,6 @@
-import React from "react";
-import { FirebaseAuthProvider } from "../../context/AuthContext";
-import ExampleSignup from "./ExampleSignup";
+import React from 'react'
+import { FirebaseAuthProvider } from '../../context/AuthContext'
+import ExampleSignup from './ExampleSignup'
 
 
 class TestPage extends React.Component {
@@ -11,6 +11,5 @@ class TestPage extends React.Component {
       </FirebaseAuthProvider>
     )
   }
-
 }
-export default TestPage;
+export default TestPage

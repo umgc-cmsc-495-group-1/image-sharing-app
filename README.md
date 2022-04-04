@@ -97,8 +97,8 @@ This is to distinguish them from variables in JavaScript, which have camelCase n
 This is the heading navigation component which allows for navigation throughout the app.
 
 ```tsx
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
 
 /**
  * This is just and example to show how components can work together
@@ -107,11 +107,11 @@ export default function ExampleNav() {
     return (
         <div>
             <nav>
-                <Link to="/">Home</Link>
+                <Link to='/'>Home</Link>
                 <br/>
-                <Link to="/about">About</Link>
+                <Link to='/about'>About</Link>
                 <br/>
-                <Link to="/users">Users</Link>
+                <Link to='/users'>Users</Link>
             </nav>
 
             <hr />
@@ -127,7 +127,7 @@ export default function ExampleNav() {
 This is our `Home Page` component.
 
 ```tsx
-import React from "react";
+import React from 'react';
 
 export default function ExampleHome() {
     return (
@@ -146,7 +146,7 @@ export default function ExampleHome() {
 This is the same as the previous example, except it is our `About Page`.
 
 ```tsx
-import React from "react";
+import React from 'react';
 
 export default function ExampleAbout() {
     return (
@@ -165,14 +165,14 @@ export default function ExampleAbout() {
 Here we are giving an index for the children components to reference. This is the parent component for all the `ExampleUserPage.tsx`. This is why we need the `Outlet` component to hold the place for everything.
 
 ```tsx
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 export default function ExampleUserLink() {
     return (
         <div>
             <h1>List of Users</h1>
-            
+
             <Outlet />
         </div>
     );
@@ -184,9 +184,9 @@ export default function ExampleUserLink() {
 We are mapping the data dynamically generating individual list items based on the length of the list. Each link will have a unique path which will create a unique URL for routing. The interface here is used throughout the rest of the application for User objects, but it could be in `test_date.ts` for cleaner code.
 
 ```tsx
-import React from "react";
-import {Link} from "react-router-dom";
-import { getUsers } from "../../tests/test_data"
+import React from 'react';
+import {Link} from 'react-router-dom';
+import { getUsers } from '../../tests/test_data'
 
 export interface User {
     id: number,
@@ -220,13 +220,13 @@ export default function ExampleUserIndex() {
 This is a simple User Page, we can see the information which can be gathered paths. This is passed through the routes and gathered but the `useParams` method. Then with the help of a function in the example users file we are able to locate the user and assign it to a `User` object, which has specific properties.
 
 ```tsx
-import React from "react";
-import {useParams} from "react-router-dom";
-import { getUserById } from "../../tests/test_data";
-import { User } from "./ExampleUserIndex";
+import React from 'react';
+import {useParams} from 'react-router-dom';
+import { getUserById } from '../../tests/test_data';
+import { User } from './ExampleUserIndex';
 
 export default function ExampleUserPage() {
-    const { id } = useParams<"id">()
+    const { id } = useParams<'id'>()
     const user: User = getUserById(id);
     return (
         <>
@@ -244,7 +244,7 @@ export default function ExampleUserPage() {
 This is just a simple 404-page example - but we keep this at the bottom of the routes, for route cannot be found it will render.
 
 ```tsx
-import React from "react";
+import React from 'react';
 
 export default function Example404 () {
     return (
@@ -270,7 +270,7 @@ We pass this constant to the `useRoutes` method, and place it as an object in th
 import React from 'react';
 import {
   RouteObject, useRoutes
-} from "react-router-dom";
+} from 'react-router-dom';
 import ExampleHome from './components/examples/ExampleHome';
 import ExampleAbout from './components/examples/ExampleAbout';
 import ExampleNav from './components/examples/ExampleNav';
@@ -284,19 +284,19 @@ export default function App() {
 
   const routes: RouteObject[] = [
       {
-          path: "/",
+          path: '/',
           element: <ExampleNav />,
           children: [
               { index: true, element: <ExampleHome /> },
-              { path: "/about", element: <ExampleAbout /> },
+              { path: '/about', element: <ExampleAbout /> },
               {
-                  path: "/users", element: <ExampleUserLink />,
+                  path: '/users', element: <ExampleUserLink />,
                   children: [
                       { index: true, element: <ExampleUserIndex /> },
-                      { path: "/users/:id", element: <ExampleUserPage /> }
+                      { path: '/users/:id', element: <ExampleUserPage /> }
                   ]
               },
-              { path: "*", element: <Example404 /> }
+              { path: '*', element: <Example404 /> }
           ],
       },
   ];
@@ -304,7 +304,7 @@ export default function App() {
   const element = useRoutes(routes);
 
   return (
-    <div className="App">
+    <div className='App'>
       {element}
     </div>
   );
@@ -409,4 +409,4 @@ prevent any issues being pushed to the master branch.
 This is similar to the previous script, where it will run a pre-commit script, checking your source code for errors
 if there are any errors it will attempt to fix them. If there are too many errors it will reject the commit and tell you to correct the code before committing to the repository. There will be hints to assist with what you need to correct.
 
-After this has run you will need to commit the files if it succeeds. `git commit -m "[FILES UPDATED AND CHANGES MADE]"`. You will not need to add the files as this script will add any files for you.
+After this has run you will need to commit the files if it succeeds. `git commit -m '[FILES UPDATED AND CHANGES MADE]'`. You will not need to add the files as this script will add any files for you.

@@ -70,7 +70,7 @@ Make any necessary edits to the documents that you think should be contributed
 
 `npm run stage`
 
-`git commit -m "ENTER YOUR CHANGES HERE"`
+`git commit -m 'ENTER YOUR CHANGES HERE'`
 
 `git push -u origin TEAM`
 
