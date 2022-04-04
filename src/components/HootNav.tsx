@@ -71,14 +71,14 @@ export default function HootNav() {
                                 toggleDrawer(false, event);
                             }}
                 >
-                    <List>
-                        <ListItem button component={Link} to="/" >
+                    <List role="navigation-list-container">
+                        <ListItem button component={Link} to="/" role="navigation-home">
                             <ListItemText primary="Home" />
                         </ListItem>
-                        <ListItem button component={Link} to="/login">
+                        <ListItem button component={Link} to="/login" role="navigation-login">
                             <ListItemText primary="Login" />
                         </ListItem>
-                        <ListItem button component={Link} to="/signup">
+                        <ListItem button component={Link} to="/signup" role="navigation-signup">
                             <ListItemText primary="Sign Up" />
                         </ListItem>
                     </List>
