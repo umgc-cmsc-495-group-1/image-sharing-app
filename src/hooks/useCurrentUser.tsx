@@ -30,6 +30,6 @@ export const useCurrentUser = (userId: string) => {
         setCurrentUser(user);
       }
     })()
-  }, [userId,currentUser])
+  }, [userId])
   return currentUser
 }

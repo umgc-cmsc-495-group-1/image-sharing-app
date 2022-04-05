@@ -1,6 +1,6 @@
 import React from 'react'
 // import { useNavigate } from 'react-router-dom'
-import { signup, logout } from '../../data/authFunctions'
+import { signup, logout, loginWithGoogle } from '../../data/authFunctions'
 import { useFirebaseAuth } from '../../context/AuthContext'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 // import { deleteUser } from '../../data/userData'
@@ -47,7 +47,11 @@ function ExampleSignupPage() {
     // await deleteUser(user.uid);
     // navigate('/login', { replace: true });
     // history.push('/signup');
-  };
+  }
+
+  const login = async () => {
+    await loginWithGoogle()
+  }
 
   const userId = (useFirebaseAuth()?.uid || 'not authenticated')
   const currentUser = (useCurrentUser(userId)?.username || 'no current user')
@@ -168,8 +172,9 @@ function ExampleSignupPage() {
           <button
             type='submit'
             // value='login'
+            onClick={login}
             >
-            Log In
+            Log In With Google
           </button>
         </form>
       </main>
