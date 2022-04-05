@@ -21,11 +21,11 @@ export default function App() {
             path: "/",
             element: <HootNav />,
             children: [
-                { 
-                    index: true, 
-                    element: <HootHome /> 
+                {
+                    index: true,
+                    element: <HootHome />
                 },
-                { 
+                {
                     path: "/login",
                     element: <HootLogin />
                 },

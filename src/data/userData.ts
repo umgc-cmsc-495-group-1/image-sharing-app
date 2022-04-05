@@ -1,13 +1,15 @@
-import 'firebase/storage';
-import firebase from "firebase/compat/app";
-import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
-import { firestore } from "../firebaseSetup";
-import { newUser } from './authFunctons';
+import 'firebase/storage'
+import { collection, doc, setDoc, getDocs, deleteDoc, getDoc } from 'firebase/firestore'
+import { fireStore } from '../firebaseSetup'
+import { newUser } from './authFunctions'
+import { User } from 'firebase/auth'
 
 /***********************************************************
+ *
  * User Functions: Create New User, Delete User (not tested)
  * beginning of functions to edit user profile, upload avatar
  * and other photos, get all users
+ *
  **********************************************************/
 
 export interface appUser {
@@ -16,54 +18,87 @@ export interface appUser {
   last: string,
   username: string,
   email: string,
-  friends: [],
-  likes: []
+  bio?: string,
+  friends: string[],
+  likes: string[]
 }
 
 // Gets reference to the User collection
-const usersRef = collection(firestore, "users");
+const usersRef = collection(fireStore, 'users')
 
-// add a new user
-export const createUser = async (user: firebase.User, userInfo: newUser) => {
-  // write to firestore db
-  await setDoc(doc(usersRef, `${user.uid}`), {
-    uid: user.uid,
-    firstName: userInfo.first,
-    lastName: userInfo.last,
-    userName: userInfo.username,
-    email: user.email,
-    friends: [],
-    likes: []
-  });
-};
+// Add a new user
+export const createUser = async (user: User, userInfo: newUser) => {
+  // Write to firestore db
+  try {
+    await setDoc(doc(usersRef, `${user.uid}`), {
+      uid: user.uid,
+      first: userInfo.first,
+      last: userInfo.last,
+      username: userInfo.username,
+      email: user.email,
+      bio: '',
+      friends: [],
+      likes: []
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Get user with UID value
+export const getUserById = async (userId: string) => {
+  const userRef = doc(fireStore, 'users', userId)
+  const docSnap = await getDoc(userRef)
+
+  if (!docSnap.exists()) {
+    console.log('No user document found')
+    return
+  }
+  const data = docSnap.data();
+  const user: appUser = {
+    uid: data.uid,
+    username: data.username,
+    first: data.first,
+    last: data.last,
+    email: data.email,
+    bio: data.bio,
+    likes: data.likes,
+    friends: data.friends
+  }
+  console.log('user data: ', user.username)
+
+  return user
+}
 
 // update user profile - find correct syntax
 export const updateUser = async (user: appUser) => {
-  //const docRef = firestore.doc(`/users/${user.uid}`);
-  //const docRef = doc(firestore, "users", `${user.uid}`);
-  //const docSnap = await getDoc(docRef);
-  const usersRef = doc(firestore, 'users', 'BJ');
-  await setDoc(usersRef, { user }, { merge: true });
+  // const docRef = doc(fireStore, 'users', `${user.uid}`);
+  // const docSnap = await getDoc(docRef);
+  const usersRef = doc(fireStore, 'users', `${user.uid}`)  //??? shouldn't this be user uid instead of string 'BJ'
+  await setDoc(usersRef, { user }, { merge: true })
 
-  //return docRef.update(user);
-};
+  // return docRef.update(user);
+}
 // Delete user
+// TODO: user should have to enter auth info before delete
+// should input just be user id?
 export const deleteUser = async (user: appUser) => {
-  await deleteDoc(doc(firestore ,"users", `${user.uid}`))
+  await deleteDoc(doc(fireStore ,'users', `${user.uid}`))
 };
+
 
 // Gets all users
 export const getAllUsers = async () => {
-  const querySnapshot = await getDocs(collection(firestore, "users"));
+  const querySnapshot = await getDocs(collection(fireStore, 'users'))
   querySnapshot.forEach((doc) => {
    doc.data() //is never undefined for query doc snapshots
-  console.log(doc.id, " => ", doc.data());
-  });
-};
+  console.log(doc.id, ' => ', doc.data());
+  })
+}
 
 
 // upload an avatar --
-//TODO: fix
+// TODO: fix
 /*
 export const uploadAvatar = (user.uid, File, progress) => {
   return new Promise((resolve, reject) => {
@@ -92,5 +127,4 @@ export const getDownloadUrl = async (userId, fileName) => {
   console.log(getDownloadURL(fileRef));
   return getDownloadURL(fileRef);
 };
-
 */
