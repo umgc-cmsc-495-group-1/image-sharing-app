@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@mui/material';
+import { AppBar, IconButton, Typography, Box, Drawer, List, ListItem, ListItemText, Toolbar  } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+// import useWindowDimensions from '../hooks/useWindowDimensions';
 
 export default function HootNav() {
-
+    // const { width, height } = useWindowDimensions();
     const [isOpen, setIsOpen] = useState(false);
-
+    // [S, Dispatch<SetStateAction<S>>]
+    // toggle drawer function
     function toggleDrawer(open: boolean, event: React.KeyboardEvent | React.MouseEvent) {
         if (
             event.type === 'keydown' &&
             ((event as React.KeyboardEvent).key == 'Tab' ||
-            (event as React.KeyboardEvent).key == 'Shift')
+                (event as React.KeyboardEvent).key == 'Shift')
         ) {
             return;
         }
@@ -19,10 +22,11 @@ export default function HootNav() {
         setIsOpen(open);
     }
 
-    return(
+    return (
         <div
             className="class.navigation"
-        > 
+        >
+            {/* start of top bar */}
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
@@ -31,8 +35,8 @@ export default function HootNav() {
                             edge="start"
                             color="inherit"
                             aria-label="menu"
-                            sx={{ mr: 2  }}
-                            onClick= {(event) => {
+                            sx={{ mr: 2 }}
+                            onClick={(event) => {
                                 toggleDrawer(!isOpen, event);
                             }}
                         >
@@ -55,21 +59,21 @@ export default function HootNav() {
             <Drawer
                 anchor="left"
                 open={isOpen}
-                onClose= { () => {
+                onClose={() => {
                     setIsOpen(false);
                 }}
             >
                 <Toolbar>
                 </Toolbar>
                 <Box
-                    sx={{ width: 250}}
+                    sx={{ width: 250 }}
                     role="presentation"
                     onClick={(event) => {
-                                toggleDrawer(false, event);
-                            }}
+                        toggleDrawer(false, event);
+                    }}
                     onKeyDown={(event) => {
-                                toggleDrawer(false, event);
-                            }}
+                        toggleDrawer(false, event);
+                    }}
                 >
                     <List role="navigation-list-container">
                         <ListItem button component={Link} to="/" role="navigation-home">
@@ -86,6 +90,6 @@ export default function HootNav() {
             </Drawer>
             <Outlet />
         </div>
-    ) 
-    
+    )
+
 }
