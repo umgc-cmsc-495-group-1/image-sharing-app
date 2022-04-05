@@ -53,7 +53,9 @@ install all the dependencies
 
 Setup the link to the organization reposiotry by running the following command:
 
-`git remote add upstream https://github.com/d-bryan/image-sharing-app.git`
+`git remote add upstream https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git`
+
+`git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
 `git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
