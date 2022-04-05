@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
 
 /**
  * This is just and example to show how components can work together
@@ -8,13 +8,13 @@ export default function ExampleNav() {
     return (
         <div>
             <nav>
-                <Link to="/">Home</Link>
+                <Link to='/'>Home</Link>
                 <br/>
-                <Link to="/about">About</Link>
+                <Link to='/about'>About</Link>
                 <br/>
-                <Link to="/users">Users</Link>
+                <Link to='/users'>Users</Link>
                 <br/>
-                <Link to="signup">Sign Up</Link>
+                <Link to='signup'>Sign Up</Link>
             </nav>
 
             <hr />

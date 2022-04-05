@@ -1,11 +1,11 @@
 root: true
 parser: '@typescript-eslint/parser'
 
-parserOptions: 
-  project: "*/tsconfig.json"
+parserOptions:
+  project: '*/tsconfig.json'
 
-settings: 
-  react: 
+settings:
+  react:
     version: 'detect'
 
 plugins: [
@@ -23,12 +23,12 @@ extends: [
   'plugin:eslint-plugin-react-hooks/recommended'
 ]
 
-env: 
+env:
   browser: true
   es6: true
   jest: true
   node: true
   commonjs: true
 
-rules: 
+rules:
   no-unused-vars: 2

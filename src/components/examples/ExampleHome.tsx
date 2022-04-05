@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 /**
  * This is just and example to show how components can work together

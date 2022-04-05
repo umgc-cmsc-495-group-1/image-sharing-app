@@ -1,10 +1,10 @@
-import React from "react";
-import {useParams} from "react-router-dom";
-import { getUserById } from "../../tests/test_data";
-import { User } from "./ExampleUserIndex";
+import React from 'react';
+import {useParams} from 'react-router-dom';
+import { getUserById } from '../../tests/test_data';
+import { User } from './ExampleUserIndex';
 
 export default function ExampleUserPage() {
-    const { id } = useParams<"id">()
+    const { id } = useParams<'id'>()
     const user: User = getUserById(id);
     return (
         <>

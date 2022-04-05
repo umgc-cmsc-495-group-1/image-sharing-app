@@ -1,55 +1,55 @@
 {
-  "short_name": "Hoot!",
-  "name": "Hoot!",
-  "icons": [
+  'short_name': 'Hoot!',
+  'name': 'Hoot!',
+  'icons': [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      'src': 'favicon.ico',
+      'sizes': '64x64 32x32 24x24 16x16',
+      'type': 'image/x-icon'
     },
     {
-      "src": "simple-57x57.png",
-      "type": "image/png",
-      "sizes": "57x57"
+      'src': 'simple-57x57.png',
+      'type': 'image/png',
+      'sizes': '57x57'
     },
     {
-      "src": "simple-72x72.png",
-      "type": "image/png",
-      "sizes": "72x72"
+      'src': 'simple-72x72.png',
+      'type': 'image/png',
+      'sizes': '72x72'
     },
     {
-      "src": "simple-114x114.png",
-      "type": "image/png",
-      "sizes": "114x114"
+      'src': 'simple-114x114.png',
+      'type': 'image/png',
+      'sizes': '114x114'
     },
     {
-      "src": "simple-120x120.png",
-      "type": "image/png",
-      "sizes": "120x120"
+      'src': 'simple-120x120.png',
+      'type': 'image/png',
+      'sizes': '120x120'
     },
     {
-      "src": "simple-144x144.png",
-      "type": "image/png",
-      "sizes": "144x144"
+      'src': 'simple-144x144.png',
+      'type': 'image/png',
+      'sizes': '144x144'
     },
     {
-      "src": "simple-180x180.png",
-      "type": "image/png",
-      "sizes": "180x180"
+      'src': 'simple-180x180.png',
+      'type': 'image/png',
+      'sizes': '180x180'
     },
     {
-      "src": "simple-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      'src': 'simple-192x192.png',
+      'type': 'image/png',
+      'sizes': '192x192'
     },
     {
-      "src": "simple-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      'src': 'simple-512x512.png',
+      'type': 'image/png',
+      'sizes': '512x512'
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  'start_url': '.',
+  'display': 'standalone',
+  'theme_color': '#000000',
+  'background_color': '#ffffff'
 }
