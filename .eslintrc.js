@@ -7,7 +7,7 @@ module.exports = {
   settings: {
     react: {
       version: 'detect'
-    },
+    }
   },
   plugins: [
     '@typescript-eslint',
@@ -30,6 +30,6 @@ module.exports = {
     commonjs: true
   },
   rules: {
-    'no-unused-vars': 2,
+    'no-unused-vars': 2
   }
-};
+}
