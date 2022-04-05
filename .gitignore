@@ -61,14 +61,16 @@ packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
 
 #firebase emulator env and config
-.firebaserc
-database.rules.json
-firebase.json
-firestore.indexes.json
-firestore.json
-firestore.rules
+*/.firebaserc
+*/database.rules.json
+*/firebase.json
+*/firestore.indexes.json
+*/firestore.json
+*/firestore.rules
+*/firebaseSetup.ts
 *.log
 *.log
+
 
 src/dbHandlers/firebaseConfig.ts
 src/dbHandlers/fs_emulator_connect.ts

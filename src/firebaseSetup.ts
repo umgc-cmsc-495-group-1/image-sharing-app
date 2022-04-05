@@ -72,11 +72,11 @@ if (location.hostname === 'localhost') {
 
   firebaseApp = firebase.initializeApp({
 
-    apiKey: process.env.REACT_APP_API_KEY,
+    apiKey: 'AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA',
     databaseURL: 'http://localhost:8080?ns=hoot-umgc',
-    projectId: process.env.REACT_APP_PROJECT_ID,
+    projectId: 'hoot-umgc',
     storageBucket: 'http://localhost:9199?ns=hoot-umgc',
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
+    messagingSenderId: 'G-W7J416M731'
 
   })
 
@@ -84,12 +84,12 @@ if (location.hostname === 'localhost') {
 
   firebaseApp = firebase.initializeApp({
 
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    apiKey:  'AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA',
+    authDomain: 'hoot-umgc.firebaseapp.com',
+    // databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: 'hoot-umgc',
+    storageBucket: 'hoot-umgc.appspot.com',
+    messagingSenderId: 'G-W7J416M731'
 
   })
 }
