@@ -2,12 +2,12 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: '*/tsconfig.json'
+    project: "*/tsconfig.json"
   },
   settings: {
     react: {
       version: 'detect'
-    },
+    }
   },
   plugins: [
     '@typescript-eslint',
@@ -30,6 +30,6 @@ module.exports = {
     commonjs: true
   },
   rules: {
-    'no-unused-vars': 2,
+    'no-unused-vars': 2
   }
-};
+}
