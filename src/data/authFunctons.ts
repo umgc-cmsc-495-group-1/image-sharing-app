@@ -51,7 +51,7 @@ export const signInWithGoogle = async () => {
 }
 
 export const logout = () => {
-  return firebase.auth().signOut();
+  auth.signOut();
 };
 
 export const login = async (user: returnUser) => {
