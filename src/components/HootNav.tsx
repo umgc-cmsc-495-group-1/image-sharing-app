@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
 import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { auth } from '../firebaseSetup';
+import { logout } from '../data/authFunctons';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function HootNav() {
+
+    const [uid, setUid] = useState("");
+
+    const navigate = useNavigate();
+
+    onAuthStateChanged(auth, (user) =>  {
+        if (user) {
+            setUid(user.uid);
+        } else {
+            setUid("");
+        }
+    })
+
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +63,7 @@ export default function HootNav() {
                             src={require('../assets/logo/png/simple-72x72.png')}
                         />
                         <Typography variant="h6">
-                            Hoot!
+                            { uid ? uid + " - Hoot!" : "Hoot!" }
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -75,12 +91,26 @@ export default function HootNav() {
                         <ListItem button component={Link} to="/" >
                             <ListItemText primary="Home" />
                         </ListItem>
-                        <ListItem button component={Link} to="/login">
-                            <ListItemText primary="Login" />
-                        </ListItem>
-                        <ListItem button component={Link} to="/signup">
-                            <ListItemText primary="Sign Up" />
-                        </ListItem>
+                        {!uid ? // Logged out User Nav Section
+                        <>
+                            <ListItem button component={Link} to="/login">
+                                <ListItemText primary="Login" />
+                            </ListItem> 
+                            <ListItem button component={Link} to="/signup">
+                                <ListItemText primary="Sign Up" />
+                            </ListItem>
+                        </>
+                        : "" }
+                        {uid ? // Logged in User Nav Section
+                        <>
+                            <ListItem button onClick={() => {
+                                logout()
+                                navigate("../", {replace: true});
+                                }}>
+                                <ListItemText primary="Sign Out" />
+                            </ListItem>
+                        </>
+                        : "" }
                     </List>
                 </Box>
             </Drawer>
