@@ -12,7 +12,8 @@ import { User } from 'firebase/auth';
 
 export interface appUser {
   uid: string,
-  displayName: string,
+  first: string,
+  last: string,
   username: string,
   email: string,
   friends: [],
@@ -27,7 +28,8 @@ export const createUser = async (user: User, userInfo: newUser) => {
   // write to fireStore db
   await setDoc(doc(usersRef, `${user.uid}`), {
     uid: user.uid,
-    displayName: userInfo.displayName,
+    firstName: userInfo.first,
+    lastName: userInfo.last,
     userName: userInfo.username,
     email: user.email,
     friends: [],
