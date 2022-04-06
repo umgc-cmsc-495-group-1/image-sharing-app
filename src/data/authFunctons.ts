@@ -2,13 +2,14 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { createUser } from "./userData";
 import { auth } from '../firebaseSetup';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, UserCredential } from 'firebase/auth';
+import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 /*************************************************
  * Sign Up, Log In, and Log Out Functions
  ************************************************/
 
 export interface newUser {
-  displayName: string,
+  first: string,
+  last: string,
   username: string,
   email: string,
   password: string
@@ -43,12 +44,6 @@ export const signup = async (user: newUser) => {
   createUser(addedUser, user);
   return addedUser;
 };
-
-const provider = new GoogleAuthProvider();
-
-export const signInWithGoogle = async () => {
-  await(signInWithPopup(auth, provider));
-}
 
 export const logout = () => {
   return firebase.auth().signOut();
