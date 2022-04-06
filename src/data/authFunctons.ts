@@ -1,8 +1,8 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import { createUser } from "./userData";
-import { auth } from '../firebaseSetup';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, UserCredential } from 'firebase/auth';
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import { createUser } from './userData'
+import { auth } from '../firebaseSetup'
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, UserCredential } from 'firebase/auth'
 /*************************************************
  * Sign Up, Log In, and Log Out Functions
  ************************************************/
@@ -19,42 +19,41 @@ export interface returnUser {
   password: string
 }
 
-//export const signup = async ({ firstName, lastName, email, password, username }) => {   //orig. code
+// export const signup = async ({ firstName, lastName, email, password, username }) => {   //orig. code
 export const signup = async (user: newUser) => {
-  
   let res : UserCredential
 
   try {
     res = await createUserWithEmailAndPassword(
       auth,
       user.email,
-      user.password,
-    );
+      user.password
+    )
   } catch (e) {
-    console.log(e);
-    return;
+    console.log(e)
+    return
   }
-  const addedUser = res.user;
-  //await user.updateUser({ username: `${username}` });
+  const addedUser = res.user
+  // await user.updateUser({ username: `${username}` })
   if (!addedUser) {
-    return addedUser;
+    return addedUser
   }
 
-  createUser(addedUser, user);
-  return addedUser;
-};
+  createUser(addedUser, user)
+  return addedUser
+}
 
-const provider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider()
 
 export const signInWithGoogle = async () => {
-  await(signInWithPopup(auth, provider));
+  await (signInWithPopup(auth, provider))
 }
 
 export const logout = () => {
-  auth.signOut();
-};
+  auth.signOut()
+}
 
 export const login = async (user: returnUser) => {
-  const res = await firebase.auth().signInWithEmailAndPassword(user.email, user.password);
-  return res.user;
-};
+  const res = await firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+  return res.user
+}
