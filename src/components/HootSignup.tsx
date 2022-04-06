@@ -11,7 +11,7 @@ export default function HootSignup() {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [username, setusername] = useState("");
+    const [userName, setuserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [verifyPassword, setVerifyPassword] = useState("");
@@ -23,20 +23,20 @@ export default function HootSignup() {
               const user = e.target as typeof e.target & {
                 first: { value: string }
                 last: { value: string }
-                username: { value: string }
+                userName: { value: string }
                 email: { value: string }
                 password: { value: string }
               };
 
               const first = user.first.value
               const last = user.last.value
-              const username = user.username.value
+              const userName = user.userName.value
               const email = user.email.value // typechecks!
               const password = user.password.value // typechecks!
               const newUser = {
                 first: first[0].toUpperCase() + first.substring(1),
                 last: last[0].toUpperCase() + last.substring(1),
-                username: username,
+                userName: userName,
                 email: email,
                 password: password
               }
@@ -61,7 +61,7 @@ export default function HootSignup() {
         console.log({
             firstName,
             lastName,
-            username,
+            userName,
             email,
             password,
             verifyPassword,
@@ -69,7 +69,8 @@ export default function HootSignup() {
         const user: newUser = {
             first: firstName,
             last: lastName,
-            username: username,
+            userName: userName,
+            displayName: userName,
             email: email,
             password: password,
         }
@@ -134,14 +135,14 @@ export default function HootSignup() {
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    setusername(event.target.value);
+                                    setuserName(event.target.value);
                                 }}
                                 required
                                 fullWidth
-                                id="username"
+                                id="userName"
                                 label="User Name"
-                                name="username"
-                                autoComplete="username"
+                                name="userName"
+                                autoComplete="userName"
                             />
                         </Grid>
                         <Grid item xs={12}>

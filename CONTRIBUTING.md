@@ -55,9 +55,9 @@ Setup the link to the organization reposiotry by running the following command:
 
 `git remote add upstream https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git`
 
-`git remote add origin https://github.com/[YOUR username HERE]/image-sharing-app.git`
+`git remote add origin https://github.com/[YOUR userName HERE]/image-sharing-app.git`
 
-`git remote add origin https://github.com/[YOUR username HERE]/image-sharing-app.git`
+`git remote add origin https://github.com/[YOUR userName HERE]/image-sharing-app.git`
 
 ## Fetch and Pull
 

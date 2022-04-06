@@ -11,13 +11,13 @@ export default function HootHome() {
     // let currentUser: appUser
 
     const userId: string = (useFirebaseAuth()?.uid || 'not authenticated')
-    const currentUser: string = (useCurrentUser(userId)?.username || 'no current user')
+    const currentUser: string = (useCurrentUser(userId)?.userName || 'no current user')
 
 
     return (
         <Typography>
             <>
-            This is the homepage for {useCurrentUser(userId)?.username || 'no current user'}
+            This is the homepage for {useCurrentUser(userId)?.userName || 'no current user'}
             {currentUser?
            <h1>{currentUser}</h1> : <h1>no current user</h1>}
            </>

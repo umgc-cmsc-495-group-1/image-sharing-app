@@ -56,15 +56,15 @@ export { FirebaseAuthProvider, useFirebaseAuth }
 *   function Parent() {
 *      return (
 *         <FirebaseAuthProvider>
-*            <username />
+*            <userName />
 *         </FirebaseAuthProvider>
 *       );
 *     }
 *   Child:
-*      function username() {
+*      function userName() {
 *         return (
 *          const user = useFirebaseAuth();
-*          return <div>(user?.username || 'not authenticated')}</div>;
+*          return <div>(user?.userName || 'not authenticated')}</div>;
 *         );
 *       }
 * References:

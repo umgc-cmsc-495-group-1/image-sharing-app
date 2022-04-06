@@ -17,7 +17,8 @@ import { createUserWithEmailAndPassword, updatePassword, updateEmail, deleteUser
 export interface newUser {
   first: string,
   last: string,
-  displayName: string,
+  displayName?: string,
+  userName: string,
   email: string,
   password: string
 }
@@ -194,14 +195,14 @@ sendPasswordResetEmail(auth, email)
   });
 
 
-const saveDisplayName = async (username: string) => {
+const saveDisplayName = async (userName: string) => {
   const user = auth.currentUser
   if (user) {
     updateProfile(user, {
-      displayName: username
+      displayName: userName
     }).then(() => {
       // Profile updated!
-      console.log('new username set')
+      console.log('new userName set')
     }).catch((error) => {
       // An error occurred
       console.log(`${error}`)
