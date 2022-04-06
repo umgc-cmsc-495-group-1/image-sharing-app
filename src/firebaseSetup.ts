@@ -47,7 +47,7 @@ export {
 // WORKING CONFIG / INIT
 
 import { initializeApp } from 'firebase/app'
-import 'firebase/firestore'
+import 'firebase/compat/firestore'
 import 'firebase/storage'
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
 import { getAuth, connectAuthEmulator } from 'firebase/auth'
@@ -72,11 +72,11 @@ if (location.hostname === 'localhost') {
 
   config = ({
 
-    apiKey: 'AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA',
+    apiKey: process.env.REACT_APP_API_KEY,
     databaseURL: 'http://localhost:8080?ns=hoot-umgc',
-    projectId: 'hoot-umgc',
+    projectId: process.env.REACT_APP_PROJECT_ID,
     storageBucket: 'http://localhost:9199?ns=hoot-umgc',
-    messagingSenderId: 'G-W7J416M731'
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 
   })
 
@@ -84,21 +84,22 @@ if (location.hostname === 'localhost') {
 
   config = ({
 
-    apiKey:  'AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA',
-    authDomain: 'hoot-umgc.firebaseapp.com',
-    // databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: 'hoot-umgc',
-    storageBucket: 'hoot-umgc.appspot.com',
-    messagingSenderId: 'G-W7J416M731'
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 
   })
 }
 
-// console.log(firebase.app().options);
-export const app = initializeApp(config)
+
 
 // Firestore DB
-export const fireStore = getFirestore()
+export const app = initializeApp(config)
+export const fireStore = getFirestore(app)
+
 connectFirestoreEmulator(fireStore, 'localhost', 8080)
 // Firebase Auth
 export const auth = getAuth()
@@ -108,3 +109,4 @@ export const cloud = getStorage(app)
 export const cloudRef = ref(cloud)
 connectStorageEmulator(cloud, 'localhost', 9199)
 
+console.log(app.options);

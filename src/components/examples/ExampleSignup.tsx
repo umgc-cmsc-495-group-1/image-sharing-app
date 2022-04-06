@@ -54,7 +54,7 @@ function ExampleSignupPage() {
   }
 
   const userId = (useFirebaseAuth()?.uid || 'not authenticated')
-  const currentUser = (useCurrentUser(userId)?.username || 'no current user')
+  const currentUser = (useCurrentUser(userId)?.userName || 'no current user')
 
 
   console.log('user: ', userId)
@@ -89,7 +89,7 @@ function ExampleSignupPage() {
               }
               // etc...
               try {
-                await signup(newUser);
+                //await signup(newUser);
 
               } catch (error) {
                 console.log(JSON.stringify(newUser));

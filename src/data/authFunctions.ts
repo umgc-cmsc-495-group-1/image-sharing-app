@@ -17,7 +17,8 @@ import { createUserWithEmailAndPassword, updatePassword, updateEmail, deleteUser
 export interface newUser {
   first: string,
   last: string,
-  username: string,
+  userName: string,
+  displayName?: string,
   email: string,
   password: string
 }
