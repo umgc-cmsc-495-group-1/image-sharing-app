@@ -2,7 +2,7 @@ import { auth } from '../firebaseSetup'
 // import firebase from 'firebase/app'
 import 'firebase/auth'
 import { createUser } from './userData'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
 import { updatePassword, updateEmail, deleteUser } from 'firebase/auth'
@@ -92,8 +92,49 @@ export const login = async (user: returnUser) => {
   // return user
 }
 
+// TODO: Google signup - creates account by redirecting to signup
+export const signInGoogleRedirect =  async () => {
+
+  let user: googleUser
+  let addedUser: UserCredential['user']
+
+  getRedirectResult(auth)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access Google APIs.
+    if (result) {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      console.log(token)
+
+      // The signed-in user info.
+      addedUser = result.user
+      if (!addedUser) {
+        return addedUser;
+      }
+      user = {
+        userName: addedUser.displayName || '',
+        email: addedUser.email || ''
+      }
+      createUser(addedUser, user);
+      return addedUser
+    }
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`)
+  });
+
+}
+
+
+
 // TODO: add Google sign up option - this is a popup option
-export const loginWithGoogle = async () => {
+export const signInGooglePopup = async () => {
 
   let user: googleUser
   let addedUser: UserCredential['user']
@@ -249,40 +290,7 @@ function isUserSignedIn() {
   return !!getAuth().currentUser;
 }
 ---------------------
-firebase.auth().signInWithPopup(provider).then((result) => {
-  console.log(result.additionalUserInfo.isNewUser);
-});
 
-// TODO: Google signup - creates account by redirecting to signup
-/*
-const signUpWithGoogle = async (user: newUser) => {
-
-  let addedUser
-  getRedirectResult(auth)
-  .then((result) => {
-    // This gives you a Google Access Token. You can use it to access Google APIs.
-    if (result) {
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
-      console.log(token)
-
-      // The signed-in user info.
-      addedUser = result.user
-    }
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    const email = error.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    console.log(`${error.Code}: ${error.Message}`)
-  });
-  if (addedUser)
-    await createUser(addedUser, user);
-    return user
-}
 */
 
 
