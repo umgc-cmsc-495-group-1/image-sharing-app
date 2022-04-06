@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
+import { login, returnUser } from '../data/authFunctions'
+import { auth } from '../firebaseSetup'
 
 export default function HootLogin() {
 
@@ -10,13 +12,27 @@ export default function HootLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
         console.log({
             email,
             password,
         });
+        const user: returnUser = {
+            email: email,
+            password: password
+        }
+        try {
+            await login(user);
+          } catch (error) {
+            console.log(JSON.stringify(user));
+            console.log(error);
+            alert(`login failed: ${error}`);
+          } finally {
+            alert('logged in')
+            console.log(auth.currentUser)
+          }
         navigate("../", { replace: true });
     };
     return (

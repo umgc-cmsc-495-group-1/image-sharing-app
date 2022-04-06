@@ -1,10 +1,11 @@
 import { auth } from '../firebaseSetup'
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
+// import firebase from 'firebase/app'
+import 'firebase/auth'
 import { createUser } from './userData'
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
-import { createUserWithEmailAndPassword, updatePassword, updateEmail, deleteUser } from 'firebase/auth'
+import { updatePassword, updateEmail, deleteUser } from 'firebase/auth'
 
 /****************************************************************
  *
@@ -15,11 +16,20 @@ import { createUserWithEmailAndPassword, updatePassword, updateEmail, deleteUser
  ****************************************************************/
 
 export interface newUser {
-  first: string,
-  last: string,
-  username: string,
+  first?: string,
+  last?: string,
+  displayName?: string,
+  userName: string,
   email: string,
   password: string
+}
+
+export interface googleUser {
+  first?: string,
+  last?: string,
+  displayName?: string,
+  userName: string,
+  email: string,
 }
 
 export interface returnUser {
@@ -32,7 +42,11 @@ export interface returnUser {
 export const signup = async (user: newUser) => {
 
   let res: UserCredential
-
+  // Exit sign up function if it doesn't contain email and password
+  if (!isEmptyForm(user)) {
+    console.log("no form data");
+    return;
+  }
   try {
     res = await createUserWithEmailAndPassword(
       auth,
@@ -49,14 +63,13 @@ export const signup = async (user: newUser) => {
   if (!addedUser) {
     return addedUser;
   }
-
   await createUser(addedUser, user);
   return addedUser;
 }
 
 // Logout
 export const logout = async () => {
-  return await firebase.auth().signOut();
+  return await auth.signOut();
 }
 
 //export const logout = async () => {
@@ -67,6 +80,10 @@ export const logout = async () => {
 
 // Login user with email and password
 export const login = async (user: returnUser) => {
+  if (!isEmptyForm(user)) {
+    console.log("no form data");
+    return;
+  }
   await signInWithEmailAndPassword(auth, user.email, user.password)
     .then((userCredential) => {
       // Signed in
@@ -82,8 +99,57 @@ export const login = async (user: returnUser) => {
   // return user
 }
 
-// TODO: add Google login option - this is a popup option
-export const loginWithGoogle = async () => {
+// TODO: Google signup - creates account by redirecting to signup
+export const signInGoogleRedirect = async () => {
+
+  let user: googleUser
+  let addedUser: UserCredential['user']
+
+  getRedirectResult(auth)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access Google APIs.
+      if (result) {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        console.log(token)
+
+        // The signed-in user info.
+        addedUser = result.user
+        if (!addedUser) {
+          return addedUser;
+        }
+        user = {
+          userName: addedUser.displayName || '',
+          email: addedUser.email || ''
+        }
+        createUser(addedUser, user);
+        // Start a sign in process for an unauthenticated user.
+
+        // third possible parameter is popup redirect resovler
+        // signInWithRedirect(auth, credential);
+        return addedUser
+      }
+    }).catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`)
+    });
+
+}
+
+
+
+// TODO: add Google sign up option - this is a popup option
+// TODO: add Google sign up option - this is a popup option
+export const signInGooglePopup = async () => {
+
+  let user: googleUser
+  let addedUser: UserCredential['user']
 
   const provider = new GoogleAuthProvider()
   signInWithPopup(auth, provider)
@@ -94,8 +160,22 @@ export const loginWithGoogle = async () => {
         // const token = credential.accessToken;
       }
       // The signed-in user info.
-      // const user = result.user;
-      // ...
+      addedUser = result.user;
+      //await user.updateUser({ displayName: `${displayName}` });
+      if (!addedUser) {
+        return addedUser;
+      }
+      user = {
+        userName: addedUser.displayName || '',
+        email: addedUser.email || ''
+      }
+      if (auth.currentUser && auth.currentUser.email === user.email) {
+        // alert(`user ${auth.currentUser.displayName} is already signed in`);
+      } else {
+        createUser(addedUser, user);
+        return addedUser
+
+      }
     }).catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
@@ -109,7 +189,6 @@ export const loginWithGoogle = async () => {
       // ...
     });
 }
-
 //reset email address
 export const changeEmail = (newEmail: string) => {
   const user = auth.currentUser
@@ -175,7 +254,13 @@ export const deleteAccount = () => {
   }
 }
 
+function isEmptyForm(user: newUser | returnUser) {
+ return user.email.length === 0 || user.password.length === 0;
+}
+
 /*
+
+// Bits of boilerplate that may be useful
 
 // Code to send email for password reset
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
@@ -194,19 +279,37 @@ sendPasswordResetEmail(auth, email)
   });
 
 
-const saveDisplayName = async (username: string) => {
+const saveDisplayName = async (userName: string) => {
   const user = auth.currentUser
   if (user) {
     updateProfile(user, {
-      displayName: username
+      displayName: userName
     }).then(() => {
       // Profile updated!
-      console.log('new username set')
+      console.log('new userName set')
     }).catch((error) => {
       // An error occurred
       console.log(`${error}`)
       console.log(`An error occured while deleted the account number ${user.uid}`)
     })
   }
+//  ////////////////////////
+// Returns the signed-in user's profile Pic URL.
+function getProfilePicUrl() {
+  return getAuth().currentUser.photoURL || '/images/profile_placeholder.png';
+}
 
- */
+// Returns the signed-in user's display name.
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+-----------------
+// Returns true if a user is signed-in.
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+---------------------
+
+*/
+
+

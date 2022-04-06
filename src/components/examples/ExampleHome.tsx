@@ -1,10 +1,14 @@
+import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { auth } from '../../firebaseSetup'
 
 /**
  * This is just and example to show how components can work together
  */
 export default function ExampleHome() {
     console.log('Home happened');
+    const user = auth.currentUser ? auth.currentUser.uid : 'no user'
+    console.log(userEvent)
     return (
         <div>
             <main>

@@ -46,6 +46,7 @@ export {
 */
 // WORKING CONFIG / INIT
 
+// import { initializeApp } from 'firebase/app'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 import 'firebase/storage'
@@ -66,44 +67,48 @@ import { getStorage, connectStorageEmulator, ref } from 'firebase/storage'
  *
  ************************************************/
 
-let firebaseApp;
+let app;
 
 if (location.hostname === 'localhost') {
 
-  firebaseApp = firebase.initializeApp({
+  app = firebase.initializeApp({
 
-    apiKey: 'AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA',
+    apiKey: process.env.REACT_APP_API_KEY,
     databaseURL: 'http://localhost:8080?ns=hoot-umgc',
-    projectId: 'hoot-umgc',
+    authDomain: 'hoot-umgc.firebaseapp.com',
+    projectId: process.env.REACT_APP_PROJECT_ID,
     storageBucket: 'http://localhost:9199?ns=hoot-umgc',
-    messagingSenderId: 'G-W7J416M731'
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 
   })
 
 } else {
 
-  firebaseApp = firebase.initializeApp({
+  app = firebase.initializeApp ({
 
-    apiKey:  'AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA',
-    authDomain: 'hoot-umgc.firebaseapp.com',
-    // databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: 'hoot-umgc',
-    storageBucket: 'hoot-umgc.appspot.com',
-    messagingSenderId: 'G-W7J416M731'
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 
   })
 }
 
-// console.log(firebase.app().options);
 
 // Firestore DB
-export const fireStore = firebase.firestore()
+// export const app = initializeApp(config)
+export const fireStore = firebase.firestore();
+// export const fireStore = getFirestore(app)
+
 connectFirestoreEmulator(fireStore, 'localhost', 8080)
 // Firebase Auth
-export const auth = getAuth()
+export const auth = getAuth(app)
 connectAuthEmulator(auth,'http://localhost:9099?ns=hoot-umgc')
 // Cloud Storage
-export const cloud = getStorage(firebaseApp)
+export const cloud = getStorage(app)
 export const cloudRef = ref(cloud)
 connectStorageEmulator(cloud, 'localhost', 9199)
 
+console.log(firebase.app().options);
