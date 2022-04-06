@@ -2,9 +2,10 @@ import { auth } from '../firebaseSetup'
 // import firebase from 'firebase/app'
 import 'firebase/auth'
 import { createUser } from './userData'
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
-import { createUserWithEmailAndPassword, updatePassword, updateEmail, deleteUser } from 'firebase/auth'
+import { updatePassword, updateEmail, deleteUser } from 'firebase/auth'
 
 /****************************************************************
  *
@@ -15,12 +16,20 @@ import { createUserWithEmailAndPassword, updatePassword, updateEmail, deleteUser
  ****************************************************************/
 
 export interface newUser {
-  first: string,
-  last: string,
-  userName: string,
+  first?: string,
+  last?: string,
   displayName?: string,
+  userName: string,
   email: string,
   password: string
+}
+
+export interface googleUser {
+  first?: string,
+  last?: string,
+  displayName?: string,
+  userName: string,
+  email: string,
 }
 
 export interface returnUser {
@@ -83,8 +92,52 @@ export const login = async (user: returnUser) => {
   // return user
 }
 
-// TODO: add Google login option - this is a popup option
-export const loginWithGoogle = async () => {
+// TODO: Google signup - creates account by redirecting to signup
+export const signInGoogleRedirect =  async () => {
+
+  let user: googleUser
+  let addedUser: UserCredential['user']
+
+  getRedirectResult(auth)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access Google APIs.
+    if (result) {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      console.log(token)
+
+      // The signed-in user info.
+      addedUser = result.user
+      if (!addedUser) {
+        return addedUser;
+      }
+      user = {
+        userName: addedUser.displayName || '',
+        email: addedUser.email || ''
+      }
+      createUser(addedUser, user);
+      return addedUser
+    }
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`)
+  });
+
+}
+
+
+
+// TODO: add Google sign up option - this is a popup option
+export const signInGooglePopup = async () => {
+
+  let user: googleUser
+  let addedUser: UserCredential['user']
 
   const provider = new GoogleAuthProvider()
   signInWithPopup(auth, provider)
@@ -95,8 +148,18 @@ export const loginWithGoogle = async () => {
         // const token = credential.accessToken;
       }
       // The signed-in user info.
-      // const user = result.user;
-      // ...
+      addedUser = result.user;
+      //await user.updateUser({ displayName: `${displayName}` });
+      if (!addedUser) {
+        return addedUser;
+      }
+      user = {
+        userName: addedUser.displayName || '',
+        email: addedUser.email || ''
+      }
+      createUser(addedUser, user);
+      return addedUser
+
     }).catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
@@ -178,6 +241,8 @@ export const deleteAccount = () => {
 
 /*
 
+// Bits of boilerplate that may be useful
+
 // Code to send email for password reset
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
@@ -195,19 +260,37 @@ sendPasswordResetEmail(auth, email)
   });
 
 
-const saveDisplayName = async (username: string) => {
+const saveDisplayName = async (userName: string) => {
   const user = auth.currentUser
   if (user) {
     updateProfile(user, {
-      displayName: username
+      displayName: userName
     }).then(() => {
       // Profile updated!
-      console.log('new username set')
+      console.log('new userName set')
     }).catch((error) => {
       // An error occurred
       console.log(`${error}`)
       console.log(`An error occured while deleted the account number ${user.uid}`)
     })
   }
+//  ////////////////////////
+// Returns the signed-in user's profile Pic URL.
+function getProfilePicUrl() {
+  return getAuth().currentUser.photoURL || '/images/profile_placeholder.png';
+}
 
- */
+// Returns the signed-in user's display name.
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+-----------------
+// Returns true if a user is signed-in.
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+---------------------
+
+*/
+
+

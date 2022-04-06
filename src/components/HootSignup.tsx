@@ -3,28 +3,30 @@ import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } fro
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function HootSignup() {
 
     const navigate = useNavigate();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
+    const [userName, setuserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [verifyPassword, setVerifyPassword] = useState("");
-        
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
         console.log({
             firstName,
             lastName,
-            username,
+            userName,
             email,
             password,
             verifyPassword,
         });
+
         navigate("../", { replace: true });
     };
     return (
@@ -75,14 +77,14 @@ export default function HootSignup() {
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    setUsername(event.target.value);
+                                    setuserName(event.target.value);
                                 }}
                                 required
                                 fullWidth
-                                id="username"
+                                id="userName"
                                 label="User Name"
-                                name="username"
-                                autoComplete="username"
+                                name="userName"
+                                autoComplete="userName"
                             />
                         </Grid>
                         <Grid item xs={12}>

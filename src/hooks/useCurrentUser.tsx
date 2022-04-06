@@ -4,7 +4,7 @@ import { getUserById, appUser } from '../data/userData'
 /******************************************************
  *
  * Custom hook for getting the curent user data
- * (firstName, lastName, username, email, friends, likes)
+ * (firstName, lastName, userName, email, friends, likes)
  * If there is no current user it returns null
  *
  ******************************************************/

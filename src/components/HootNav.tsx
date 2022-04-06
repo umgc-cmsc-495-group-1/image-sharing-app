@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link, Outlet } from 'react-router-dom';
+import { logout, deleteAccount } from '../data/authFunctions'
 
 export default function HootNav() {
 
@@ -22,7 +23,7 @@ export default function HootNav() {
     return(
         <div
             className="class.navigation"
-        > 
+        >
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
@@ -50,6 +51,12 @@ export default function HootNav() {
                             Hoot!
                         </Typography>
                     </Toolbar>
+                    <button onClick={logout}>
+                        log out
+                    </button>
+                    <button onClick={deleteAccount}>
+                        delete account
+                    </button>
                 </AppBar>
             </Box>
             <Drawer
@@ -86,6 +93,6 @@ export default function HootNav() {
             </Drawer>
             <Outlet />
         </div>
-    ) 
-    
+    )
+
 }

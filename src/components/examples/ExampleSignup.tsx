@@ -1,6 +1,6 @@
 import React from 'react'
 // import { useNavigate } from 'react-router-dom'
-import { signup, logout, loginWithGoogle } from '../../data/authFunctions'
+import { signup, logout } from '../../data/authFunctions'
 import { useFirebaseAuth } from '../../context/AuthContext'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 // import { deleteUser } from '../../data/userData'
@@ -15,6 +15,10 @@ function ExampleSignupPage() {
 
   // const [email, setEmail] = useState({email: ''});
   // const [password, setPassword] = useState({password:''});
+
+  const userId = (useFirebaseAuth()?.uid || 'not authenticated')
+  const currentUser = (useCurrentUser(userId)?.userName || 'no current user')
+  console.log('user: ', userId)
 
   const userLogout = async () => {
     await logout();
@@ -50,14 +54,8 @@ function ExampleSignupPage() {
   }
 
   const login = async () => {
-    await loginWithGoogle()
+    //await signUpWithGoogle()
   }
-
-  const userId = (useFirebaseAuth()?.uid || 'not authenticated')
-  const currentUser = (useCurrentUser(userId)?.userName || 'no current user')
-
-
-  console.log('user: ', userId)
 
   return (
     <>
@@ -70,20 +68,20 @@ function ExampleSignupPage() {
               const user = e.target as typeof e.target & {
                 first: { value: string }
                 last: { value: string }
-                username: { value: string }
+                userName: { value: string }
                 email: { value: string }
                 password: { value: string }
               };
 
               const first = user.first.value
               const last = user.last.value
-              const username = user.username.value
+              const userName = user.userName.value
               const email = user.email.value // typechecks!
               const password = user.password.value // typechecks!
               const newUser = {
                 first: first[0].toUpperCase() + first.substring(1),
                 last: last[0].toUpperCase() + last.substring(1),
-                username: username,
+                userName: userName,
                 email: email,
                 password: password
               }
@@ -115,8 +113,8 @@ function ExampleSignupPage() {
             </input>
             <input
               type='text'
-              name='username'
-              placeholder='username'
+              name='userName'
+              placeholder='userName'
             >
             </input>
             <input
