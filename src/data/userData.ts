@@ -49,7 +49,7 @@ export const updateUser = async (user: appUser) => {
   const usersRef = doc(fireStore, "users", "BJ");
   await setDoc(usersRef, { user }, { merge: true });
 
-  //return docRef.update(user)
+  // return docRef.update(user)
 };
 // Delete user
 export const deleteUser = async (user: appUser) => {
@@ -60,7 +60,7 @@ export const deleteUser = async (user: appUser) => {
 export const getAllUsers = async () => {
   const querySnapshot = await getDocs(collection(fireStore, "users"));
   querySnapshot.forEach((doc) => {
-    doc.data(); //is never undefined for query doc snapshots
+    doc.data(); // is never undefined for query doc snapshots
     console.log(doc.id, " => ", doc.data());
   });
 };
