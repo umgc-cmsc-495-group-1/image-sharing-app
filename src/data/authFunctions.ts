@@ -161,9 +161,11 @@ export const signInGooglePopup = async () => {
         userName: addedUser.displayName || '',
         email: addedUser.email || ''
       }
-      createUser(addedUser, user);
-      return addedUser
-
+      if (auth.currentUser && auth.currentUser.email === user.email) {
+        alert(`${auth.currentUser.displayName} you are already signed in`)
+      } else {
+        createUser(addedUser, user);
+      }
     }).catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
