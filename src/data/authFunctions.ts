@@ -42,7 +42,11 @@ export interface returnUser {
 export const signup = async (user: newUser) => {
 
   let res: UserCredential
-
+  // Exit sign up function if it doesn't contain email and password
+  if (!isEmptyForm(user)) {
+    console.log("no form data");
+    return;
+  }
   try {
     res = await createUserWithEmailAndPassword(
       auth,
@@ -59,7 +63,6 @@ export const signup = async (user: newUser) => {
   if (!addedUser) {
     return addedUser;
   }
-
   await createUser(addedUser, user);
   return addedUser;
 }
@@ -77,6 +80,10 @@ export const logout = async () => {
 
 // Login user with email and password
 export const login = async (user: returnUser) => {
+  if (!isEmptyForm(user)) {
+    console.log("no form data");
+    return;
+  }
   await signInWithEmailAndPassword(auth, user.email, user.password)
     .then((userCredential) => {
       // Signed in
@@ -138,6 +145,7 @@ export const signInGoogleRedirect = async () => {
 
 
 // TODO: add Google sign up option - this is a popup option
+// TODO: add Google sign up option - this is a popup option
 export const signInGooglePopup = async () => {
 
   let user: googleUser
@@ -162,9 +170,11 @@ export const signInGooglePopup = async () => {
         email: addedUser.email || ''
       }
       if (auth.currentUser && auth.currentUser.email === user.email) {
-        alert(`${auth.currentUser.displayName} you are already signed in`)
+        // alert(`user ${auth.currentUser.displayName} is already signed in`);
       } else {
         createUser(addedUser, user);
+        return addedUser
+
       }
     }).catch((error) => {
       // Handle Errors here.
@@ -179,7 +189,6 @@ export const signInGooglePopup = async () => {
       // ...
     });
 }
-
 //reset email address
 export const changeEmail = (newEmail: string) => {
   const user = auth.currentUser
@@ -243,6 +252,10 @@ export const deleteAccount = () => {
       console.log(`An error occured while deleted the account number ${user.uid}`)
     });
   }
+}
+
+function isEmptyForm(user: newUser | returnUser) {
+ return user.email.length === 0 || user.password.length === 0;
 }
 
 /*

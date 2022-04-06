@@ -46,10 +46,11 @@ export {
 */
 // WORKING CONFIG / INIT
 
-import { initializeApp } from 'firebase/app'
+// import { initializeApp } from 'firebase/app'
+import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 import 'firebase/storage'
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
+import { connectFirestoreEmulator } from 'firebase/firestore'
 import { getAuth, connectAuthEmulator } from 'firebase/auth'
 import { getStorage, connectStorageEmulator, ref } from 'firebase/storage'
 
@@ -66,11 +67,11 @@ import { getStorage, connectStorageEmulator, ref } from 'firebase/storage'
  *
  ************************************************/
 
-let config;
+let app;
 
 if (location.hostname === 'localhost') {
 
-  config = ({
+  app = firebase.initializeApp({
 
     apiKey: process.env.REACT_APP_API_KEY,
     databaseURL: 'http://localhost:8080?ns=hoot-umgc',
@@ -83,7 +84,7 @@ if (location.hostname === 'localhost') {
 
 } else {
 
-  config = ({
+  app = firebase.initializeApp ({
 
     apiKey: process.env.REACT_APP_API_KEY,
     authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -97,16 +98,17 @@ if (location.hostname === 'localhost') {
 
 
 // Firestore DB
-export const app = initializeApp(config)
-export const fireStore = getFirestore(app)
+// export const app = initializeApp(config)
+export const fireStore = firebase.firestore();
+// export const fireStore = getFirestore(app)
 
 connectFirestoreEmulator(fireStore, 'localhost', 8080)
 // Firebase Auth
-export const auth = getAuth()
+export const auth = getAuth(app)
 connectAuthEmulator(auth,'http://localhost:9099?ns=hoot-umgc')
 // Cloud Storage
 export const cloud = getStorage(app)
 export const cloudRef = ref(cloud)
 connectStorageEmulator(cloud, 'localhost', 9199)
 
-console.log(app.options);
+console.log(firebase.app().options);
