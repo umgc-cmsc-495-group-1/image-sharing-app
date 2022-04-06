@@ -27,7 +27,7 @@ const FirebaseAuthProvider: React.FC = ({ children }) => {
   // Register callback
   React.useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(setUser)
-
+    // onAuthStateChanged(getAuth(), authStateObserver); // newer ?
     return unsubscribe
   }, [])
   return (

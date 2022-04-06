@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
-import { signup, newUser } from '../data/authFunctions'
+import { signup, newUser, loginWithGoogle } from '../data/authFunctions'
 
 
 export default function HootSignup() {
@@ -194,6 +194,13 @@ export default function HootSignup() {
                         sx={{ mt: 3, mb: 2 }}
                     >
                         Sign Up
+                    </Button>
+                    <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    onClick={loginWithGoogle}>
+                     google login
                     </Button>
                     <Grid container justifyContent="flex-end">
                         <Grid item>

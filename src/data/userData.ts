@@ -2,7 +2,7 @@ import 'firebase/storage'
 import { collection, doc, setDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore'
 // import { query, where } from 'firebase/firestore'
 import { fireStore } from '../firebaseSetup'
-import { newUser } from './authFunctions'
+import { googleUser, newUser } from './authFunctions'
 import { User } from 'firebase/auth'
 
 /***********************************************************
@@ -20,8 +20,7 @@ export interface appUser {
   last: string,
   userName: string,
   displayName?: string,
-  // email: string, this should probably only be saved in auth
-  // so it can be updated more easily
+  email: string,
   bio?: string,
   friends: string[],
   likes: string[]
@@ -31,16 +30,15 @@ export interface appUser {
 const usersRef = collection(fireStore, 'users')
 
 // Add a new user
-export const createUser = async (user: User, userInfo: newUser) => {
+export const createUser = async (user: User, userInfo: newUser | googleUser) => {
   // Write to firestore db
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
-      first: userInfo.first,
-      last: userInfo.last,
+      first: userInfo.first || '',
+      last: userInfo.last || '',
       userName: user.displayName,
-      //email: user.email, // want to remove this so email only
-                         // in auth and only needs updating in one location
+      email: user.email,
       bio: '',
       friends: [],
       likes: []
@@ -65,7 +63,32 @@ export const getUserById = async (userId: string) => {
     userName: data.userName,
     first: data.first,
     last: data.last,
-    // email: data.email,
+    email: data.email,
+    bio: data.bio,
+    likes: data.likes,
+    friends: data.friends
+  }
+  console.log('user data: ', user.userName)
+
+  return user
+}
+
+// Get single user with UID value
+export const getUserByEmail = async (email: string) => {
+  const userRef = doc(fireStore, 'users', email)
+  const docSnap = await getDoc(userRef)
+
+  if (!docSnap.exists()) {
+    console.log('No user document found')
+    return null
+  }
+  const data = docSnap.data();
+  const user: appUser = {
+    uid: data.uid,
+    userName: data.userName,
+    first: data.first,
+    last: data.last,
+    email: data.email,
     bio: data.bio,
     likes: data.likes,
     friends: data.friends

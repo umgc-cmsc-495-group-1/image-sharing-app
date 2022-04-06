@@ -74,6 +74,7 @@ if (location.hostname === 'localhost') {
 
     apiKey: process.env.REACT_APP_API_KEY,
     databaseURL: 'http://localhost:8080?ns=hoot-umgc',
+    authDomain: 'hoot-umgc.firebaseapp.com',
     projectId: process.env.REACT_APP_PROJECT_ID,
     storageBucket: 'http://localhost:9199?ns=hoot-umgc',
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID

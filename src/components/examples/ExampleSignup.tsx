@@ -1,6 +1,6 @@
 import React from 'react'
 // import { useNavigate } from 'react-router-dom'
-import { signup, logout, loginWithGoogle } from '../../data/authFunctions'
+import { signup, logout } from '../../data/authFunctions'
 import { useFirebaseAuth } from '../../context/AuthContext'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 // import { deleteUser } from '../../data/userData'
@@ -54,7 +54,7 @@ function ExampleSignupPage() {
   }
 
   const login = async () => {
-    await loginWithGoogle()
+    //await signUpWithGoogle()
   }
 
   return (
