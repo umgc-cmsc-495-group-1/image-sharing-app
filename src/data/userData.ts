@@ -16,7 +16,8 @@ export interface appUser {
   uid: string,
   first: string,
   last: string,
-  username: string,
+  userName: string,
+  displayName?: string,
   email: string,
   bio?: string,
   friends: string[],
@@ -34,7 +35,8 @@ export const createUser = async (user: User, userInfo: newUser) => {
       uid: user.uid,
       first: userInfo.first,
       last: userInfo.last,
-      username: userInfo.username,
+      userName: userInfo.userName,
+      displayName: userInfo.displayName,
       email: user.email,
       bio: '',
       friends: [],
@@ -57,7 +59,8 @@ export const getUserById = async (userId: string) => {
   const data = docSnap.data();
   const user: appUser = {
     uid: data.uid,
-    username: data.username,
+    userName: data.userName,
+    displayName: data.displayName,
     first: data.first,
     last: data.last,
     email: data.email,
@@ -65,7 +68,7 @@ export const getUserById = async (userId: string) => {
     likes: data.likes,
     friends: data.friends
   }
-  console.log('user data: ', user.username)
+  console.log('user data: ', user.userName)
 
   return user
 }
