@@ -96,7 +96,19 @@ export const getAllUsers = async () => {
   console.log(doc.id, ' => ', doc.data());
   })
 }
+/**
+ * import {query, collection, onSnapshot, orderBy} from 'firebase/firestore'
 
+...
+const orderedOrders = query(ref, orderBy('created', 'desc'))
+onSnapshot(orderedOrders, snapshot => {
+     setOrders(snapshot.docs.map(doc => ({
+       id: doc.id,
+       data: doc.data()
+     })))
+  })
+...
+ */
 
 // upload an avatar --
 // TODO: fix

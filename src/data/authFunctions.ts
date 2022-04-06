@@ -1,6 +1,6 @@
 import { auth } from '../firebaseSetup'
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
+// import firebase from 'firebase/app'
+import 'firebase/auth'
 import { createUser } from './userData'
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
@@ -56,7 +56,7 @@ export const signup = async (user: newUser) => {
 
 // Logout
 export const logout = async () => {
-  return await firebase.auth().signOut();
+  return await auth.signOut();
 }
 
 //export const logout = async () => {
