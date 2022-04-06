@@ -13,7 +13,7 @@ import { getUserById, appUser } from '../data/userData'
 export const useCurrentUser = (userId: string) => {
   const [currentUser, setCurrentUser] =
     useState<appUser>({
-      username: '', email: '', uid: '', first: '',
+      username: '', uid: '', first: '',
       last: '', friends: [], likes: [], bio: ''
     })
 

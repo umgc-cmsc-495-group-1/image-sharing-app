@@ -70,5 +70,11 @@ firestore.rules
 *.log
 *.log
 
+<<<<<<< HEAD
 src/dbHandlers/firebaseConfig.ts
 src/dbHandlers/fs_emulator_connect.ts
+=======
+
+*/src/dbHandlers/firebaseConfig.ts
+*/src/dbHandlers/fs_emulator_connect.ts
+>>>>>>> data

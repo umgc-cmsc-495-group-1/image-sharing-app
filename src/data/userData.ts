@@ -19,7 +19,8 @@ export interface appUser {
   first: string,
   last: string,
   username: string,
-  email: string,
+  // email: string, this should probably only be saved in auth
+  // so it can be updated more easily
   bio?: string,
   friends: string[],
   likes: string[]
@@ -63,7 +64,7 @@ export const getUserById = async (userId: string) => {
     username: data.username,
     first: data.first,
     last: data.last,
-    email: data.email,
+    // email: data.email,
     bio: data.bio,
     likes: data.likes,
     friends: data.friends
