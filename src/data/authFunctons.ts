@@ -8,7 +8,7 @@ import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, Us
  ************************************************/
 
 export interface newUser {
-  displayNAme: string,
+  displayName: string,
   username: string,
   email: string,
   password: string
