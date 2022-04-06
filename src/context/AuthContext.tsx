@@ -1,8 +1,7 @@
 import React from 'react'
-//import { useState, useContext, useEffect } from 'react'
 import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
-
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebaseSetup'
 
 /*************************************************
  * React Context and Provider for Current User
@@ -13,21 +12,20 @@ import 'firebase/compat/auth'
 // Firebase.User returned by onAuthStateChanged, if
 // there isn't a current authenticated user the onAuthStateChanged
 // callback called with null value
-export type User = firebase.User | null
-type ContextState = { user: User }
+type appUser = firebase.User | null
+type ContextState = { user: appUser }
 
 export const FirebaseAuthContext = React.createContext<ContextState | undefined>(undefined)
 
 // Encapsulates FirebaseAuthContext.Provider and onAuthStateChanged listener
 const FirebaseAuthProvider: React.FC = ({ children }) => {
   // State for current firebase.User
-  const [user, setUser] = React.useState<User>(null)
+  const [user, setUser] = React.useState<appUser>(null)
   const value = { user }
 
   // Register callback
   React.useEffect( () => {
     const unsubscribe = firebase.auth().onAuthStateChanged(setUser)
-
     return unsubscribe
   }, [])
   return (
