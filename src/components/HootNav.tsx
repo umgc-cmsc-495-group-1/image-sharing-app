@@ -1,28 +1,30 @@
 import React, { useState } from 'react';
-import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@mui/material';
+import { AppBar, IconButton, Typography, Box, Drawer, List, ListItem, ListItemText, Toolbar } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link, Outlet } from 'react-router-dom';
+import useWindowDimensions from '../hooks/useWindowDimensions';
 
 export default function HootNav() {
-
+    const { width, height } = useWindowDimensions();
     const [isOpen, setIsOpen] = useState(false);
-
-    function toggleDrawer(open: boolean, event: React.KeyboardEvent | React.MouseEvent) {
+    // toggle drawer function
+    function toggleDrawer(open: boolean, event: React.KeyboardEvent | React.MouseEvent): void {
         if (
             event.type === 'keydown' &&
             ((event as React.KeyboardEvent).key == 'Tab' ||
-            (event as React.KeyboardEvent).key == 'Shift')
+                (event as React.KeyboardEvent).key == 'Shift')
         ) {
             return;
         }
-
+        console.info(width, height);
         setIsOpen(open);
     }
 
-    return(
+    return (
         <div
             className="class.navigation"
-        > 
+        >
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
@@ -31,10 +33,8 @@ export default function HootNav() {
                             edge="start"
                             color="inherit"
                             aria-label="menu"
-                            sx={{ mr: 2  }}
-                            onClick= {(event) => {
-                                toggleDrawer(!isOpen, event);
-                            }}
+                            sx={{ mr: 2 }}
+                            onClick={(event) => { toggleDrawer(!isOpen, event) }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -44,8 +44,7 @@ export default function HootNav() {
                                 height: 64,
                             }}
                             alt="Hoot Logo"
-                            src={require('../assets/logo/png/simple-72x72.png')}
-                        />
+                            src={require('../assets/logo/png/simple-72x72.png')} />
                         <Typography variant="h6">
                             Hoot!
                         </Typography>
@@ -55,21 +54,15 @@ export default function HootNav() {
             <Drawer
                 anchor="left"
                 open={isOpen}
-                onClose= { () => {
-                    setIsOpen(false);
-                }}
+                onClose={() => { setIsOpen(false) }}
             >
                 <Toolbar>
                 </Toolbar>
                 <Box
-                    sx={{ width: 250}}
+                    sx={{ width: 250 }}
                     role="presentation"
-                    onClick={(event) => {
-                                toggleDrawer(false, event);
-                            }}
-                    onKeyDown={(event) => {
-                                toggleDrawer(false, event);
-                            }}
+                    onClick={(event) => { toggleDrawer(false, event) }}
+                    onKeyDown={(event) => { toggleDrawer(false, event) }}
                 >
                     <List role="navigation-list-container">
                         <ListItem button component={Link} to="/" role="navigation-home">
@@ -86,6 +79,6 @@ export default function HootNav() {
             </Drawer>
             <Outlet />
         </div>
-    ) 
-    
+    )
+
 }
