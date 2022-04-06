@@ -1,8 +1,10 @@
-import 'firebase/storage';
-import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { User } from "firebase/auth";
+import {
+    collection, deleteDoc, doc, getDocs, setDoc
+} from "firebase/firestore";
+import "firebase/storage";
 import { fireStore } from "../firebaseSetup";
-import { newUser } from './authFunctons';
-import { User } from 'firebase/auth';
+import { newUser } from "./authFunctons";
 
 /***********************************************************
  * User Functions: Create New User, Delete User (not tested)
@@ -11,12 +13,12 @@ import { User } from 'firebase/auth';
  **********************************************************/
 
 export interface appUser {
-  uid: string,
-  displayName: string,
-  username: string,
-  email: string,
-  friends: [],
-  likes: []
+  uid: string;
+  displayName: string;
+  username: string;
+  email: string;
+  friends: [];
+  likes: [];
 }
 
 // Gets reference to the User collection
@@ -31,7 +33,7 @@ export const createUser = async (user: User, userInfo: newUser) => {
     userName: userInfo.username,
     email: user.email,
     friends: [],
-    likes: []
+    likes: [],
   });
 };
 
@@ -40,25 +42,24 @@ export const updateUser = async (user: appUser) => {
   //const docRef = fireStore.doc(`/users/${user.uid}`);
   //const docRef = doc(fireStore, "users", `${user.uid}`);
   //const docSnap = await getDoc(docRef);
-  const usersRef = doc(fireStore, 'users', 'BJ');
+  const usersRef = doc(fireStore, "users", "BJ");
   await setDoc(usersRef, { user }, { merge: true });
 
   //return docRef.update(user);
 };
 // Delete user
 export const deleteUser = async (user: appUser) => {
-  await deleteDoc(doc(fireStore ,"users", `${user.uid}`))
+  await deleteDoc(doc(fireStore, "users", `${user.uid}`));
 };
 
 // Gets all users
 export const getAllUsers = async () => {
   const querySnapshot = await getDocs(collection(fireStore, "users"));
   querySnapshot.forEach((doc) => {
-   doc.data() //is never undefined for query doc snapshots
-  console.log(doc.id, " => ", doc.data());
+    doc.data(); //is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
   });
 };
-
 
 // upload an avatar --
 //TODO: fix
