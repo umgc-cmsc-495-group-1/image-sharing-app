@@ -134,15 +134,15 @@ export default function HootSignup() {
   const validateForm = () => {
     setValidForm(
       input.displayName.length > 0 &&
-        input.username.length > 0 &&
-        input.email.length > 0 &&
-        input.password.length > 0 &&
-        input.verifyPassword.length > 0 &&
-        error.displayName.length == 0 &&
-        error.username.length == 0 &&
-        error.email.length == 0 &&
-        error.password.length == 0 &&
-        error.verifyPassword.length == 0
+      input.username.length > 0 &&
+      input.email.length > 0 &&
+      input.password.length > 0 &&
+      input.verifyPassword.length > 0 &&
+      error.displayName.length == 0 &&
+      error.username.length == 0 &&
+      error.email.length == 0 &&
+      error.password.length == 0 &&
+      error.verifyPassword.length == 0
     );
     console.log(validForm);
   };

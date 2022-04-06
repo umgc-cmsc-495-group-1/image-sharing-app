@@ -21,7 +21,9 @@ export interface returnUser {
 
 // export const signup = async ({ firstName, lastName, email, password, username }) => {   //orig. code
 export const signup = async (user: newUser) => {
-  let res : UserCredential
+
+
+  let res: UserCredential
 
   try {
     res = await createUserWithEmailAndPassword(
