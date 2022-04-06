@@ -1,155 +1,46 @@
 import React, { useState } from 'react';
-import { Alert, Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useNavigate } from 'react-router-dom';
-import { newUser, signInWithGoogle, signup } from '../data/authFunctons';
+//import { useNavigate } from 'react-router-dom';
+import { newUser, signup } from '../data/authFunctons'; 
 
 export default function HootSignup() {
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
-    const [input, setInput] = useState({
-        displayName: "",
-        username: "",
-        email: "",
-        password: "",
-        verifyPassword: "",
-    });
-    const [error, setError] = useState({
-        displayName: "",
-        username: "",
-        email: "",
-        password: "",
-        verifyPassword: "",
-    });
-    const [validForm, setValidForm] = useState(false);
-
-    const onInputChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.currentTarget;
-        setInput(prev => ({
-            ...prev,
-            [name]: value
-        }));
-        validateInput(e);
-    }
-
-    const validateInput = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.currentTarget;
-        switch (name) {
-            case "displayName":
-                if (!value) {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: "Please enter a Display Name" 
-                    }));
-                } else {
-                    console.log("unsetting error")
-                    setError(prev => ({
-                        ...prev,
-                        [name]: ""
-                    }));
-                }
-                break;
-
-            case "username":
-                if (!value) {
-                   setError(prev => ({
-                       ...prev,
-                       [name]: "Please enter a Username"
-                   }));
-                } else {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: ""
-                    }))
-                }
-                break;
-
-            case "email":
-                if (!value) {
-                   setError(prev => ({
-                       ...prev,
-                       [name]: "Please enter an Email Address"
-                   }));
-                } else {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: ""
-                    }))
-                }
-                break;
-                
-            case "password":
-                if (value.length < 6) {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: "Password must be at least 6 characters"
-                    }));
-                } else if (input.verifyPassword && value !== input.verifyPassword) {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: "Passwords must match"
-                    }));
-                } else {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: input.verifyPassword ? "" : error.verifyPassword
-                    }));
-                }
-                break;
-
-            case "verifyPassword":
-                if (input.password && value !== input.password) {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: "Passwords must match"
-                    }));
-                } else {
-                    setError(prev => ({
-                        ...prev,
-                        [name]: ""
-                    }));
-                }
-                break;
-
-            default:
-                break;
-        } 
-        validateForm();
-    }
-    
-    const validateForm = () => {
-        setValidForm(
-            input.displayName.length > 0 &&
-            input.username.length > 0 &&
-            input.email.length > 0 &&
-            input.password.length > 0 &&
-            input.verifyPassword.length > 0 &&
-            error.displayName.length == 0 &&
-            error.username.length == 0 &&
-            error.email.length == 0 &&
-            error.password.length == 0 &&
-            error.verifyPassword.length == 0
-        )
-        console.log(validForm);
-    }
-
-    const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [verifyPassword, setVerifyPassword] = useState("");
+        
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newUser: newUser  = {
-            displayName: input.displayName,
-            username: input.username,
-            email: input.email,
-            password: input.password,
+            first: firstName,
+            last: lastName,
+            username: username,
+            email: email,
+            password: password,
         }
 
         try {
+            console.log(JSON.stringify(newUser));
             await signup(newUser);
         } catch (error){
             console.log(error)
         }
 
-        navigate("../", { replace: true });
+        console.log({
+            firstName,
+            lastName,
+            username,
+            email,
+            password,
+            verifyPassword,
+        });
+        //navigate("../", { replace: true });
     };
     return (
         <Container component="main" maxWidth="xs">
@@ -169,31 +60,37 @@ export default function HootSignup() {
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 onChange = {(event) => {
-                                    onInputChange(event);
-                                }}
-                                onBlur = {(event) => {
-                                    validateInput(event);
+                                    setFirstName(event.target.value);
                                 }}
                                 required
                                 fullWidth
-                                id="displayName"
-                                label="Display Name"
-                                name="displayName"
-                                autoComplete="name"
+                                id="firstName"
+                                label="First Name"
+                                name="firstName"
+                                autoComplete="given-name"
                                 autoFocus
                             />
-                            {error.displayName && <Alert severity="error">{error.displayName}</Alert>}
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                onChange = {(event) => {
+                                    setLastName(event.target.value);
+                                }}
+                                required
+                                fullWidth
+                                id="lastName"
+                                label="Last Name"
+                                name="lastName"
+                                autoComplete="family-name"
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    onInputChange(event);
-                                }}
-                                onBlur = {(event) => {
-                                    validateInput(event);
+                                    setUsername(event.target.value);
                                 }}
                                 required
                                 fullWidth
@@ -202,15 +99,11 @@ export default function HootSignup() {
                                 name="username"
                                 autoComplete="username"
                             />
-                            {error.username && <Alert severity="error">{error.username}</Alert>}
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    onInputChange(event);
-                                }}
-                                onBlur = {(event) => {
-                                    validateInput(event);
+                                    setEmail(event.target.value);
                                 }}
                                 required
                                 fullWidth
@@ -219,15 +112,11 @@ export default function HootSignup() {
                                 name="email"
                                 autoComplete="email"
                             />
-                            {error.email && <Alert severity="error">{error.email}</Alert>}
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    onInputChange(event);
-                                }}
-                                onBlur = {(event) => {
-                                    validateInput(event);
+                                    setPassword(event.target.value);
                                 }}
                                 required
                                 fullWidth
@@ -237,15 +126,11 @@ export default function HootSignup() {
                                 id="password"
                                 autoComplete="new-password"
                             />
-                            {error.password && <Alert severity="error">{error.password}</Alert>}
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    onInputChange(event);
-                                }}
-                                onBlur = {(event) => {
-                                    validateInput(event);
+                                    setVerifyPassword(event.target.value);
                                 }}
                                 required
                                 fullWidth
@@ -255,25 +140,15 @@ export default function HootSignup() {
                                 id="verifyPassword"
                                 autoComplete="new-password"
                             />
-                            {error.verifyPassword && <Alert severity="error">{error.verifyPassword}</Alert>}
                         </Grid>
                     </Grid>
                     <Button
                         type="submit"
                         fullWidth
-                        disabled={!validForm}
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
                         Sign Up
-                    </Button>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                        onClick={signInWithGoogle}
-                    >
-                        Google Sign In
                     </Button>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
@@ -287,3 +162,4 @@ export default function HootSignup() {
         </Container>
     )
 }
+
