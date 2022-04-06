@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "debug": "BROWSER='google chrome' BROWSER_ARGS='--remote-debugging-port=9222' react-scripts start",
     "emulators": "firebase emulators:start",
     "build": "react-scripts build",
     "test": "react-scripts test",

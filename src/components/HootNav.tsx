@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, IconButton, Typography, Box, Drawer, List, ListItem, ListItemText, Toolbar  } from '@mui/material';
+import { AppBar, IconButton, Typography, Box, Drawer, List, ListItem, ListItemText, Toolbar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -34,7 +34,7 @@ export default function HootNav() {
                             color="inherit"
                             aria-label="menu"
                             sx={{ mr: 2 }}
-                            onClick={(event) => {toggleDrawer(!isOpen, event)}}
+                            onClick={(event) => { toggleDrawer(!isOpen, event) }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -54,15 +54,15 @@ export default function HootNav() {
             <Drawer
                 anchor="left"
                 open={isOpen}
-                onClose={() => {setIsOpen(false)}}
+                onClose={() => { setIsOpen(false) }}
             >
                 <Toolbar>
                 </Toolbar>
                 <Box
                     sx={{ width: 250 }}
                     role="presentation"
-                    onClick={(event) => {toggleDrawer(false, event)}}
-                    onKeyDown={(event) => {toggleDrawer(false, event)}}
+                    onClick={(event) => { toggleDrawer(false, event) }}
+                    onKeyDown={(event) => { toggleDrawer(false, event) }}
                 >
                     <List role="navigation-list-container">
                         <ListItem button component={Link} to="/" role="navigation-home">
