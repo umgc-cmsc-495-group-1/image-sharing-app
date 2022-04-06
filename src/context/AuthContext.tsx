@@ -25,7 +25,7 @@ const FirebaseAuthProvider: React.FC = ({ children }) => {
   const value = { user }
 
   // Register callback
-  React.useEffect( () => {
+  React.useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(setUser)
 
     return unsubscribe
@@ -56,15 +56,15 @@ export { FirebaseAuthProvider, useFirebaseAuth }
 *   function Parent() {
 *      return (
 *         <FirebaseAuthProvider>
-*            <Username />
+*            <username />
 *         </FirebaseAuthProvider>
 *       );
 *     }
 *   Child:
-*      function Username() {
+*      function username() {
 *         return (
 *          const user = useFirebaseAuth();
-*          return <div>(user?.displayName || 'not authenticated')}</div>;
+*          return <div>(user?.username || 'not authenticated')}</div>;
 *         );
 *       }
 * References:

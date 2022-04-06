@@ -16,6 +16,10 @@ function ExampleSignupPage() {
   // const [email, setEmail] = useState({email: ''});
   // const [password, setPassword] = useState({password:''});
 
+  const userId = (useFirebaseAuth()?.uid || 'not authenticated')
+  const currentUser = (useCurrentUser(userId)?.username || 'no current user')
+  console.log('user: ', userId)
+
   const userLogout = async () => {
     await logout();
     // navigate('/login', { replace: true });
@@ -52,12 +56,6 @@ function ExampleSignupPage() {
   const login = async () => {
     await loginWithGoogle()
   }
-
-  const userId = (useFirebaseAuth()?.uid || 'not authenticated')
-  const currentUser = (useCurrentUser(userId)?.username || 'no current user')
-
-
-  console.log('user: ', userId)
 
   return (
     <>

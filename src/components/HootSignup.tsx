@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
+import { signup, newUser } from '../data/authFunctions'
+
 
 export default function HootSignup() {
 
@@ -9,12 +11,51 @@ export default function HootSignup() {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
+    const [username, setusername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [verifyPassword, setVerifyPassword] = useState("");
-        
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+    /**
+     *
+     *  onSubmit={async (e: React.SyntheticEvent) => {
+              e.preventDefault();
+              const user = e.target as typeof e.target & {
+                first: { value: string }
+                last: { value: string }
+                username: { value: string }
+                email: { value: string }
+                password: { value: string }
+              };
+
+              const first = user.first.value
+              const last = user.last.value
+              const username = user.username.value
+              const email = user.email.value // typechecks!
+              const password = user.password.value // typechecks!
+              const newUser = {
+                first: first[0].toUpperCase() + first.substring(1),
+                last: last[0].toUpperCase() + last.substring(1),
+                username: username,
+                email: email,
+                password: password
+              }
+              // etc...
+              try {
+                await signup(newUser);
+
+              } catch (error) {
+                console.log(JSON.stringify(newUser));
+                console.log(error);
+                alert(`signup failed: ${error}`);
+              } finally {
+                alert('signed up')
+
+              }
+            }}
+     */
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
         console.log({
@@ -25,6 +66,24 @@ export default function HootSignup() {
             password,
             verifyPassword,
         });
+        const user: newUser = {
+            first: firstName,
+            last: lastName,
+            username: username,
+            email: email,
+            password: password,
+        }
+        try {
+            await signup(user);
+
+          } catch (error) {
+            console.log(JSON.stringify(user));
+            console.log(error);
+            alert(`signup failed: ${error}`);
+          } finally {
+            alert('signed up')
+
+          }
         navigate("../", { replace: true });
     };
     return (
@@ -75,7 +134,7 @@ export default function HootSignup() {
                         <Grid item xs={12}>
                             <TextField
                                 onChange = {(event) => {
-                                    setUsername(event.target.value);
+                                    setusername(event.target.value);
                                 }}
                                 required
                                 fullWidth
