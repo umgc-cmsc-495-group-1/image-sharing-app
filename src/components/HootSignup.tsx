@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import {
   Alert,
   Avatar,
@@ -11,149 +11,34 @@ import {
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useNavigate } from "react-router-dom";
 import { newUser, signInWithGoogle, signup } from "../data/authFunctons";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 export default function HootSignup() {
   const navigate = useNavigate();
 
-  const [input, setInput] = useState({
-    displayName: "",
-    username: "",
-    email: "",
-    password: "",
-    verifyPassword: "",
-  });
-  const [error, setError] = useState({
-    displayName: "",
-    username: "",
-    email: "",
-    password: "",
-    verifyPassword: "",
-  });
-  const [validForm, setValidForm] = useState(false);
-
-  const onInputChange = async (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.currentTarget;
-    setInput((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    validateInput(e);
+  type FieldValues = {
+    displayName: string;
+    username: string;
+    email: string;
+    password: string;
+    verifyPassword: string;
   };
 
-  const validateInput = async (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.currentTarget;
-    switch (name) {
-      case "displayName":
-        if (!value) {
-          setError((prev) => ({
-            ...prev,
-            [name]: "Please enter a Display Name",
-          }));
-        } else {
-          console.log("unsetting error");
-          setError((prev) => ({
-            ...prev,
-            [name]: "",
-          }));
-        }
-        break;
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FieldValues>();
 
-      case "username":
-        if (!value) {
-          setError((prev) => ({
-            ...prev,
-            [name]: "Please enter a Username",
-          }));
-        } else {
-          setError((prev) => ({
-            ...prev,
-            [name]: "",
-          }));
-        }
-        break;
-
-      case "email":
-        if (!value) {
-          setError((prev) => ({
-            ...prev,
-            [name]: "Please enter an Email Address",
-          }));
-        } else {
-          setError((prev) => ({
-            ...prev,
-            [name]: "",
-          }));
-        }
-        break;
-
-      case "password":
-        if (value.length < 6) {
-          setError((prev) => ({
-            ...prev,
-            [name]: "Password must be at least 6 characters",
-          }));
-        } else if (input.verifyPassword && value !== input.verifyPassword) {
-          setError((prev) => ({
-            ...prev,
-            [name]: "Passwords must match",
-          }));
-        } else {
-          setError((prev) => ({
-            ...prev,
-            [name]: input.verifyPassword ? "" : error.verifyPassword,
-          }));
-        }
-        break;
-
-      case "verifyPassword":
-        if (input.password && value !== input.password) {
-          setError((prev) => ({
-            ...prev,
-            [name]: "Passwords must match",
-          }));
-        } else {
-          setError((prev) => ({
-            ...prev,
-            [name]: "",
-          }));
-        }
-        break;
-
-      default:
-        break;
-    }
-    validateForm();
-  };
-
-  const validateForm = () => {
-    setValidForm(
-      input.displayName.length > 0 &&
-        input.username.length > 0 &&
-        input.email.length > 0 &&
-        input.password.length > 0 &&
-        input.verifyPassword.length > 0 &&
-        error.displayName.length == 0 &&
-        error.username.length == 0 &&
-        error.email.length == 0 &&
-        error.password.length == 0 &&
-        error.verifyPassword.length == 0
-    );
-    console.log(validForm);
-  };
-
-  const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const newUser: newUser = {
-      displayName: input.displayName,
-      username: input.username,
-      email: input.email,
-      password: input.password,
+      displayName: data.displayName,
+      username: data.username,
+      email: data.email,
+      password: data.password,
     };
 
     try {
@@ -164,6 +49,21 @@ export default function HootSignup() {
 
     navigate("../", { replace: true });
   };
+
+  const password = useRef({});
+  React.useEffect(() => {
+    let unmounted = false;
+    setTimeout(() => {
+      if (!unmounted) {
+        password.current = watch("password", "");
+      }
+    }, 3000);
+
+    return () => {
+      unmounted = true;
+    };
+  });
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -178,17 +78,17 @@ export default function HootSignup() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography>Sign Up</Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                onChange={(event) => {
-                  onInputChange(event);
-                }}
-                onBlur={(event) => {
-                  validateInput(event);
-                }}
-                required
+                {...register("displayName", {
+                  required: "Display Name Required",
+                  minLength: {
+                    value: 4,
+                    message: "Display Names must be at least 4 characters",
+                  },
+                })}
                 fullWidth
                 id="displayName"
                 label="Display Name"
@@ -196,55 +96,58 @@ export default function HootSignup() {
                 autoComplete="name"
                 autoFocus
               />
-              {error.displayName && (
-                <Alert severity="error">{error.displayName}</Alert>
+              {errors.displayName && (
+                <Alert severity="error">{errors.displayName?.message}</Alert>
               )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                onChange={(event) => {
-                  onInputChange(event);
-                }}
-                onBlur={(event) => {
-                  validateInput(event);
-                }}
-                required
+                {...register("username", {
+                  required: "Username Required",
+                  minLength: {
+                    value: 4,
+                    message: "Username must be at least 4 characters",
+                  },
+                })}
                 fullWidth
                 id="username"
                 label="User Name"
                 name="username"
                 autoComplete="username"
               />
-              {error.username && (
-                <Alert severity="error">{error.username}</Alert>
+              {errors.username && (
+                <Alert severity="error">{errors.username?.message}</Alert>
               )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                onChange={(event) => {
-                  onInputChange(event);
-                }}
-                onBlur={(event) => {
-                  validateInput(event);
-                }}
-                required
+                {...register("email", {
+                  required: "Email address required",
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: "This doesn't look like an email address...",
+                  },
+                })}
                 fullWidth
+                type="email"
                 id="email"
                 label="Email Address"
                 name="email"
                 autoComplete="email"
               />
-              {error.email && <Alert severity="error">{error.email}</Alert>}
+              {errors.email && (
+                <Alert severity="error">{errors.email?.message}</Alert>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                onChange={(event) => {
-                  onInputChange(event);
-                }}
-                onBlur={(event) => {
-                  validateInput(event);
-                }}
-                required
+                {...register("password", {
+                  required: "Password required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
                 fullWidth
                 name="password"
                 label="Password"
@@ -252,19 +155,16 @@ export default function HootSignup() {
                 id="password"
                 autoComplete="new-password"
               />
-              {error.password && (
-                <Alert severity="error">{error.password}</Alert>
+              {errors.password && (
+                <Alert severity="error">{errors.password?.message}</Alert>
               )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                onChange={(event) => {
-                  onInputChange(event);
-                }}
-                onBlur={(event) => {
-                  validateInput(event);
-                }}
-                required
+                {...register("verifyPassword", {
+                  validate: (value) =>
+                    value === password.current || "The passwords must match!",
+                })}
                 fullWidth
                 name="verifyPassword"
                 label="Verify Password"
@@ -272,15 +172,15 @@ export default function HootSignup() {
                 id="verifyPassword"
                 autoComplete="new-password"
               />
-              {error.verifyPassword && (
-                <Alert severity="error">{error.verifyPassword}</Alert>
+              {errors.verifyPassword && (
+                <Alert severity="error">{errors.verifyPassword?.message}</Alert>
               )}
             </Grid>
           </Grid>
           <Button
             type="submit"
+            onClick={handleSubmit(onSubmit)}
             fullWidth
-            disabled={!validForm}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
