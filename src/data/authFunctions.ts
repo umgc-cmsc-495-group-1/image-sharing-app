@@ -9,7 +9,11 @@ import { updatePassword, updateEmail, deleteUser, updateProfile } from 'firebase
 
 /****************************************************************
  *
- * Sign Up, Log In, and Log Out Functions, auth.currentUser editing
+ * Sign Up, Log In, and Log Out Functions, Delete user account
+ * Google popup signin, Google redirect signin
+ * auth.currentUser updating: update password, email, displayName,
+ * and photoURL
+ * Request Re-authentication for password update
  * https://firebase.google.com/docs/auth/web/manage-users
  * https://firebase.google.com/docs/reference/js/v8/firebase.User
  *
