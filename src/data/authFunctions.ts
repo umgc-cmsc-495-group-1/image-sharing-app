@@ -49,11 +49,7 @@ export interface returnUser {
 export const signup = async (user: newUser) => {
 
   let res: UserCredential
-  // Exit sign up function if it doesn't contain email and password
-  if (!isEmptyForm(user)) {
-    console.log("no form data");
-    return;
-  }
+
   try {
     res = await createUserWithEmailAndPassword(
       auth,
@@ -248,7 +244,7 @@ export const updateNameImgUrl = (displayName: string, imgUrl: string) => {
       displayName: displayName, photoURL: imgUrl
     }).then(() => {
       // Profile updated!
-      console.log(`${user.displayName} your profile has been updates`)
+      console.log(`${user.displayName} your profile has been updated`)
     }).catch((error) => {
       // An error occurred
       console.log(error);
