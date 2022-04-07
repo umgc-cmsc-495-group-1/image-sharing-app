@@ -71,7 +71,7 @@ export const signup = async (user: newUser) => {
     return addedUser;
   }
   await createUser(addedUser, user);
-  const displayName: string = addedUser.displayName || ''
+  const displayName: string = user.userName || ''
   updateNameImgUrl(displayName, '')
   return addedUser;
 }
