@@ -93,10 +93,7 @@ export const logout = async () => {
  * @returns
  */
 export const login = async (user: returnUser) => {
-  if (!isEmptyForm(user)) {
-    console.log("no form data");
-    return;
-  }
+
   await signInWithEmailAndPassword(auth, user.email, user.password)
     .then((userCredential) => {
       // Signed in
