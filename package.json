@@ -28,6 +28,7 @@
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4"
   },
+
   "scripts": {
     "start": "react-scripts start",
     "emulators": "firebase emulators:start",
@@ -35,7 +36,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "fix-errors": "eslint . --fix",
-    "find-errors": "eslint . "
+    "find-errors": "eslint . ",
+    "debug": "BROWSER='google chrome' BROWSER_ARGS='--remote-debugging-port=9222' react-scripts start"
   },
   "eslintConfig": {
     "extends": [

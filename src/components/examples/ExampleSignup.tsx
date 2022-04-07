@@ -17,7 +17,7 @@ function ExampleSignupPage() {
   // const [password, setPassword] = useState({password:''});
 
   const userId = (useFirebaseAuth()?.uid || 'not authenticated')
-  const currentUser = (useCurrentUser(userId)?.userName || 'no current user')
+  const currentUser = (useCurrentUser(userId)?.username || 'no current user')
   console.log('user: ', userId)
 
   const userLogout = async () => {

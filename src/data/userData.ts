@@ -20,7 +20,7 @@ export interface appUser {
   uid: string,
   first: string,
   last: string,
-  userName: string,
+  username: string,
   displayName?: string,
   email: string,
   bio?: string,
@@ -43,7 +43,7 @@ export const createUser = async (user: User, userInfo: newUser | googleUser) => 
       uid: user.uid,
       first: userInfo.first || '',
       last: userInfo.last || '',
-      userName: user.displayName,
+      username: user.displayName,
       email: user.email,
       bio: '',
       friends: [],
@@ -56,7 +56,7 @@ export const createUser = async (user: User, userInfo: newUser | googleUser) => 
 
 /**
  * Get single user with field value
- * choices: UID, first, last, userName, email
+ * choices: UID, first, last, username, email
  * @param userId
  * @returns
  */
@@ -71,7 +71,7 @@ export const getUserByUserId = async (userId: string) => {
   const data = docSnap.data();
   const user: appUser = {
     uid: data.uid,
-    userName: data.userName,
+    username: data.username,
     displayName: data.displayName,
     first: data.first,
     last: data.last,
@@ -80,7 +80,7 @@ export const getUserByUserId = async (userId: string) => {
     likes: data.likes,
     friends: data.friends
   }
-  console.log('user data: ', user.userName)
+  console.log('user data: ', user.username)
 
   return user
 }

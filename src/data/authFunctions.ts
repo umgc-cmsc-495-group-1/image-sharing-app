@@ -23,7 +23,7 @@ export interface newUser {
   first?: string,
   last?: string,
   displayName?: string,
-  userName: string,
+  username: string,
   email: string,
   password: string
 }
@@ -67,7 +67,7 @@ export const signup = async (user: newUser) => {
     return addedUser;
   }
   await createUser(addedUser, user);
-  const displayName: string = user.userName || ''
+  const displayName: string = user.username || ''
   updateNameImgUrl(displayName, '')
   return addedUser;
 }
@@ -192,6 +192,7 @@ export const signInGooglePopup = async () => {
         email: addedUser.email || ''
       }
       if (emailInFirestore(user.email) != null) {
+        console.log(`email ${user.email} is already in db`)
         alert(`user with ${user.email} is already registered`);
       } else {
         createUser(addedUser, user);
