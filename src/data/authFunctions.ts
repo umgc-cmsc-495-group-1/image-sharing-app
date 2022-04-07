@@ -5,11 +5,11 @@ import { createUser, emailInFirestore, deleteUserDoc } from './userData'
 import { GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
-import { updatePassword, updateEmail, deleteUser } from 'firebase/auth'
+import { updatePassword, updateEmail, deleteUser, updateProfile } from 'firebase/auth'
 
 /****************************************************************
  *
- * Sign Up, Log In, and Log Out Functions
+ * Sign Up, Log In, and Log Out Functions, auth.currentUser editing
  * https://firebase.google.com/docs/auth/web/manage-users
  * https://firebase.google.com/docs/reference/js/v8/firebase.User
  *
@@ -67,6 +67,8 @@ export const signup = async (user: newUser) => {
     return addedUser;
   }
   await createUser(addedUser, user);
+  const displayName: string = addedUser.displayName || ''
+  updateNameImgUrl(displayName, '')
   return addedUser;
 }
 
@@ -75,7 +77,8 @@ export const signup = async (user: newUser) => {
  * @returns
  */
 export const logout = async () => {
-  return await auth.signOut();
+ return await auth.signOut();
+  // return signOut(auth);
 }
 
 //export const logout = async () => {
@@ -157,6 +160,7 @@ export const signInGoogleRedirect = async () => {
 }
 
 
+
 /**
  *  Google Popup Sign Up / Sign In
  *  Function should check to see if email is entered in
@@ -224,6 +228,29 @@ export const changeEmail = (newEmail: string) => {
       console.log(error)
       console.log(`Email update for ${user.uid} failed`)
     });
+}
+
+/**
+ * Update Profile displayName or profile URL
+ * call with auth.currentUser.displayName or .photoURL
+ * if not changing value
+ * @param displayName
+ * @param imgUrl
+ */
+export const updateNameImgUrl = (displayName: string, imgUrl: string) => {
+  const user = auth.currentUser;
+  if (user) {
+    updateProfile(user, {
+      displayName: displayName, photoURL: imgUrl
+    }).then(() => {
+      // Profile updated!
+      console.log(`${user.displayName} your profile has been updates`)
+    }).catch((error) => {
+      // An error occurred
+      console.log(error);
+    });
+  }
+
 }
 
 /**
