@@ -1,7 +1,7 @@
 import { auth } from '../firebaseSetup'
 // import firebase from 'firebase/app'
 import 'firebase/auth'
-import { createUser, emailInFirestore, deleteUserDoc } from './userData'
+import { createUser, deleteUserDoc } from './userData'
 import { GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
@@ -191,14 +191,14 @@ export const signInGooglePopup = async () => {
         userName: addedUser.displayName || '',
         email: addedUser.email || ''
       }
-      if (emailInFirestore(user.email) != null) {
-        console.log(`email ${user.email} is already in db`)
-        alert(`user with ${user.email} is already registered`);
-      } else {
-        createUser(addedUser, user);
-        return addedUser
+      // if (emailInFirestore(user.email) != null) {
+      //  console.log(`email ${user.email} is already in db`)
+      //   alert(`user with ${user.email} is already registered`);
+      // }
+      createUser(addedUser, user);
+      return addedUser
 
-      }
+
     }).catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
@@ -323,7 +323,7 @@ export const deleteAccount = async () => {
  * @returns
  */
 function isEmptyForm(user: newUser | returnUser) {
- return user.email.length === 0 || user.password.length === 0;
+ return user.email === "" || user.password === "";
 }
 
 /*
