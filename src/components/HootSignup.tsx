@@ -33,7 +33,7 @@ export default function HootSignup() {
   });
   const [validForm, setValidForm] = useState(false);
 
-  const onInputChange = async (
+  const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.currentTarget;
@@ -44,7 +44,7 @@ export default function HootSignup() {
     validateInput(e);
   };
 
-  const validateInput = async (
+  const validateInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.currentTarget;
