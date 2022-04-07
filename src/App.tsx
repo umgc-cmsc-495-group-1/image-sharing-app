@@ -5,6 +5,8 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // import HootFeed from './components/HootFeed';
 import Feed from './components/Feed';
+import UserPost from './components/UserPost';
+import TestComment from './components/TestComment';
 import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
 import HootNav from './components/HootNav';
@@ -45,7 +47,17 @@ export default function App() {
 							children: [
 								{
 									path: "profile",
-									element: <HootUser />
+									children: [
+										{ index: true, element: <HootUser /> },
+										{
+											path: "/user/:userId/profile/:pid",
+											element: <UserPost />
+										},
+										{
+											path: "/user/:userId/profile/:pid/comments",
+											element: <TestComment />
+										}
+									],
 								},
 								{
 									path: "settings",
@@ -55,7 +67,10 @@ export default function App() {
 						},
 					],
 				},
-				{ path: "*", element: <Hoot404 /> },
+				{
+					path: "*",
+					element: <Hoot404 />
+				},
 			],
 		},
 	];
