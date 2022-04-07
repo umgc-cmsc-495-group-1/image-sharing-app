@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getUserById, appUser } from '../data/userData'
+import { getUserByUserId, appUser } from '../data/userData'
 
 /******************************************************
  *
@@ -22,7 +22,7 @@ export const useCurrentUser = (userId: string) => {
     let user;
     (async () => {
 
-      user = await getUserById(userId)
+      user = await getUserByUserId(userId)
 
       if (user) {
         // set current user info

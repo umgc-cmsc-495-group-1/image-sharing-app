@@ -8,7 +8,9 @@ import { auth } from '../../firebaseSetup'
 export default function ExampleHome() {
     console.log('Home happened');
     const user = auth.currentUser ? auth.currentUser.uid : 'no user'
+    console.log(user)
     console.log(userEvent)
+
     return (
         <div>
             <main>
