@@ -4,7 +4,7 @@ import { getUserByUserId, appUser } from '../data/userData'
 /******************************************************
  *
  * Custom hook for getting the curent user data
- * (firstName, lastName, userName, email, friends, likes)
+ * (firstName, lastName, username, email, friends, likes)
  * If there is no current user it returns null
  *
  ******************************************************/
@@ -13,7 +13,7 @@ import { getUserByUserId, appUser } from '../data/userData'
 export const useCurrentUser = (userId: string) => {
   const [currentUser, setCurrentUser] =
     useState<appUser>({
-      userName: '', displayName: '', email: '', uid: '', first: '',
+      username: '', displayName: '', email: '', uid: '', first: '',
       last: '', friends: [], likes: [], bio: ''
     })
 
