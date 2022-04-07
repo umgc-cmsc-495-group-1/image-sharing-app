@@ -1,6 +1,6 @@
 import React from 'react'
 // import { useNavigate } from 'react-router-dom'
-import { signup, logout } from '../../data/authFunctions'
+import { logout } from '../../data/authFunctions'
 import { useFirebaseAuth } from '../../context/AuthContext'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 // import { deleteUser } from '../../data/userData'
