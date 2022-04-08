@@ -85,6 +85,20 @@ export default function App() {
 			secondary: {
 				main: '#039be5',
 			},
+			info: {
+				main: '#ABABAB',
+			},
+			warning: {
+				main: '#EB2D0B',
+			},
+			grey: {
+				"200": '#F7F7F7',
+				"300": '#EBEBEB',
+				"500": '#DADAD9',
+				"700": '#ABABAB',
+				"900": '#6B6B6B'
+			}
+
 		},
 	});
 

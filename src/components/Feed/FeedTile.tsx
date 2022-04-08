@@ -2,10 +2,12 @@ import React from 'react'
 import { FeedPostTypeInterface } from '../../tests/test_data';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { Box } from '@mui/material';
-// import { MetaDataBar } from './MetaDataBar';
+import { MetaDataBar } from './MetaDataBar';
 
 export type ImageItemProps = {
   src: string | undefined;
+  margin: number;
+  padding: number;
   alt?: string;
   loading?: "lazy" | "eager" | undefined;
   sizes?: string | undefined;
@@ -38,9 +40,9 @@ function determineMarginAndPadding(width: number) {
 }
 
 
-const ImageItem: React.FC<ImageItemProps> = ({ src, alt }): JSX.Element => {
-  const { width } = useWindowDimensions();
-  const { margin, padding } = determineMarginAndPadding(width);
+const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX.Element => {
+  // const { width } = useWindowDimensions();
+  // const { margin, padding } = determineMarginAndPadding(width);
   const isAlt = (alt !== "") ? alt : 'image';
   const details: React.CSSProperties = {
     height: "100%",
@@ -65,9 +67,11 @@ const ImageItem: React.FC<ImageItemProps> = ({ src, alt }): JSX.Element => {
 }
 
 const FeedTile: React.FC<FeedPostTypeInterface> = ({
-  imageUrl, uid, username, pid, numberLikes, numberComments, comments
+  imageUrl, uid, username, pid, postText, numberLikes, numberComments, comments
 }): JSX.Element => {
-  console.log(pid, numberLikes, numberComments, comments);
+  const { width, height } = useWindowDimensions();
+  const { margin, padding } = determineMarginAndPadding(width);
+  // console.log(pid, numberLikes, numberComments, comments);
   return (
     <Box
       sx={{
@@ -77,8 +81,10 @@ const FeedTile: React.FC<FeedPostTypeInterface> = ({
       <ImageItem
         key={`${uid}-${username}`}
         src={imageUrl}
+        margin={margin}
+        padding={padding}
       />
-      {/* <MetaDataBar
+      <MetaDataBar
         uid={uid}
         pid={pid}
         numberLikes={numberLikes}
@@ -87,7 +93,11 @@ const FeedTile: React.FC<FeedPostTypeInterface> = ({
         postText={postText}
         imageUrl={imageUrl}
         comments={comments}
-      /> */}
+        margin={margin}
+        padding={padding}
+        screenWidth={width}
+        screenHeight={height}
+      />
     </Box>
   );
 }
