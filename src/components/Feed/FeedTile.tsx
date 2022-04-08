@@ -1,5 +1,5 @@
 import React from 'react'
-import { FeedPostTypeInterface } from '../../tests/test_data';
+import { FeedPostInterface } from '../../tests/test_data';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { Box } from '@mui/material';
 import { MetaDataBar } from './MetaDataBar';
@@ -41,8 +41,6 @@ function determineMarginAndPadding(width: number) {
 
 
 const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX.Element => {
-  // const { width } = useWindowDimensions();
-  // const { margin, padding } = determineMarginAndPadding(width);
   const isAlt = (alt !== "") ? alt : 'image';
   const details: React.CSSProperties = {
     height: "100%",
@@ -66,12 +64,11 @@ const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX
   );
 }
 
-const FeedTile: React.FC<FeedPostTypeInterface> = ({
+const FeedTile: React.FC<FeedPostInterface> = ({
   imageUrl, uid, username, pid, postText, numberLikes, numberComments, comments
 }): JSX.Element => {
   const { width, height } = useWindowDimensions();
   const { margin, padding } = determineMarginAndPadding(width);
-  // console.log(pid, numberLikes, numberComments, comments);
   return (
     <Box
       sx={{
@@ -104,5 +101,6 @@ const FeedTile: React.FC<FeedPostTypeInterface> = ({
 
 export {
   FeedTile,
-  ImageItem
+  ImageItem,
+  determineMarginAndPadding
 }
