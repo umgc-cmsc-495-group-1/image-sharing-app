@@ -11,10 +11,7 @@ const Feed: React.FC = (): JSX.Element => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        // alignContent: 'center',
         width: '100%',
-        // mx: '5rem',
-        // px: '1rem',
       }}
     >
       {totalFeedPosts.map((item: FeedPostType) => (
@@ -35,15 +32,3 @@ const Feed: React.FC = (): JSX.Element => {
 }
 
 export default Feed;
-
-
-      // <ImageList
-      //   sx={{
-      //     display: 'flex',
-      //     flexDirection: 'column',
-      //     alignItems: 'center',
-      //     width: '100%'
-      //   }}
-      //   cols={1}
-      //   rowHeight={1000}
-      // > 

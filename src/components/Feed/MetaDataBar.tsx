@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentIcon from '@mui/icons-material/Comment';
-import { FeedPostTypeInterface } from '../../tests/test_data';
+import { FeedPostInterface } from '../../tests/test_data';
 type IconType = typeof FavoriteIcon | typeof FavoriteBorderIcon | typeof CommentIcon;
 
-interface MetaDataBarInterface extends FeedPostTypeInterface {
+export interface MetaDataBarInterface extends FeedPostInterface {
   margin: number;
   padding: number;
   screenWidth: number;
@@ -34,6 +34,7 @@ interface CommentIconProps extends MarginPadding {
 interface PostDetailProps extends MarginPadding {
   username: string;
   postText: string;
+  metaDataProps?: boolean | false;
 }
 
 function determinBarHeight(width: number): number {
@@ -122,20 +123,32 @@ const CommentIconCustom: React.FC<CommentIconProps> = ({
 };
 
 const PostDetails: React.FC<PostDetailProps> = ({
-  username, postText
+  username, postText, metaDataProps
 }): JSX.Element => {
+  const metaDataStyles = {
+    userStyle: {
+      justifyContent: 'flex-start',
+    },
+    postStyle: {
+      justifyContent: 'flex-end',
+    }
+  }
+
   const userStyle: React.CSSProperties = {
     fontWeight: 'bold',
     fontSize: '1.35rem',
     color: '#bfa760',
-    justifyContent: 'flex-start',
     marginLeft: '1.25rem',
   }
   const postStyle: React.CSSProperties = {
     fontSize: '1rem',
     color: '#000',
-    justifyContent: 'flex-end',
     marginLeft: '1.25rem',
+  }
+
+  if (metaDataProps) {
+    userStyle.justifyContent = metaDataStyles.userStyle.justifyContent;
+    postStyle.justifyContent = metaDataStyles.postStyle.justifyContent;
   }
   return (
     <Box
@@ -155,7 +168,6 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
   uid, pid, numberLikes, username, postText,
   numberComments, margin, padding, screenWidth
 }): JSX.Element => {
-  // console.log(margin)
   const [isLiked, setIsLiked] = useState(numberLikes > 0);
   const [numberOfLikes, setNumberOfLikes] = useState(numberLikes);
   const navigate = useNavigate();
@@ -231,6 +243,7 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
           postText={postText}
           margin={margin}
           padding={padding}
+          metaDataProps={true}
         />
       </Box>
     </Box>
@@ -238,5 +251,8 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
 }
 
 export {
-  MetaDataBar
+  MetaDataBar,
+  determinBarHeight,
+  determineIconSize,
+  PostDetails
 }
