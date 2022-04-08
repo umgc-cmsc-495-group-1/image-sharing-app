@@ -32,7 +32,6 @@ import feedImage17 from '../assets/static/images/theaminahmadi-T0WB-E2hcYU-unspl
 import feedImage18 from '../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg'
 import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
 
-
 const demoUsernames = [
 	'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
 	'lina', 'max', 'melanie', 'mounir', 'philipp', 'sour', 'svitlana', 'theaminahmadi', 'tommy', 'yusuf'
@@ -85,12 +84,10 @@ export interface UserImagesInterface {
 	imageUrl: string | undefined;
 }
 
-
 export interface UserInterface {
 	uid: string;
 	username: string;
 }
-
 
 export interface CommentInterface extends UserInterface {
 	comment: string;
@@ -102,7 +99,6 @@ interface AltCommentInterface {
 }
 
 type AltCommentType = AltCommentInterface;
-
 
 export interface FeedPostTypeInterface {
 	uid: string;

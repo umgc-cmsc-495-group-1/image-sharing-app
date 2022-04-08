@@ -1,7 +1,7 @@
 import React from 'react';
 import "@testing-library/react/dont-cleanup-after-each";
 import '@testing-library/jest-dom';
-import { 
+import {
   MemoryRouter,
   Routes,
   Route
@@ -29,10 +29,10 @@ function renderWithMemoryRouter() {
   return render(
     <MemoryRouter initialEntries={['/']}>
       <Routes>
-        <Route path="/" element={<HootNav/>} />
-        <Route path="/" element={<HootHome/>} />
-        <Route path="/login" element={<HootLogin/>} />
-        <Route path="/signup" element={<HootSignup/>} />
+        <Route path="/" element={<HootNav />} />
+        <Route path="/" element={<HootHome />} />
+        <Route path="/login" element={<HootLogin />} />
+        <Route path="/signup" element={<HootSignup />} />
       </Routes>
     </MemoryRouter>
   );
@@ -48,7 +48,7 @@ describe('App Navigation', () => {
   it('Navigation Renders properly and sidebar operational', () => {
     const navMenuButton = screen.getByLabelText('menu');
     fireEvent.click(navMenuButton);
-    setTimeout(() => {}, 500);
+    setTimeout(() => { console.log('wait half a second') }, 500);
     const navHome = screen.getByRole('navigation-home');
     const navLogin = screen.getByRole('navigation-login');
     const navSignup = screen.getByRole('navigation-signup');
@@ -69,7 +69,7 @@ describe('App Navigation', () => {
     const navSignup = screen.getByRole('navigation-signup');
     // navigate to the signup page
     fireEvent.click(navSignup);
-    setTimeout(() => {}, 500);
+    setTimeout(() => { console.log('wait half a second') }, 500);
     const signupForm = screen.getByRole('signup-form');
     expect(signupForm).toBeInTheDocument();
   })
