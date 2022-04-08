@@ -35,7 +35,13 @@ export default function HootLogin() {
                 <Typography>
                     Login
                 </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Box 
+                    component="form" 
+                    noValidate 
+                    onSubmit={handleSubmit} 
+                    sx={{ mt: 3 }}
+                    role="login-form"
+                >
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
@@ -84,4 +90,4 @@ export default function HootLogin() {
             </Box>
         </Container>
     )
-            }
+}

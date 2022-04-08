@@ -49,15 +49,15 @@ export const updateUser = async (user: appUser) => {
 };
 // Delete user
 export const deleteUser = async (user: appUser) => {
-  await deleteDoc(doc(fireStore ,"users", `${user.uid}`))
+  await deleteDoc(doc(fireStore, "users", `${user.uid}`))
 };
 
 // Gets all users
 export const getAllUsers = async () => {
   const querySnapshot = await getDocs(collection(fireStore, "users"));
   querySnapshot.forEach((doc) => {
-   doc.data() //is never undefined for query doc snapshots
-  console.log(doc.id, " => ", doc.data());
+    doc.data() //is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
   });
 };
 
