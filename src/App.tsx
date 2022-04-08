@@ -5,6 +5,8 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // import HootFeed from './components/HootFeed';
 import Feed from './components/Feed';
+import UserPost from './components/UserPost';
+import TestComment from './components/TestComment';
 import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
 import HootNav from './components/HootNav';
@@ -45,7 +47,17 @@ export default function App() {
 							children: [
 								{
 									path: "profile",
-									element: <HootUser />
+									children: [
+										{ index: true, element: <HootUser /> },
+										{
+											path: "/user/:userId/profile/:pid",
+											element: <UserPost />
+										},
+										{
+											path: "/user/:userId/profile/:pid/comments",
+											element: <TestComment />
+										}
+									],
 								},
 								{
 									path: "settings",
@@ -55,7 +67,10 @@ export default function App() {
 						},
 					],
 				},
-				{ path: "*", element: <Hoot404 /> },
+				{
+					path: "*",
+					element: <Hoot404 />
+				},
 			],
 		},
 	];
@@ -70,6 +85,20 @@ export default function App() {
 			secondary: {
 				main: '#039be5',
 			},
+			info: {
+				main: '#ABABAB',
+			},
+			warning: {
+				main: '#EB2D0B',
+			},
+			grey: {
+				"200": '#F7F7F7',
+				"300": '#EBEBEB',
+				"500": '#DADAD9',
+				"700": '#ABABAB',
+				"900": '#6B6B6B'
+			}
+
 		},
 	});
 
