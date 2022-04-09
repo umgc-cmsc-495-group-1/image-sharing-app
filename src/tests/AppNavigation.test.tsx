@@ -55,17 +55,21 @@ describe('App Navigation', () => {
     // check for the home information
     expect(navHome).toBeInTheDocument();
     expect(navHome).toHaveTextContent('Home');
-    expect(navHome).toHaveAttribute('href', '/');
+    // expect(navHome).toHaveAttribute('href', '/');
     // check for the login information
     expect(navLogin).toBeInTheDocument();
     expect(navLogin).toHaveTextContent('Login');
-    expect(navLogin).toHaveAttribute('href', '/login');
+    // expect(navLogin).toHaveAttribute('href', '/login');
     // check for the signup information
     expect(navSignup).toBeInTheDocument();
     expect(navSignup).toHaveTextContent('Sign Up');
-    expect(navSignup).toHaveAttribute('href', '/signup');
+    // expect(navSignup).toHaveAttribute('href', '/signup');
   })
   it('Navigates to the Sign Up Page', () => {
+    // open nav bar
+    const navMenuButton = screen.getByLabelText('menu');
+    fireEvent.click(navMenuButton);
+
     const navSignup = screen.getByRole('navigation-signup');
     // navigate to the signup page
     fireEvent.click(navSignup);
@@ -73,5 +77,17 @@ describe('App Navigation', () => {
     const signupForm = screen.getByRole('signup-form');
     expect(signupForm).toBeInTheDocument();
   })
-})
+  it('Navigates to the Login Page', () => {
+    // open nav bar
+    const navMenuButton = screen.getByLabelText('menu');
+    fireEvent.click(navMenuButton);
 
+    const navLogin = screen.getByRole('navigation-login');
+    // navigate to the login page
+    fireEvent.click(navLogin);
+    setTimeout(() => { console.log('wait half a second') }, 500);
+    
+    const loginForm = screen.getByRole('login-form');
+    expect(loginForm).toBeInTheDocument();
+  })
+})
