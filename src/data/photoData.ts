@@ -38,7 +38,7 @@ export function getProfilePicUrl() {
 }
 
 export const updateProfileImg = async (userId: string, file: File) => {
-  const path = `users/${userId}/profile-image`;
+  const path = `profile-imgs/${userId}/profile-image`;
 
   // const cloudRef = ref(cloud, path);
 
@@ -46,10 +46,10 @@ export const updateProfileImg = async (userId: string, file: File) => {
    await uploadImageFile(file, path);
 }
 
-export const uploadImage = async (id: string, data: photoData, photoFile: File) => {
+export const uploadImage = async (userId: string, data: photoData, photoFile: File) => {
   // Add a new document with a generated id
   const firestoreRef = doc(collection(fireStore, "photos")); // decide on collection vs. subcollection
-  const path = `photos/${firestoreRef}/${data.imgName}`;  // decide on path
+  const path = `photos/${userId}/${firestoreRef}/${photoFile.name}`;  // decide on path
   const cloudRef = ref(cloud, path);
   const url = await getDownloadURL(cloudRef);
 
@@ -127,7 +127,7 @@ export const uploadImageFile = async (file: File, path: string) => {
 }
 
 export const getPhotoUrl = async (userId: string) => {
-  const filePath = `users/${userId}/profile-image`;
+  const filePath = `profile-imgs/${userId}/profile-image`;
   const fileRef = ref(cloud, filePath);
   console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);

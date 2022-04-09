@@ -22,8 +22,8 @@ import { updatePassword, updateEmail, deleteUser, updateProfile } from 'firebase
 export interface newUser {
   first?: string,
   last?: string,
-  displayName?: string,
-  username: string,
+  displayName: string,
+  username?: string,
   email: string,
   password: string
 }
@@ -68,7 +68,7 @@ export const signup = async (user: newUser) => {
   }
   await createUser(addedUser, user);
   const displayName: string = user.username || ''
-  updateNameImgUrl(displayName, `users/${addedUser.uid}/profile-image`)
+  updateNameImgUrl(displayName, `profile-imgs/${addedUser.uid}/profile-image`)
   console.log("addedUser", addedUser.uid)
   return addedUser;
 }

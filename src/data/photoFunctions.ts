@@ -1,52 +1,77 @@
 // import React, { useRef, useState, useEffect } from "react";
-// import { uploadImage, getDownloadUrl } from './data/photoFunctions';
+// import { getPhotoUrl, updateProfileImg } from '../data/photoData';
+// import { useFirebaseAuth } from '../context/AuthContext';
 
-/**
 
-export const Avatar = ({ id }) => {
-    const fileInput = useRef(null);
+// example of javascript usage
+/*
+export const ProfileImage = () => {
+
+    const id = (useFirebaseAuth()?.uid || 'not authenticated')
+   // const id = '9WNXDNDFOOCn1aVTYKc2rsOPInCH' // put a hardcoded value here for testing
+
+    const fileInput = useRef(null); //pass ref obj to react with ref=""
     const [imageUrl, setImageUrl] = useState('');
-    const [uploadProgress, setUploadProgress] = useState(0);
 
     useEffect(() => {
-        getDownloadUrl(id).then((url) => !!url && setImageUrl(url)); /////
+        getPhotoUrl(id).then((url) => !!url && setImageUrl(url)); /////
     }, [id]);
 
-    //const filePath = `${getAuth().currentUser.uid}/${messageRef.id}/${file.name}`;
-    //const newImageRef = ref(getStorage(), filePath);
-    //const fileSnapshot = await uploadBytesResumable(newImageRef, file);
-
     const fileChange = async (files) => {
-        //const filePath = `${getAuth().currentUser.uid}/${messageRef.id}/${file.name}`;
-        const ref = await uploadImage(id, files[0], updateProgress);
-        const downloadUrl = await ref.getDownloadUrl;
-        setImageUrl(downloadUrl); ///////////
-    };
-    const updateProgress = (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setUploadProgress(progress);
-    };
+        if (!id) {return}
+        const ref = await updateProfileImg(id, files[0]);
+
+        // console.log(ref);
+        const downloadUrl = await getPhotoUrl(ref);
+
+        setImageUrl(downloadUrl);
+        console.log("url", imageUrl);
+    }
 
     return (
-        <div >
-          <img className="ui image"
+      <div >
+          <img
           src={imageUrl || "/placeholder.png"}
-          alt="profile" />
-          <input className="file-input"
+          alt="profile"
+          width={100} height={100}
+          />
+          <input
           type="file"
-          accept=".png, .jpg, jpeg"
+          accept=".png, .jpg"
           ref={fileInput}
           onChange={(e) => fileChange(e.target.files)}
           />
-          <progress style={{width: '100%'}} max="100" value={uploadProgress} />
           <button className="ui grey button upload-button"
           onClick = {() => fileInput.current.click()}
           >upload photos
           </button>
       </div>
     );
+}
+
+// ProfileImage.propTypes = {
+////    id: PropTypes.string | ''
+//  };
+
+//separate photo component example
+import PropTypes from 'prop-types';
+
+export default function Image({ src, caption }) {
+  return <img src={src} alt={caption} />;
+}
+
+Image.propTypes = {
+  src: PropTypes.string.isRequired,
+  caption: PropTypes.string.isRequired
 };
 
+//working with filenames ex
+// Grab the file
+        const file = req.file;        // Format the filename
+        const timestamp = Date.now();
+        const name = file.originalname.split(".")[0];
+        const type = file.originalname.split(".")[1];
+        const fileName = `${name}_${timestamp}.${type}`;
+*/
 
- */
-export {}
+export{}
