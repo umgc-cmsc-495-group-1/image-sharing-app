@@ -1,5 +1,5 @@
 import 'firebase/storage'
-import { collection, doc, setDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, doc, setDoc, deleteDoc, getDoc, getDocs, getDocsFromServer } from 'firebase/firestore'
 import { query, where } from 'firebase/firestore'
 import { fireStore } from '../firebaseSetup'
 import { googleUser, newUser } from './authFunctions'
@@ -18,8 +18,8 @@ import { User } from 'firebase/auth'
 // Bio field is optional
 export interface appUser {
   uid: string,
-  first: string,
-  last: string,
+  first?: string,
+  last?: string,
   username: string,
   displayName?: string,
   email: string,
@@ -43,6 +43,7 @@ export const createUser = async (user: User, userInfo: newUser | googleUser) => 
       uid: user.uid,
       first: userInfo.first || '',
       last: userInfo.last || '',
+      displayName: user.displayName,
       username: user.displayName,
       email: user.email,
       bio: '',
@@ -86,15 +87,15 @@ export const getUserByUserId = async (userId: string) => {
 }
 
 // Get single user with Email value
-export const emailInFirestore = async (email: string) => {
+export const emailInDb = async (email: string) => {
   const q = query(collection(fireStore, "users"), where("email", "==", email));
 
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocsFromServer(q);
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
     console.log(doc.data.length);
-    return doc.data;
+    return doc.data.length > 0;
   });
 }
 
