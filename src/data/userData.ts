@@ -15,20 +15,25 @@ import { User } from 'firebase/auth'
  *
  **********************************************************/
 
-// Bio field is optional
+/**
+ * appUser - inteface for user
+ * Bio, first, last, and username fields are optional
+ */
 export interface appUser {
   uid: string,
   first?: string,
   last?: string,
-  username: string,
-  displayName?: string,
+  username?: string,
+  displayName: string,
   email: string,
   bio?: string,
   friends: string[],
   likes: string[]
 }
 
-// Gets reference to the User collection
+/**
+ * Gets reference to the User collection
+ */
 const usersRef = collection(fireStore, 'users')
 
 /**
@@ -86,7 +91,10 @@ export const getUserByUserId = async (userId: string) => {
   return user
 }
 
-// Get single user with Email value
+/**
+ * Get single user with Email value
+ * @param email
+ */
 export const emailInDb = async (email: string) => {
   const q = query(collection(fireStore, "users"), where("email", "==", email));
 
@@ -99,9 +107,12 @@ export const emailInDb = async (email: string) => {
   });
 }
 
-// update user profile - find correct syntax
-// break profile updates out into their own folder
+// break profile updates out into their own folder?
 // update functions must incorporate db and auth functions
+/**
+ * Update user profile information not in auth.currentUser
+ * @param user
+ */
 export const updateUser = async (user: appUser) => {
   // const docSnap = await getDoc(docRef);
   const docRef = doc(fireStore, 'users', `${user.uid}`)
@@ -121,6 +132,10 @@ export const updateUser = async (user: appUser) => {
 
 // TODO: this just deletes user's doc in firestore
 // TODO: should also delete any photos
+/**
+ * Delete user document from Firestore
+ * @param userId
+ */
 export const deleteUserDoc = async (userId: string) => {
   await deleteDoc(doc(fireStore, 'users', `${userId}`))
 };
