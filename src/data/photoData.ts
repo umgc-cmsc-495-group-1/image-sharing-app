@@ -4,6 +4,14 @@ import { cloud, auth, fireStore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc } from "firebase/firestore";
 
+/************************************************************
+ *
+ * Photo data functions
+ * Update Profile Image
+ * Post New Image
+ *
+ ************************************************************/
+
 // need to npm install uuid to create unique filepath for photos
 // & npm install -D @types/uuid or npm i --save-dev @types/uuid
 // Usage: uuidv4(); returns uid string
@@ -18,6 +26,7 @@ export interface photoData {
   imgName?: string,
   caption?: string,
   numberLikes: number,
+  comments: string[], // this may need to be moved to a sub-collection
   imgURL?: string
 }
 
@@ -53,6 +62,8 @@ export const updateProfileImg = async (userId: string, file: File) => {
 export const postNewImage = async (userId: string, caption: string, photoFile: File) => {
   // Create a new UID for the photo
   const imgUid = uuidv4();
+  // get ext from file let extension = filename.split(".").pop();
+  // imgName = imgUid + . + ext
   const path = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
   // Check for valid user
   const user = auth.currentUser;
@@ -66,6 +77,7 @@ export const postNewImage = async (userId: string, caption: string, photoFile: F
       userId: userId,
       imgName: photoFile.name || "",
       caption: caption || "",
+      comments: [],
       imgURL: path,
       numberLikes: 0
     }
@@ -85,7 +97,7 @@ export const postNewImage = async (userId: string, caption: string, photoFile: F
  * @param file
  * @param path
  */
-export const uploadImageFile = async (file: File, path: string) => {
+const uploadImageFile = async (file: File, path: string) => {
 
   // example cloud storage file path: const path = `users/${userId}/profile-img`;
 
@@ -145,7 +157,23 @@ export const getProfileUrl = async (userId: string) => {
   console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
+
+// TODO:
+
+// 1. Get one photo
+// includes: photo url, photo data obj from firestore, metadata?
+
+// 2. Delete one photo, file in storage and data in firestore
+
+// 3. Get all  photos (urls) in a path 'photos/userID' and 'userID/posts' collection
+// from firestore
+
+// 4. Delete all users photo files and photo data
+
+
+
 /*
+// Get cloud storage url
 export const getPhotoUrl = async (userId: string, file: File) => {
   const filePath = `photos/${userId}/${file.name}`;
   const fileRef = ref(cloud, filePath);
