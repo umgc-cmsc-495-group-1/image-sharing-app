@@ -31,8 +31,8 @@ export interface newUser {
 export interface googleUser {
   first?: string,
   last?: string,
-  displayName?: string,
-  userName: string,
+  displayName: string,
+  userName?: string,
   email: string,
 }
 
@@ -68,7 +68,8 @@ export const signup = async (user: newUser) => {
   }
   await createUser(addedUser, user);
   const displayName: string = user.username || ''
-  updateNameImgUrl(displayName, '')
+  updateNameImgUrl(displayName, `users/${addedUser.uid}/profile-image`)
+  console.log("addedUser", addedUser.uid)
   return addedUser;
 }
 
@@ -133,7 +134,7 @@ export const signInGoogleRedirect = async () => {
           return addedUser;
         }
         user = {
-          userName: addedUser.displayName || '',
+          displayName: addedUser.displayName || '',
           email: addedUser.email || ''
         }
         createUser(addedUser, user);
@@ -153,10 +154,7 @@ export const signInGoogleRedirect = async () => {
       const credential = GoogleAuthProvider.credentialFromError(error);
       console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`)
     });
-
 }
-
-
 
 /**
  *  Google Popup Sign Up / Sign In
@@ -185,13 +183,10 @@ export const signInGooglePopup = async () => {
         return addedUser;
       }
       user = {
-        userName: addedUser.displayName || '',
+        displayName: addedUser.displayName || '',
         email: addedUser.email || ''
       }
-      // if (emailInFirestore(user.email) != null) {
-      //  console.log(`email ${user.email} is already in db`)
-      //   alert(`user with ${user.email} is already registered`);
-      // }
+
       createUser(addedUser, user);
       return addedUser
 
@@ -313,15 +308,13 @@ export const deleteAccount = async () => {
   }
 }
 
-/**
- * Helper function to prevent empty form submission
- * from creating an empty auth object or Firestore doc
- * @param user
- * @returns
- */
-function isEmptyForm(user: newUser | returnUser) {
- return user.email === "" || user.password === "";
+
+/*
+// Returns true if a user is signed-in.
+function isUserSignedIn() {
+  return !!auth.currentUser;
 }
+*/
 
 /*
 
