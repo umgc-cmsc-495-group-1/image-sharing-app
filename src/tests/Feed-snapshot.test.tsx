@@ -6,20 +6,20 @@ import {
   Routes,
   Route
 } from 'react-router-dom';
-import HootLogin  from '../components/HootLogin';
+import Feed from '../components/Feed/index';
 import { create } from 'react-test-renderer';
 
 function renderWithMemoryRouter(component: JSX.Element) {
   return create(
-    <MemoryRouter initialEntries={['/login']}>
+    <MemoryRouter initialEntries={['/feed']}>
       <Routes>
-        <Route path='/login' element={component} />
+        <Route path='/feed' element={component} />
       </Routes>
     </MemoryRouter>
   );
 }
 
 it('Renders correctly',() => {
-  const renderer = renderWithMemoryRouter(<HootLogin/>);
+  const renderer = renderWithMemoryRouter(<Feed />);
   expect(renderer.toJSON()).toMatchSnapshot();
 });
