@@ -97,15 +97,15 @@ export default function HootNav() {
         >
           <List>
             <ListItem button component={Link} to="/">
-              <ListItemText primary="Home" />
+              <ListItemText role="navigation-home" primary="Home" />
             </ListItem>
             {!uid ? ( // Logged out User Nav Section
               <>
                 <ListItem button component={Link} to="/login">
-                  <ListItemText primary="Login" />
+                  <ListItemText role="navigation-login" primary="Login" />
                 </ListItem>
                 <ListItem button component={Link} to="/signup">
-                  <ListItemText primary="Sign Up" />
+                  <ListItemText role="navigation-signup" primary="Sign Up" />
                 </ListItem>
               </>
             ) : (
