@@ -15,7 +15,7 @@
      "allowJs": true,
      "sourceMap": true,
     "noEmit": false,                                  
-    "isolatedModules": false,                          
+    "isolatedModules": true,                          
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,                             
     "forceConsistentCasingInFileNames": true,            
