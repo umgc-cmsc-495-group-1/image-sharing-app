@@ -178,7 +178,7 @@ export default function HootSignup() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography>Sign Up</Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box role="signup-form" component="form" noValidate onSubmit={handleSubmit} data-testid={"SignupTest"} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
