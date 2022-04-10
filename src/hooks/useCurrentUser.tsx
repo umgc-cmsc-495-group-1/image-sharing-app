@@ -22,14 +22,14 @@ export const useCurrentUser = (userId: string) => {
     let user;
     (async () => {
 
-      user = await getUserByUserId(userId)
+      user = await getUserByUserId(userId);
 
       if (user) {
         // set current user info
-        console.log(`current user is: ${JSON.stringify(user)}`)
+        console.log(`current user is: ${JSON.stringify(user)}`);
         setCurrentUser(user);
       }
     })()
   }, [userId])
-  return currentUser
+  return currentUser;
 }

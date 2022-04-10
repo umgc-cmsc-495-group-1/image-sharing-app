@@ -1,72 +1,90 @@
 import 'firebase/storage';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { cloud, auth, fireStore } from '../firebaseSetup';
-import { collection, setDoc, doc } from "firebase/firestore";
+import { v4 as uuidv4 } from 'uuid';
+import { setDoc, doc } from "firebase/firestore";
 
-// import {  updateNameImgUrl } from "../data/authFunctions";
+/************************************************************
+ *
+ * Photo data functions
+ * Update Profile Image
+ * Post New Image
+ *
+ ************************************************************/
 
+// need to npm install uuid to create unique filepath for photos
+// & npm install -D @types/uuid or npm i --save-dev @types/uuid
+// Usage: uuidv4(); returns uid string
+
+/**
+ * Interface for firestore data
+ * associated with a photo post
+ */
 export interface photoData {
   photoId: string, // make both ids user id for profile?
   userId: string,
   imgName?: string,
-  caption: string,
+  caption?: string,
   numberLikes: number,
+  comments: string[], // this may need to be moved to a sub-collection
   imgURL?: string
 }
 
-
-// Can create custom file metadata
-// ex.
-/** @type {any} */
-/*
-interface metadata {
-  customMetadata: {
-    'type': string,
-    'size': number,
-    "date": Date
-  }
-}
-*/
-
-// get url
-// Returns the signed-in user's profile Pic URL.
-// or if URL is empty returns placeholder image
-
+/**
+ * get url
+ * Returns the signed-in user's profile Pic URL
+ * or if URL is empty returns placeholder image
+ * @returns
+ */
 export function getProfilePicUrl() {
   if (auth.currentUser)
     return auth.currentUser.photoURL || '/profile_placeholder.png';
 }
 
+/**
+ * Replaces user profile image
+ * @param userId
+ * @param file
+ */
 export const updateProfileImg = async (userId: string, file: File) => {
-  const path = `users/${userId}/profile-image`;
-
-  // const cloudRef = ref(cloud, path);
-
-  // const publicImageUrl =  getDownloadURL(cloudRef); //await
+  const path = `profile-imgs/${userId}/profile-image`;
    await uploadImageFile(file, path);
 }
 
-export const uploadImage = async (id: string, data: photoData, photoFile: File) => {
-  // Add a new document with a generated id
-  const firestoreRef = doc(collection(fireStore, "photos")); // decide on collection vs. subcollection
-  const path = `photos/${firestoreRef}/${data.imgName}`;  // decide on path
-  const cloudRef = ref(cloud, path);
-  const url = await getDownloadURL(cloudRef);
-
+/**
+ * Upload new photo post
+ * uploads new photo to cloud storage
+ * and photo data to firestore db
+ * @param userId
+ * @param data
+ * @param photoFile
+ */
+export const postNewImage = async (userId: string, caption: string, photoFile: File) => {
+  // Create a new UID for the photo
+  const imgUid = uuidv4();
+  // get ext from file let extension = filename.split(".").pop();
+  // imgName = imgUid + . + ext
+  const path = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
+  // Check for valid user
   const user = auth.currentUser;
+  // Get reference to subcollection path
+  // (photos collection->doc w/userId key->posts collection->post data doc)
+  const firestoreRef = doc(fireStore, "photos", userId, "posts", imgUid);
   if (user) {
-    const newImgData = {
-      photoId: firestoreRef, // make both ids user id for profile?
-      userId: user.uid,
-      imgName: data.imgName,
-      caption: data.caption,
-      imgURL: url,
+    // Post related data to save to firestore collection
+    const newImgData: photoData = {
+      photoId: imgUid,
+      userId: userId,
+      imgName: photoFile.name || "",
+      caption: caption || "",
+      comments: [],
+      imgURL: path,
       numberLikes: 0
     }
     // Write to firestore db
     try {
       // set document data
-      await setDoc(firestoreRef, newImgData);
+      await setDoc(firestoreRef ,newImgData);
       await uploadImageFile(photoFile, path)
     } catch (error) {
       console.log(error);
@@ -74,10 +92,12 @@ export const uploadImage = async (id: string, data: photoData, photoFile: File) 
   }
 }
 
-
-
-// This first saves the image in Firebase storage.
-export const uploadImageFile = async (file: File, path: string) => {
+/**
+ *  Save image file (.png, .jpg) to Cloud Storage path
+ * @param file
+ * @param path
+ */
+const uploadImageFile = async (file: File, path: string) => {
 
   // example cloud storage file path: const path = `users/${userId}/profile-img`;
 
@@ -126,14 +146,41 @@ export const uploadImageFile = async (file: File, path: string) => {
   );
 }
 
-export const getPhotoUrl = async (userId: string) => {
-  const filePath = `users/${userId}/profile-image`;
+/**
+ * Get URL for profile image
+ * @param userId
+ * @returns
+ */
+export const getProfileUrl = async (userId: string) => {
+  const filePath = `profile-imgs/${userId}/profile-image`;
   const fileRef = ref(cloud, filePath);
   console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
 
+// TODO:
 
+// 1. Get one photo
+// includes: photo url, photo data obj from firestore, metadata?
+
+// 2. Delete one photo, file in storage and data in firestore
+
+// 3. Get all  photos (urls) in a path 'photos/userID' and 'userID/posts' collection
+// from firestore
+
+// 4. Delete all users photo files and photo data
+
+
+
+/*
+// Get cloud storage url
+export const getPhotoUrl = async (userId: string, file: File) => {
+  const filePath = `photos/${userId}/${file.name}`;
+  const fileRef = ref(cloud, filePath);
+  console.log("url: ", getDownloadURL(fileRef));
+  return await getDownloadURL(fileRef);
+};
+*/
 
 /**
  * import { updateDoc, serverTimestamp } from "firebase/firestore";
@@ -145,4 +192,15 @@ const updateTimestamp = await updateDoc(docRef, {
   timestamp: serverTimestamp()
 });
  */
-
+// Can create custom file metadata
+// ex.
+/** @type {any} */
+/*
+interface metadata {
+  customMetadata: {
+    'type': string,
+    'size': number,
+    "date": Date
+  }
+}
+*/

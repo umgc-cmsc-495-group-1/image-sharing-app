@@ -130,10 +130,10 @@ export const updateUser = async (user: appUser) => {
  * @param userId
  */
 
-// TODO: this just deletes user's doc in firestore
-// TODO: should also delete any photos
+
 /**
  * Delete user document from Firestore
+ * This function is used by deleteAccount in authFunctions
  * @param userId
  */
 export const deleteUserDoc = async (userId: string) => {
