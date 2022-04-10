@@ -32,95 +32,100 @@ import feedImage17 from '../assets/static/images/theaminahmadi-T0WB-E2hcYU-unspl
 import feedImage18 from '../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg'
 import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
 
-
 const demoUsernames = [
-	'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
-	'lina', 'max', 'melanie', 'mounir', 'philipp', 'sour', 'svitlana', 'theaminahmadi', 'tommy', 'yusuf'
+  'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
+  'lina', 'max', 'melanie', 'mounir', 'philipp', 'sour', 'svitlana', 'theaminahmadi', 'tommy', 'yusuf'
 ]
 const demoProfilePictures = [
-	profileImage1,
-	profileImage2,
-	profileImage3,
-	profileImage4,
-	profileImage5,
-	profileImage6,
-	profileImage7,
-	profileImage8,
-	profileImage9,
-	profileImage10,
-	profileImage11,
-	profileImage12,
-	profileImage13,
-	profileImage14
+  profileImage1,
+  profileImage2,
+  profileImage3,
+  profileImage4,
+  profileImage5,
+  profileImage6,
+  profileImage7,
+  profileImage8,
+  profileImage9,
+  profileImage10,
+  profileImage11,
+  profileImage12,
+  profileImage13,
+  profileImage14
 ]
 
 const demoFeedImages = [
-	feedImage1,
-	feedImage2,
-	feedImage3,
-	feedImage4,
-	feedImage5,
-	feedImage6,
-	feedImage7,
-	feedImage8,
-	feedImage9,
-	feedImage10,
-	feedImage11,
-	feedImage12,
-	feedImage13,
-	feedImage14,
-	feedImage15,
-	feedImage16,
-	feedImage17,
-	feedImage18,
-	feedImage19
+  feedImage1,
+  feedImage2,
+  feedImage3,
+  feedImage4,
+  feedImage5,
+  feedImage6,
+  feedImage7,
+  feedImage8,
+  feedImage9,
+  feedImage10,
+  feedImage11,
+  feedImage12,
+  feedImage13,
+  feedImage14,
+  feedImage15,
+  feedImage16,
+  feedImage17,
+  feedImage18,
+  feedImage19
 ]
 
 const demoContent = {
-	profile: demoProfilePictures,
-	images: demoFeedImages
+  profile: demoProfilePictures,
+  images: demoFeedImages
 }
 
 export interface UserImagesInterface {
-	imageUrl: string | undefined;
+  imageUrl: string | undefined;
 }
-
 
 export interface UserInterface {
-	uid: string;
-	username: string;
+  uid: string;
+  username: string;
 }
 
+export interface AltCommentInterface {
+  user: UserInterface;
+  comment: string | string[];
+}
 
 export interface CommentInterface extends UserInterface {
-	comment: string;
+  comment: string | string[];
 }
 
-interface AltCommentInterface {
-	user: UserInterface;
-	comment: string;
+/**
+ * @description This interface is used to create a new comment
+ * @export interface CommentInterface
+ * @interface CommentInterface
+ * @extends {UserInterface} UserInterface
+ * @property {string} comment - The comment
+ * @property {string} uid - The user id
+ * @property {string} username - The username
+ */
+export type CommentType = CommentInterface | CommentInterface[];
+
+export interface FeedPostInterface {
+  uid: string;
+  username: string;
+  pid: string;
+  postText: string;
+  numberLikes: number;
+  numberComments: number;
+  imageUrl: string | undefined;
+  comments: CommentInterface[];
 }
 
-type AltCommentType = AltCommentInterface;
-
-
-export interface FeedPostTypeInterface {
-	uid: string;
-	username: string;
-	pid: string;
-	postText: string;
-	numberLikes: number;
-	numberComments: number;
-	imageUrl: string | undefined;
-	comments: AltCommentInterface[] | AltCommentInterface;
-}
-
-export type FeedPostType = FeedPostTypeInterface;
+export type FeedPostType = FeedPostInterface;
 
 export interface ProfileInterface extends UserInterface, UserImagesInterface {
-	posts: number;
-	friends: number;
-	bio: string;
+  posts: number;
+  friends: number;
+  bio: string;
 }
 
 /**
@@ -128,39 +133,38 @@ export interface ProfileInterface extends UserInterface, UserImagesInterface {
  * @returns Generate a random test user to be used in the feed and profile
  */
 function generateRandomUsers(): ProfileInterface[] {
-	const users: ProfileInterface[] = []
-	for (let i = 0; i < demoProfilePictures.length; i++) {
-		const user: ProfileInterface = {
-			uid: `${i + 1}`,
-			username: `${demoUsernames[i]}`,
-			posts: Math.floor(Math.random() * 100),
-			friends: Math.floor(Math.random() * 30),
-			bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-			imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
-		}
-		users.push(user)
-	}
+  const users: ProfileInterface[] = []
+  for (let i = 0; i < demoProfilePictures.length; i++) {
+    const user: ProfileInterface = {
+      uid: `${i + 1}`,
+      username: `${demoUsernames[i]}`,
+      posts: Math.floor(Math.random() * 100),
+      friends: Math.floor(Math.random() * 30),
+      bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
+    }
+    users.push(user)
+  }
 
-	return users
+  return users
 }
 
 /**
  * 
  * @returns Generate random comments for the feed
  */
-function generateRandomComments(): AltCommentType[] {
-	const comments: AltCommentType[] = []
-	for (let i = 0; i < Math.floor(Math.random() * demoContent.profile.length) + 1; i++) {
-		const comment: AltCommentType = {
-			user: {
-				uid: `${i + 1}`,
-				username: `${demoUsernames[i]}`,
-			},
-			comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-		}
-		comments.push(comment)
-	}
-	return comments;
+function generateRandomComments(): Array<CommentInterface> {
+  // const comments: AltCommentType[] = []
+  const comments: Array<CommentInterface> = []
+  for (let i = 0; i < Math.floor(Math.random() * demoContent.profile.length) + 1; i++) {
+    const comment: CommentInterface = {
+      uid: `${i + 1}`,
+      username: `${demoUsernames[i]}`,
+      comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+    }
+    comments.push(comment)
+  }
+  return comments;
 }
 
 /**
@@ -168,27 +172,32 @@ function generateRandomComments(): AltCommentType[] {
  * @returns Generate random posts for the feed
  */
 function generateRandomFeedProps(): FeedPostType[] {
-	const posts: FeedPostType[] = [];
-	for (let i = 0; i < demoContent.images.length; i++) {
-		const post: FeedPostType = {
-			uid: `${i + 1}`,
-			username: `${demoUsernames[i]}`,
-			pid: `${i + 1}`,
-			postText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-			numberLikes: Math.floor(Math.random() * 100),
-			numberComments: Math.floor(Math.random() * 10),
-			comments: generateRandomComments(),
-			imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
-		}
-		posts.push(post)
-	}
-	return posts
+  const posts: FeedPostType[] = [];
+  for (let i = 0; i < demoContent.images.length; i++) {
+    const post: FeedPostType = {
+      uid: `${i + 1}`,
+      username: `${demoUsernames[i]}`,
+      pid: `${i + 1}`,
+      postText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      numberLikes: Math.floor(Math.random() * 100),
+      numberComments: Math.floor(Math.random() * 10),
+      comments: generateRandomComments(),
+      imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
+    }
+    posts.push(post)
+  }
+  return posts
 }
 
-const totalDemoUsers = generateRandomUsers();
-const totalFeedPosts = generateRandomFeedProps();
+function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {
+  return totalFeedPosts.filter(post => post.uid === userId && post.pid === postId)[0]
+}
+
+const totalDemoUsers: ProfileInterface[] = generateRandomUsers();
+const totalFeedPosts: FeedPostInterface[] = generateRandomFeedProps();
 
 export {
-	totalDemoUsers,
-	totalFeedPosts
+  totalDemoUsers,
+  totalFeedPosts,
+  getPostData
 }

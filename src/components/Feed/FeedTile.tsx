@@ -1,53 +1,106 @@
 import React from 'react'
-import ImageListItem from '@mui/material/ImageListItem';
-import { FeedPostTypeInterface } from '../../tests/test_data';
+import { FeedPostInterface } from '../../tests/test_data';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-// import { MetaDataBar } from './MetaDataBar';
+import { Box } from '@mui/material';
+import { MetaDataBar } from './MetaDataBar';
 
-// import { FeedPostType } from '../../tests/test_data';
-
-type ImageItemProps = {
+export type ImageItemProps = {
   src: string | undefined;
+  margin: number;
+  padding: number;
   alt?: string;
   loading?: "lazy" | "eager" | undefined;
-  maxWidth?: string | undefined;
+  sizes?: string | undefined;
+  width?: string | undefined;
+  height?: string | undefined;
+  objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down" | undefined;
 }
 
-const ImageItem: React.FC<ImageItemProps> = ({ src, alt, maxWidth }): JSX.Element => {
-  const isAlt = alt ? alt : 'image';
+function determineMarginAndPadding(width: number) {
+  let currentMargin = 0;
+  let currentPadding = 0;
+
+  if (width < 1200 && width > 800) {
+    currentMargin = 15;
+    currentPadding = 5;
+  } else if (width < 800 && width > 600) {
+    currentMargin = 10;
+    currentPadding = 5;
+  } else if (width < 600 && width > 400) {
+    currentMargin = 5;
+    currentPadding = 2;
+  } else if (width < 400 && width > 275) {
+    currentMargin = 3;
+    currentPadding = 2;
+  } else {
+    currentMargin = 20;
+    currentPadding = 5;
+  }
+  return { margin: currentMargin, padding: currentPadding };
+}
+
+
+const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX.Element => {
+  const isAlt = (alt !== "") ? alt : 'image';
+  const details: React.CSSProperties = {
+    height: "100%",
+    width: "100%",
+    objectFit: "contain",
+  }
   return (
-    <>
-      <img src={src} alt={isAlt} sizes={maxWidth} />
-    </>
+    <Box
+      sx={{
+        px: padding,
+        mx: margin,
+      }}
+    >
+      <img
+        src={src}
+        alt={isAlt}
+        style={details}
+        loading="lazy"
+      />
+    </Box>
   );
 }
 
-const FeedTile: React.FC<FeedPostTypeInterface> = ({
+const FeedTile: React.FC<FeedPostInterface> = ({
   imageUrl, uid, username, pid, postText, numberLikes, numberComments, comments
 }): JSX.Element => {
   const { width, height } = useWindowDimensions();
-  const currentHeight = (height / 3);
-  const currentWidth = (width - (width / 3) + "px");
-  console.log(pid, numberLikes, numberComments, comments);
+  const { margin, padding } = determineMarginAndPadding(width);
   return (
-    <ImageListItem
+    <Box
       sx={{
-        width: '80%',
-        height: currentHeight,
+        width: 'inherit',
       }}
     >
       <ImageItem
         key={`${uid}-${username}`}
         src={imageUrl}
-        alt={postText}
-        maxWidth={currentWidth}
-        loading="lazy"
+        margin={margin}
+        padding={padding}
       />
-    </ImageListItem>
-
+      <MetaDataBar
+        uid={uid}
+        pid={pid}
+        numberLikes={numberLikes}
+        numberComments={numberComments}
+        username={username}
+        postText={postText}
+        imageUrl={imageUrl}
+        comments={comments}
+        margin={margin}
+        padding={padding}
+        screenWidth={width}
+        screenHeight={height}
+      />
+    </Box>
   );
 }
 
 export {
-  FeedTile
+  FeedTile,
+  ImageItem,
+  determineMarginAndPadding
 }
