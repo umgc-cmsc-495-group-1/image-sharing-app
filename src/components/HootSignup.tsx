@@ -16,7 +16,6 @@ import { newUser, signInWithGoogle, signup } from "../data/authFunctons";
 
 export default function HootSignup() {
   const navigate = useNavigate();
-
   const [input, setInput] = useState({
     displayName: "",
     username: "",
@@ -194,6 +193,7 @@ export default function HootSignup() {
                 label="Display Name"
                 name="displayName"
                 autoComplete="name"
+                role="display-name-input"
                 autoFocus
               />
               {error.displayName && (
@@ -213,6 +213,7 @@ export default function HootSignup() {
                 id="username"
                 label="User Name"
                 name="username"
+                role="username-input"
                 autoComplete="username"
               />
               {error.username && (
@@ -232,6 +233,7 @@ export default function HootSignup() {
                 id="email"
                 label="Email Address"
                 name="email"
+                role="email-input"
                 autoComplete="email"
               />
               {error.email && <Alert severity="error">{error.email}</Alert>}
@@ -250,6 +252,7 @@ export default function HootSignup() {
                 label="Password"
                 type="password"
                 id="password"
+                role="password-input"
                 autoComplete="new-password"
               />
               {error.password && (
@@ -271,6 +274,7 @@ export default function HootSignup() {
                 type="password"
                 id="verifyPassword"
                 autoComplete="new-password"
+                role="verify-password-input"
               />
               {error.verifyPassword && (
                 <Alert severity="error">{error.verifyPassword}</Alert>
