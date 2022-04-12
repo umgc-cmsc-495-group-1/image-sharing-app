@@ -51,12 +51,6 @@ export default function App() {
                       path: ":pid",
                       children: [
                         { index: true, element: <UserPost /> },
-                        // {
-                        //   path: "post",
-                        //   children: [
-                        //     { path: "comments", element: <TestComment /> },
-                        //   ],
-                        // },
                       ],
                     },
                   ],
