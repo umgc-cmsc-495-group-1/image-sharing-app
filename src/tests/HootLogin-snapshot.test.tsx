@@ -1,12 +1,12 @@
 import React from 'react';
 import "@testing-library/react/dont-cleanup-after-each";
 import '@testing-library/jest-dom';
-import { 
+import {
   MemoryRouter,
   Routes,
   Route
 } from 'react-router-dom';
-import HootLogin  from '../components/HootLogin';
+import HootLogin from '../components/HootLogin';
 import { create } from 'react-test-renderer';
 
 function renderWithMemoryRouter(component: JSX.Element) {
@@ -19,8 +19,8 @@ function renderWithMemoryRouter(component: JSX.Element) {
   );
 }
 
-it('Renders correctly',() => {
-  const renderer = renderWithMemoryRouter(<HootLogin/>);
+it('Renders correctly', () => {
+  const renderer = renderWithMemoryRouter(<HootLogin />);
   expect(renderer.toJSON()).toMatchSnapshot();
 })
 

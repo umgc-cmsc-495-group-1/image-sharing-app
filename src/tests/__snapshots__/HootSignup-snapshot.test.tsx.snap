@@ -37,19 +37,19 @@ exports[`Renders correctly 1`] = `
         className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
       >
         <div
-          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-1b3l6lk-MuiGrid-root"
+          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
         >
           <div
             className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
-            role="first-name-input"
+            role="display-name-input"
           >
             <label
               className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink={false}
-              htmlFor="firstName"
-              id="firstName-label"
+              htmlFor="displayName"
+              id="displayName-label"
             >
-              First Name
+              Display Name
               <span
                 aria-hidden={true}
                 className="MuiInputLabel-asterisk MuiFormLabel-asterisk css-wgai2y-MuiFormLabel-asterisk"
@@ -64,12 +64,12 @@ exports[`Renders correctly 1`] = `
             >
               <input
                 aria-invalid={false}
-                autoComplete="given-name"
+                autoComplete="name"
                 autoFocus={true}
                 className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
                 disabled={false}
-                id="firstName"
-                name="firstName"
+                id="displayName"
+                name="displayName"
                 onAnimationStart={[Function]}
                 onBlur={[Function]}
                 onChange={[Function]}
@@ -85,7 +85,7 @@ exports[`Renders correctly 1`] = `
                   className="css-1ftyaf0"
                 >
                   <span>
-                    First Name
+                    Display Name
                      
                     *
                   </span>
@@ -93,64 +93,7 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
-        </div>
-        <div
-          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-1b3l6lk-MuiGrid-root"
-        >
-          <div
-            className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
-            role="last-name-input"
-          >
-            <label
-              className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink={false}
-              htmlFor="lastName"
-              id="lastName-label"
-            >
-              Last Name
-              <span
-                aria-hidden={true}
-                className="MuiInputLabel-asterisk MuiFormLabel-asterisk css-wgai2y-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
-            <div
-              className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
-              onClick={[Function]}
-            >
-              <input
-                aria-invalid={false}
-                autoComplete="family-name"
-                autoFocus={false}
-                className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                disabled={false}
-                id="lastName"
-                name="lastName"
-                onAnimationStart={[Function]}
-                onBlur={[Function]}
-                onChange={[Function]}
-                onFocus={[Function]}
-                required={true}
-                type="text"
-              />
-              <fieldset
-                aria-hidden={true}
-                className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-              >
-                <legend
-                  className="css-1ftyaf0"
-                >
-                  <span>
-                    Last Name
-                     
-                    *
-                  </span>
-                </legend>
-              </fieldset>
-            </div>
-          </div>
+          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -209,6 +152,7 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
+          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -267,6 +211,7 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
+          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -325,6 +270,7 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
+          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -383,11 +329,12 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
+          
         </div>
       </div>
       <button
-        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
-        disabled={false}
+        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root Mui-disabled  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
+        disabled={true}
         onBlur={[Function]}
         onContextMenu={[Function]}
         onDragLeave={[Function]}
@@ -400,11 +347,31 @@ exports[`Renders correctly 1`] = `
         onTouchEnd={[Function]}
         onTouchMove={[Function]}
         onTouchStart={[Function]}
-        role="submit-button"
-        tabIndex={0}
+        tabIndex={-1}
         type="submit"
       >
         Sign Up
+      </button>
+      <button
+        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onContextMenu={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        type="button"
+      >
+        Google Sign In
       </button>
       <div
         className="MuiGrid-root MuiGrid-container css-16g5rpk-MuiGrid-root"
@@ -417,7 +384,6 @@ exports[`Renders correctly 1`] = `
             href="/login"
             onBlur={[Function]}
             onFocus={[Function]}
-            role="redirect-signup-to-login"
           >
             Already have an account? Log in!
           </a>

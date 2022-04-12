@@ -31,7 +31,7 @@ import feedImage16 from '../assets/static/images/svitlana-w7dlfv2BWvs-unsplash.j
 import feedImage17 from '../assets/static/images/theaminahmadi-T0WB-E2hcYU-unsplash.jpg'
 import feedImage18 from '../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg'
 import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
-// [key: string]: string
+
 /**
  * Array of test user names to be used in the feed and profile
  */
