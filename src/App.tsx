@@ -1,45 +1,84 @@
-import React from 'react';
+import * as React from 'react';
 import {
-  RouteObject, useRoutes
+    RouteObject, useRoutes
 } from "react-router-dom";
-import ExampleHome from './components/examples/ExampleHome';
-import ExampleAbout from './components/examples/ExampleAbout';
-import ExampleNav from './components/examples/ExampleNav';
-import ExampleUserLink from './components/examples/ExampleUserLink';
-import ExampleUserIndex from './components/examples/ExampleUserIndex';
-import ExampleUserPage from './components/examples/ExampleUserPage';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Example404 from './components/examples/Example404';
-
-// const test: string = "name";
-// test = 5;
-
+import HootFeed from './components/HootFeed';
+import HootHome from './components/HootHome';
+import HootLogin from './components/HootLogin';
+import HootNav from './components/HootNav';
+import HootSignup from './components/HootSignup';
+import HootUser from './components/HootUser';
+import HootUserSettings from './components/HootUserSettings';
+import { CssBaseline } from '@mui/material';
 
 export default function App() {
 
-  const routes: RouteObject[] = [
-      {
-          path: "/",
-          element: <ExampleNav />,
-          children: [
-              { index: true, element: <ExampleHome /> },
-              { path: "/about", element: <ExampleAbout /> },
-              {
-                  path: "/users", element: <ExampleUserLink />,
-                  children: [
-                      { index: true, element: <ExampleUserIndex /> },
-                      { path: "/users/:id", element: <ExampleUserPage /> }
-                  ]
-              },
-              { path: "*", element: <Example404 /> }
-          ],
-      },
-  ];
+    const routes: RouteObject[] = [
+        {
+            path: "/",
+            element: <HootNav />,
+            children: [
+                {
+                    index: true,
+                    element: <HootHome />
+                },
+                {
+                    path: "/login",
+                    element: <HootLogin />
+                },
+                {
+                    path: "/signup",
+                    element: <HootSignup />
+                },
+                {
+                    path: "/feed",
+                    element: <HootFeed />
+                },
+                {
+                    path: "/user",
+                    children: [
+                        {
+                            path: ":userId",
+                            children: [
+                                {
+                                    path: "profile",
+                                    element: <HootUser />
+                                },
+                                {
+                                    path: "settings",
+                                    element: <HootUserSettings />
+                                },
+                            ]
+                        },
+                    ],
+                },
+                { path: "*", element: <Example404 /> },
+            ],
+        },
+    ];
 
-  const element = useRoutes(routes);
+    const element = useRoutes(routes);
 
-  return (
-    <div className="App">
-      {element}
-    </div>
-  );
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#bfa760',
+            },
+            secondary: {
+                main: '#039be5',
+            },
+        },
+    });
+
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <div className="App">
+                {element}
+            </div>
+        </ThemeProvider>
+    );
 }

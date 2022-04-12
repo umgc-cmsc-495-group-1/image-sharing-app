@@ -1,52 +1,66 @@
 {
-  "database": {
-    "rules": "/database.rules.json"
-  },
-  "firestore": {
-    "rules": "/firestore.rules",
-    "indexes": "/firestore.indexes.json"
-  },
-  "hosting": {
-    "public": "/build",
-    "ignore": [
-      "/firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  },
-  "storage": {
-    "rules": "/storage.rules"
-  },
-  "emulators": {
-    "auth": {
-      "port": 9099
+    "database": {
+        "rules": "database.rules.json"
     },
     "firestore": {
-      "port": 8080
-    },
-    "database": {
-      "port": 9000
+        "rules": "firestore.rules",
+        "indexes": "firestore.indexes.json"
     },
     "hosting": {
-      "port": 5001
-    },
-    "pubsub": {
-      "port": 8085
+        "public": "build",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
     },
     "storage": {
-      "port": 9199
+<<<<<<< HEAD
+    "rules": "/storage.rules"
+=======
+    "rules": "storage.rules"
+>>>>>>> 9c0a049e22ae69752b11c019a27bbd24fb01314b
     },
-    "ui": {
-      "enabled": true
-    }
-  },
-  "remoteconfig": {
+    "emulators": {
+        "auth": {
+            "port": 9099
+        },
+        "firestore": {
+            "port": 8080
+        },
+        "database": {
+            "port": 9000
+        },
+        "hosting": {
+<<<<<<< HEAD
+      "port": 5001
+=======
+      "port": 5000
+>>>>>>> 9c0a049e22ae69752b11c019a27bbd24fb01314b
+        },
+        "pubsub": {
+            "port": 8085
+        },
+        "storage": {
+            "port": 9199
+        },
+        "ui": {
+            "enabled": true
+        }
+    },
+    "remoteconfig": {
+<<<<<<< HEAD
     "template": "/remoteconfig.template.json"
-  }
+    }
 }
+=======
+    "template": "remoteconfig.template.json"
+}
+}
+>>>>>>> 9c0a049e22ae69752b11c019a27bbd24fb01314b
