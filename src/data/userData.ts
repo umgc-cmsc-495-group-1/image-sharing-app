@@ -1,23 +1,9 @@
-<<<<<<< HEAD
 import 'firebase/storage'
 import { collection, doc, setDoc, deleteDoc, getDoc, getDocs, getDocsFromServer } from 'firebase/firestore'
 import { query, where } from 'firebase/firestore'
 import { fireStore } from '../firebaseSetup'
 import { googleUser, newUser } from './authFunctions'
 import { User } from 'firebase/auth'
-=======
-import { User } from "firebase/auth";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  setDoc,
-} from "firebase/firestore";
-import "firebase/storage";
-import { fireStore } from "../firebaseSetup";
-import { newUser } from "./authFunctons";
->>>>>>> dev
 
 /***********************************************************
  *
@@ -34,7 +20,6 @@ import { newUser } from "./authFunctons";
  * Bio, first, last, and username fields are optional
  */
 export interface appUser {
-<<<<<<< HEAD
   uid: string,
   first?: string,
   last?: string,
@@ -119,58 +104,9 @@ export const emailInDb = async (email: string) => {
     // console.log(doc.id, " => ", doc.data());
     console.log(doc.data.length);
     return doc.data.length > 0;
-=======
-  uid: string;
-  displayName: string;
-  username: string;
-  email: string;
-  friends: [];
-  likes: [];
-}
-
-// Gets reference to the User collection
-const usersRef = collection(fireStore, "users");
-
-// add a new user
-export const createUser = async (user: User, userInfo: newUser) => {
-  // write to fireStore db
-  await setDoc(doc(usersRef, `${user.uid}`), {
-    uid: user.uid,
-    displayName: userInfo.displayName,
-    userName: userInfo.username,
-    email: user.email,
-    friends: [],
-    likes: [],
-  });
-};
-
-// update user profile - find correct syntax
-export const updateUser = async (user: appUser) => {
-  // const docRef = fireStore.doc(`/users/${user.uid}`)
-  // const docRef = doc(fireStore, 'users', `${user.uid}`)
-  // const docSnap = await getDoc(docRef)
-  const usersRef = doc(fireStore, "users", "BJ");
-  await setDoc(usersRef, { user }, { merge: true });
-
-  // return docRef.update(user)
-};
-// Delete user
-export const deleteUser = async (user: appUser) => {
-  await deleteDoc(doc(fireStore, "users", `${user.uid}`))
-};
-
-// Gets all users
-export const getAllUsers = async () => {
-  const querySnapshot = await getDocs(collection(fireStore, "users"));
-  querySnapshot.forEach((doc) => {
-
-    doc.data(); // is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
->>>>>>> dev
   });
 }
 
-<<<<<<< HEAD
 // break profile updates out into their own folder?
 // update functions must incorporate db and auth functions
 /**
@@ -185,29 +121,6 @@ export const updateUser = async (user: appUser) => {
   // return docRef.update(user);
 }
 
-=======
-// upload an avatar --
-// TODO: fix
-/*
-export const uploadAvatar = (user.uid, File, progress) => {
-  return new Promise((resolve, reject) => {
-    const path = `users/${userId}/avatar`
-    const newAvatarRef = ref(storage, path)
-
-    const imgURL = getDownloadURL(newAvatarRef)
-    const uploadImg = uploadBytesResumable(newAvatarRef, file)
-
-    uploadImg.on(
-      'state_changed',
-      (snapshot) => progress(snapshot),
-      (error) => reject(error),
-      () => {
-        resolve(uploadImg.snapshot.ref)
-      }
-    )
-  })
-}
->>>>>>> dev
 
 /**
  * Delete User
@@ -218,7 +131,6 @@ export const uploadAvatar = (user.uid, File, progress) => {
  */
 
 
-<<<<<<< HEAD
 /**
  * Delete user document from Firestore
  * This function is used by deleteAccount in authFunctions
@@ -241,7 +153,6 @@ export const getAllUsers = async () => {
 }
 /**
  * import {query, collection, onSnapshot, orderBy} from 'firebase/firestore'
-
 ...
 const orderedOrders = query(ref, orderBy('created', 'desc'))
 onSnapshot(orderedOrders, snapshot => {
@@ -252,14 +163,3 @@ onSnapshot(orderedOrders, snapshot => {
   })
 ...
  */
-
-=======
-export const getDownloadUrl = async (userId, fileName) => {
-  const filePath = `users/${userId}/${fileName}`
-  const fileRef = ref(storage, filePath)
-  console.log(getDownloadURL(fileRef))
-  return getDownloadURL(fileRef)
-}
-
-*/
->>>>>>> dev

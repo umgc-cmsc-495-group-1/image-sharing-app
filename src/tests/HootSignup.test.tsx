@@ -39,19 +39,15 @@ afterAll(() => cleanup())
 describe("Module: HootSignup Component Test", () => {
   it('1.Test to validate all form fields should be blank when the page is first rendered.', () => {
     const signupForm = screen.getByRole('signup-form');
-    const firstNameField = screen.getByRole('first-name-input');
-    const lastNameField = screen.getByRole('first-name-input');
+    const displayNameField = screen.getByRole('display-name-input');
     const userField = screen.getByRole('username-input');
     const emailField = screen.getByRole('email-input');
     const passwordField = screen.getByRole('password-input');
     const verifyPasswordField = screen.getByRole('verify-password-input');
     expect(signupForm).toBeInTheDocument();
-    // get the First Name Field 
-    expect(firstNameField).toBeInTheDocument();
-    expect(firstNameField).not.toHaveTextContent('John');
-    // get the Last Name Field 
-    expect(lastNameField).toBeInTheDocument();
-    expect(lastNameField).not.toHaveTextContent('Smith');
+    // get the Display Name Field 
+    expect(displayNameField).toBeInTheDocument();
+    expect(displayNameField).not.toHaveTextContent('John');
     // get the user Name Field 
     expect(userField).toBeInTheDocument();
     expect(userField).not.toHaveTextContent('jsmith');

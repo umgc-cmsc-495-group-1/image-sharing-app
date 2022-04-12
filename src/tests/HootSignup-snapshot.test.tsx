@@ -1,7 +1,7 @@
 import React from 'react';
 import "@testing-library/react/dont-cleanup-after-each";
 import '@testing-library/jest-dom';
-import { 
+import {
   MemoryRouter,
   Routes,
   Route
@@ -19,8 +19,8 @@ function renderWithMemoryRouter(component: JSX.Element) {
   );
 }
 
-it('Renders correctly',() => {
-  const renderer = renderWithMemoryRouter(<HootSignup/>);
+it('Renders correctly', () => {
+  const renderer = renderWithMemoryRouter(<HootSignup />);
   expect(renderer.toJSON()).toMatchSnapshot();
 })
 

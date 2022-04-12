@@ -19,8 +19,6 @@ import { onAuthStateChanged } from "firebase/auth";
 export default function HootNav() {
   const [uid, setUid] = useState("");
 
-  const [uid, setUid] = useState("");
-
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {

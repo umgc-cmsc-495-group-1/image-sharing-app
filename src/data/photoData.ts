@@ -48,7 +48,7 @@ export function getProfilePicUrl() {
  */
 export const updateProfileImg = async (userId: string, file: File) => {
   const path = `profile-imgs/${userId}/profile-image`;
-   await uploadImageFile(file, path);
+  await uploadImageFile(file, path);
 }
 
 /**
@@ -84,7 +84,7 @@ export const postNewImage = async (userId: string, caption: string, photoFile: F
     // Write to firestore db
     try {
       // set document data
-      await setDoc(firestoreRef ,newImgData);
+      await setDoc(firestoreRef, newImgData);
       await uploadImageFile(photoFile, path)
     } catch (error) {
       console.log(error);
