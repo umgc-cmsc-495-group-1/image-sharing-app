@@ -65,8 +65,10 @@ packages/react-devtools-timeline/dist
 database.rules.json
 firebase.json
 firestore.indexes.json
-firestore.json
 firestore.rules
+remoteconfig.template.json
+storage.rules
+
 *.log
 *.log
 
@@ -75,3 +77,5 @@ src/dbHandlers/fs_emulator_connect.ts
 
 */src/dbHandlers/firebaseConfig.ts
 */src/dbHandlers/fs_emulator_connect.ts
+# WE DONT USE YARN - ENSURE THAT YOU ARE USING PACKAGE-LOCK.JSON
+yarn.lock

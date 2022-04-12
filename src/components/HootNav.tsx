@@ -13,10 +13,12 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseSetup";
-import { logout } from "../data/authFunctions";
+import { logout } from "../data/authFunctons";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function HootNav() {
+  const [uid, setUid] = useState("");
+
   const [uid, setUid] = useState("");
 
   const navigate = useNavigate();
@@ -57,6 +59,7 @@ export default function HootNav() {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
+              role='menu-icon'
               onClick={(event) => {
                 toggleDrawer(!isOpen, event);
               }}
@@ -96,15 +99,15 @@ export default function HootNav() {
           }}
         >
           <List>
-            <ListItem button component={Link} to="/">
+            <ListItem button component={Link} to="/" role="navigation-home">
               <ListItemText primary="Home" />
             </ListItem>
             {!uid ? ( // Logged out User Nav Section
               <>
-                <ListItem button component={Link} to="/login">
+                <ListItem button component={Link} to="/login" role="navigation-login">
                   <ListItemText primary="Login" />
                 </ListItem>
-                <ListItem button component={Link} to="/signup">
+                <ListItem button component={Link} to="/signup" role="navigation-signup">
                   <ListItemText primary="Sign Up" />
                 </ListItem>
               </>

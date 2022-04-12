@@ -12,11 +12,10 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
-import { newUser, signInGooglePopup, signup } from "../data/authFunctions";
+import { newUser, signInWithGoogle, signup } from "../data/authFunctons";
 
 export default function HootSignup() {
   const navigate = useNavigate();
-
   const [input, setInput] = useState({
     displayName: "",
     username: "",
@@ -134,15 +133,15 @@ export default function HootSignup() {
   const validateForm = () => {
     setValidForm(
       input.displayName.length > 0 &&
-        input.username.length > 0 &&
-        input.email.length > 0 &&
-        input.password.length > 0 &&
-        input.verifyPassword.length > 0 &&
-        error.displayName.length == 0 &&
-        error.username.length == 0 &&
-        error.email.length == 0 &&
-        error.password.length == 0 &&
-        error.verifyPassword.length == 0
+      input.username.length > 0 &&
+      input.email.length > 0 &&
+      input.password.length > 0 &&
+      input.verifyPassword.length > 0 &&
+      error.displayName.length == 0 &&
+      error.username.length == 0 &&
+      error.email.length == 0 &&
+      error.password.length == 0 &&
+      error.verifyPassword.length == 0
     );
     console.log(validForm);
   };
@@ -194,6 +193,7 @@ export default function HootSignup() {
                 label="Display Name"
                 name="displayName"
                 autoComplete="name"
+                role="display-name-input"
                 autoFocus
               />
               {error.displayName && (
@@ -213,6 +213,7 @@ export default function HootSignup() {
                 id="username"
                 label="User Name"
                 name="username"
+                role="username-input"
                 autoComplete="username"
               />
               {error.username && (
@@ -232,6 +233,7 @@ export default function HootSignup() {
                 id="email"
                 label="Email Address"
                 name="email"
+                role="email-input"
                 autoComplete="email"
               />
               {error.email && <Alert severity="error">{error.email}</Alert>}
@@ -250,6 +252,7 @@ export default function HootSignup() {
                 label="Password"
                 type="password"
                 id="password"
+                role="password-input"
                 autoComplete="new-password"
               />
               {error.password && (
@@ -271,6 +274,7 @@ export default function HootSignup() {
                 type="password"
                 id="verifyPassword"
                 autoComplete="new-password"
+                role="verify-password-input"
               />
               {error.verifyPassword && (
                 <Alert severity="error">{error.verifyPassword}</Alert>
@@ -290,7 +294,7 @@ export default function HootSignup() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={signInGooglePopup}
+            onClick={signInWithGoogle}
           >
             Google Sign In
           </Button>

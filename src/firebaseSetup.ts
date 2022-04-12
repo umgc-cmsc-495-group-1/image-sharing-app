@@ -84,7 +84,7 @@ if (location.hostname === 'localhost') {
 
 } else {
 
-  app = firebase.initializeApp ({
+  app = firebase.initializeApp({
 
     apiKey: process.env.REACT_APP_API_KEY,
     authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -105,7 +105,7 @@ export const fireStore = firebase.firestore();
 connectFirestoreEmulator(fireStore, 'localhost', 8080)
 // Firebase Auth
 export const auth = getAuth(app)
-connectAuthEmulator(auth,'http://localhost:9099?ns=hoot-umgc')
+connectAuthEmulator(auth, 'http://localhost:9099?ns=hoot-umgc')
 // Cloud Storage
 export const cloud = getStorage(app)
 export const cloudRef = ref(cloud)

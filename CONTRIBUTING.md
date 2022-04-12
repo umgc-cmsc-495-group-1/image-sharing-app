@@ -45,17 +45,11 @@ install all the dependencies
 
 `npm install`
 
-## Checkout Your Teams Branch
-
-`git checkout TEAM` -> EXAMPLE: git checkout components
-
 ### Add Remote for Organization Repository
 
 Setup the link to the organization reposiotry by running the following command:
 
 `git remote add upstream https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git`
-
-`git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
 `git remote add origin https://github.com/[YOUR USERNAME HERE]/image-sharing-app.git`
 
