@@ -2,6 +2,7 @@
     "name": "image-sharing-app",
     "version": "0.1.0",
     "private": true,
+    "jest": {},
     "dependencies": {
         "@emotion/react": "^11.8.2",
         "@emotion/styled": "^11.8.1",
@@ -29,10 +30,12 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "debug": "BROWSER='google chrome' BROWSER_ARGS='--remote-debugging-port=9222' react-scripts start",
+        "start:debug": "BROWSER='google chrome' BROWSER_ARGS='--remote-debugging-port=9222' react-scripts start",
         "emulators": "firebase emulators:start",
         "build": "react-scripts build",
         "test": "react-scripts test",
+        "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
+        "coverage": "npm test -- --coverage",
         "eject": "react-scripts eject",
         "fix-errors": "eslint . --fix",
         "find-errors": "eslint . "

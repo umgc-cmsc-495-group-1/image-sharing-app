@@ -1,6 +1,7 @@
 import React from 'react';
-import "@testing-library/react/dont-cleanup-after-each";
+import * as ReactDOM from 'react-dom';
 import '@testing-library/jest-dom';
+import { act } from 'react-dom/test-utils';
 import {
   MemoryRouter,
   Routes,
@@ -10,68 +11,85 @@ import HootNav from '../components/HootNav';
 import HootHome from '../components/HootHome';
 import HootLogin from '../components/HootLogin';
 import HootSignup from '../components/HootSignup';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { screen, fireEvent, cleanup, render } from '@testing-library/react';
 
-// interface IMakeRoutes {
-//   component: JSX.Element;
-//   path: string | "";
-//   key: string;
-// }
-
-// const currentRoutes: IMakeRoutes[] = [
-//   { component: <HootNav/>, path: "/", key: "nav" },
-//   { component: <HootHome/>, path: "/", key: "home" },
-//   { component: <HootLogin/>, path: "/login", key: "login" },
-//   { component: <HootSignup/>, path: "/signup", key: "signup" },
-// ]
-
-function renderWithMemoryRouter() {
-  return render(
-    <MemoryRouter initialEntries={['/']}>
-      <Routes>
-        <Route path="/" element={<HootNav />} />
-        <Route path="/" element={<HootHome />} />
-        <Route path="/login" element={<HootLogin />} />
-        <Route path="/signup" element={<HootSignup />} />
-      </Routes>
-    </MemoryRouter>
-  );
-}
-beforeAll(() => {
-  renderWithMemoryRouter();
-})
-afterAll(() => {
-  cleanup();
-})
-
-describe('App Navigation', () => {
-  it('Navigation Renders properly and sidebar operational', () => {
-    const navMenuButton = screen.getByLabelText('menu');
+describe('App Navigation - Render/Navigate', () => {
+  afterEach(() => {
+    cleanup()
+  })
+  it('Menu Opens', () => {
+    act(() => {
+      render(
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="/" element={<HootNav />} />
+            <Route path="/" element={<HootHome />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    })
+    // get the menu icon
+    const navMenuButton = screen.getByRole('menu-icon');
+    // click the menu icon
     fireEvent.click(navMenuButton);
-    setTimeout(() => { console.log('wait half a second') }, 500);
+    // get the links
     const navHome = screen.getByRole('navigation-home');
     const navLogin = screen.getByRole('navigation-login');
     const navSignup = screen.getByRole('navigation-signup');
-    // check for the home information
+    // check for the information
     expect(navHome).toBeInTheDocument();
-    expect(navHome).toHaveTextContent('Home');
-    expect(navHome).toHaveAttribute('href', '/');
-    // check for the login information
     expect(navLogin).toBeInTheDocument();
-    expect(navLogin).toHaveTextContent('Login');
-    expect(navLogin).toHaveAttribute('href', '/login');
-    // check for the signup information
     expect(navSignup).toBeInTheDocument();
-    expect(navSignup).toHaveTextContent('Sign Up');
-    expect(navSignup).toHaveAttribute('href', '/signup');
   })
+
   it('Navigates to the Sign Up Page', () => {
-    const navSignup = screen.getByRole('navigation-signup');
+    // render the application
+    act(() => {
+      render(
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="/" element={<HootNav />} />
+            <Route path="/" element={<HootHome />} />
+            <Route path="signup" element={<HootSignup />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    })
+    // get the menu icon
+    const navMenuButton = screen.getByRole('menu-icon');
+    fireEvent.click(navMenuButton);
     // navigate to the signup page
+    const navSignup = screen.getByRole('navigation-signup');
+    expect(navSignup).toBeInTheDocument();
     fireEvent.click(navSignup);
-    setTimeout(() => { console.log('wait half a second') }, 500);
+    // // check for signup form
     const signupForm = screen.getByRole('signup-form');
     expect(signupForm).toBeInTheDocument();
   })
+
+  it('Navigates to the Login Page', () => {
+    // render the application
+    act(() => {
+      render(
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="/" element={<HootNav />} />
+            <Route path="/" element={<HootHome />} />
+            <Route path="login" element={<HootLogin />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    })
+    // get the menu icon
+    const navMenuButton = screen.getByRole('menu-icon');
+    fireEvent.click(navMenuButton);
+    const navLogin = screen.getByRole('navigation-login');
+    expect(navLogin).toBeInTheDocument();
+    // navigate to the login page
+    fireEvent.click(navLogin);
+    const loginForm = screen.getByRole('login-form');
+    expect(loginForm).toBeInTheDocument();
+  })
+
 })
 

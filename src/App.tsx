@@ -5,7 +5,6 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Feed from './components/Feed';
 import UserPost from './components/UserPost';
-import TestComment from './components/TestComment';
 import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
 import HootNav from './components/HootNav';
@@ -52,12 +51,12 @@ export default function App() {
                       path: ":pid",
                       children: [
                         { index: true, element: <UserPost /> },
-                        {
-                          path: "post",
-                          children: [
-                            { path: "comments", element: <TestComment /> },
-                          ],
-                        },
+                        // {
+                        //   path: "post",
+                        //   children: [
+                        //     { path: "comments", element: <TestComment /> },
+                        //   ],
+                        // },
                       ],
                     },
                   ],
