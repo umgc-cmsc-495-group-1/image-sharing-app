@@ -31,7 +31,7 @@ import feedImage16 from '../assets/static/images/svitlana-w7dlfv2BWvs-unsplash.j
 import feedImage17 from '../assets/static/images/theaminahmadi-T0WB-E2hcYU-unsplash.jpg'
 import feedImage18 from '../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg'
 import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
-
+// [key: string]: string
 /**
  * Array of test user names to be used in the feed and profile
  */
@@ -262,8 +262,8 @@ function generateRandomFeedProps(): FeedPostType[] {
 
 /**
  * @description - Get the post data by user id and post id from the feed
- * @param userId {string|undefined} - The user id of the user
- * @param postId {string|undefined} - The post id of the post
+ * @param {string|undefined} userId - The user id of the user
+ * @param {string|undefined} postId  - The post id of the post
  * @returns {FeedPostType}
  */
 function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {

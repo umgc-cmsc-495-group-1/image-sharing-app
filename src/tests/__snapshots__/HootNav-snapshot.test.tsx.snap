@@ -30,6 +30,7 @@ exports[`Renders correctly 1`] = `
           onTouchEnd={[Function]}
           onTouchMove={[Function]}
           onTouchStart={[Function]}
+          role="menu-icon"
           tabIndex={0}
           type="button"
         >
