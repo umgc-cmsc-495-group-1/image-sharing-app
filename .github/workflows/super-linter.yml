@@ -14,9 +14,9 @@ name: Lint Code Base
 #############################
 # Start the job on all push #
 #############################
-on :
+on:
   push:
-    paths: 
+    paths:
       - src/**
   pull_request:
     branches:
@@ -51,6 +51,10 @@ jobs:
       - name: Lint Code Base
         uses: docker://github/super-linter:slim-latest
         env:
+          ###################################
+          # Environments to Prevent Linting #
+          ###################################
+          VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_ALL_CODEBASE: false
           # Change to 'master' if your main branch differs
           DEFAULT_BRANCH: master

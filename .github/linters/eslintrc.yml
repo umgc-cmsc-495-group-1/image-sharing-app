@@ -1,0 +1,90 @@
+---
+#############################
+#############################
+## JavaScript Linter rules ##
+#############################
+#############################
+
+############
+# Env Vars #
+############
+env:
+  browser: true
+  es6: true
+  jest: true
+  node: true
+  commonjs: true
+
+###############
+# Global Vars #
+###############
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+
+###############
+# Parser vars #
+###############
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: module
+
+###########
+# Plugins #
+###########
+plugins:
+  - "@typescript-eslint"
+  - "jest"
+  - "eslint-plugin-react"
+  - "eslint-plugin-react-hooks"
+
+#########
+# Rules #
+#########
+rules: { "no-unused-vars": 2 }
+
+#############
+# Settings #
+#############
+project: "*/tsconfig.json"
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:jest/recommended
+  - plugin:eslint-plugin-react/recommended
+  - plugin:eslint-plugin-react-hooks/recommended
+settings:
+  react:
+    version: "detect"
+
+##############################
+# Overrides for JSON parsing #
+##############################
+overrides:
+  # JSON files
+  - files:
+      - "*.json"
+    extends:
+      - plugin:jsonc/recommended-with-json
+    parser: jsonc-eslint-parser
+    parserOptions:
+      jsonSyntax: JSON
+
+  # JSONC files
+  - files:
+      - "*.jsonc"
+    extends:
+      - plugin:jsonc/recommended-with-jsonc
+    parser: jsonc-eslint-parser
+    parserOptions:
+      jsonSyntax: JSONC
+
+  # JSON5 files
+  - files:
+      - "*.json5"
+    extends:
+      - plugin:jsonc/recommended-with-json5
+    parser: jsonc-eslint-parser
+    parserOptions:
+      jsonSyntax: JSON5
