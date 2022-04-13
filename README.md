@@ -1,5 +1,8 @@
 # Hoot
 
+[![GitHub Super-Linter](https://umgc-cmsc-495-group-1/image-sharing-app/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+![Hoot Version](https://img.shields.io/badge/Hoot-0.1.0-blue)
+
 - [Hoot](#hoot)
   - [Environment Setup](#environment-setup)
     - [Node.js](#nodejs)
