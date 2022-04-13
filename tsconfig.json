@@ -28,7 +28,7 @@
   },
   "include": [
     "src/**/*",
-    "tests/**/*"
+    // "tests/**/*"
   ],
   "watchOptions": {
     "excludeDirectories": ["**/node_modules", "_build", "public", "git-hooks"],
