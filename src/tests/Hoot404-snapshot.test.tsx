@@ -19,7 +19,6 @@ function renderWithMemoryRouter(component: JSX.Element) {
   );
 }
 it('Renders correctly',() => {
-  const renderer = renderWithMemoryRouter(<Hoot404 />);
+  const renderer = renderWithMemoryRouter(<Hoot404/>);
   expect(renderer.toJSON()).toMatchSnapshot();
-})
-
+});

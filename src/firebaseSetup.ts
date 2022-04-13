@@ -1,41 +1,3 @@
-/*
-import { initializeApp } from 'firebase/app'
-import { getAuth, connectAuthEmulator } from 'firebase/auth'
-// import { getDatabase, connectDatabaseEmulator } from 'firebase/database'
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
-import { getStorage, connectStorageEmulator } from 'firebase/storage'
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-const app = initializeApp(config);
-// auth
-const auth = getAuth();
-const authEmulator = connectAuthEmulator(auth, 'http://localhost:9099');
-// db
-// const db = getDatabase();
-// const dbEmulator = connectDatabaseEmulator(db, 'localhost', 9000);
-// firestore
-const fireStore = getFirestore();
-const fsEmulator = connectFirestoreEmulator(fireStore, 'localhost', 8080);
-// cloud storage
-const cloud = getStorage();
-const cloudEmulator = connectStorageEmulator(cloud, 'localhost', 9199);
-
-export {
-  config,
-  app,
-  auth,
-  authEmulator,
-  // db,
-  // dbEmulator,
-  fireStore,
-  fsEmulator,
-  cloud,
-  cloudEmulator
-}
-*/
-// WORKING CONFIG / INIT
-
 // import { initializeApp } from 'firebase/app'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
@@ -45,7 +7,14 @@ import { getAuth, connectAuthEmulator } from 'firebase/auth'
 import { getStorage, connectStorageEmulator, ref } from 'firebase/storage'
 
 
-// TODO: where is this file ? src/firebaseSetup.ts
+/*************************************************************
+ * TODO: CHANGE THIS TO WEB 9                                *
+ * --------------------------------------------------------- *
+ * GET RID OF THE COMPAT, HAVE THE FIREBASE CONFIG IN PLAIN  *
+ * TEXT AS IT IS NEEDED FOR PRODUCTION OTHERWISE USERS       *
+ * ATTEMPTING TO REGISTER WILL NOT HAVE THE <KEY,VALUE>      *
+ * PAIRS REQUIRED TO PING THE DATABASE                       * 
+ ************************************************************/
 
 /*************************************************
  *
@@ -57,34 +26,45 @@ import { getStorage, connectStorageEmulator, ref } from 'firebase/storage'
  *
  ************************************************/
 
-let app;
+const app = firebase.initializeApp({
+  apiKey: "AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA",
+  authDomain: "hoot-umgc.firebaseapp.com",
+  databaseURL: "https://hoot-umgc-default-rtdb.firebaseio.com",
+  projectId: "hoot-umgc",
+  storageBucket: "hoot-umgc.appspot.com",
+  messagingSenderId: "614927815368",
+  appId: "1:614927815368:web:add5a55db00e599d790bfd",
+  measurementId: "G-W7J416M731"
+})
 
-if (location.hostname === 'localhost') {
 
-  app = firebase.initializeApp({
 
-    apiKey: process.env.REACT_APP_API_KEY,
-    databaseURL: 'http://localhost:8080?ns=hoot-umgc',
-    authDomain: 'hoot-umgc.firebaseapp.com',
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: 'http://localhost:9199?ns=hoot-umgc',
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
+// if (location.hostname === 'localhost') {
 
-  })
+//   app = firebase.initializeApp({
 
-} else {
+//     apiKey: process.env.REACT_APP_API_KEY,
+//     databaseURL: 'http://localhost:8080?ns=hoot-umgc',
+//     authDomain: 'hoot-umgc.firebaseapp.com',
+//     projectId: process.env.REACT_APP_PROJECT_ID,
+//     storageBucket: 'http://localhost:9199?ns=hoot-umgc',
+//     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 
-  app = firebase.initializeApp({
+//   })
 
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+// } else {
 
-  })
-}
+//   app = firebase.initializeApp({
+
+//     apiKey: process.env.REACT_APP_API_KEY,
+//     authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+//     databaseURL: process.env.REACT_APP_DATABASE_URL,
+//     projectId: process.env.REACT_APP_PROJECT_ID,
+//     storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+//     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+
+//   })
+// }
 
 
 // Firestore DB
