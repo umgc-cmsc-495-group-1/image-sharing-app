@@ -57,6 +57,7 @@ export default function HootNav() {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
+              role='menu-icon'
               onClick={(event) => {
                 toggleDrawer(!isOpen, event);
               }}
@@ -96,15 +97,15 @@ export default function HootNav() {
           }}
         >
           <List>
-            <ListItem button component={Link} to="/">
+            <ListItem button component={Link} to="/" role="navigation-home">
               <ListItemText primary="Home" />
             </ListItem>
             {!uid ? ( // Logged out User Nav Section
               <>
-                <ListItem button component={Link} to="/login">
+                <ListItem button component={Link} to="/login" role="navigation-login">
                   <ListItemText primary="Login" />
                 </ListItem>
-                <ListItem button component={Link} to="/signup">
+                <ListItem button component={Link} to="/signup" role="navigation-signup">
                   <ListItemText primary="Sign Up" />
                 </ListItem>
               </>

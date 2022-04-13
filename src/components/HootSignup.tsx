@@ -1,198 +1,183 @@
-import React, { useRef } from "react";
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { newUser, signInWithGoogle, signup } from "../data/authFunctons";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+//import { useNavigate } from 'react-router-dom';
+import { newUser, signup } from '../data/authFunctons';
+import { UserSignupValidationError } from '../utils/Error';
 
 export default function HootSignup() {
-  const navigate = useNavigate();
 
-  type FieldValues = {
-    displayName: string;
-    username: string;
-    email: string;
-    password: string;
-    verifyPassword: string;
-  };
+  //const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<FieldValues>();
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [verifyPassword, setVerifyPassword] = useState("");
+  const [err, setErr] = useState("");
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const newUser: newUser = {
-      displayName: data.displayName,
-      username: data.username,
-      email: data.email,
-      password: data.password,
-    };
+  const handleError = async (event: React.FormEvent<HTMLFormElement>, user: newUser) => {
+    event.preventDefault();
+    // verify passwords
+    if (user.password !== user.verifyPassword) {
+      // make the error div visible
+      const errDiv: HTMLDivElement | null = document.querySelector('.submit-error');
+      if (errDiv !== null) {
+        errDiv.style.visibility = 'visible';
+      }
+      // reset forms to blank and display error
+      setDisplayName("");
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setVerifyPassword("");
+      throw new UserSignupValidationError(
+        'UserSignupValidation',
+        'Credentials are missing from sign up form'
+      );
+    }
+  }
 
-    try {
-      await signup(newUser);
-    } catch (error) {
-      console.log(error);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const user: newUser = {
+      displayName: displayName,
+      username: username,
+      email: email,
+      password: password,
+      verifyPassword: verifyPassword
     }
 
-    navigate("../", { replace: true });
-  };
-
-  const password = useRef({});
-  React.useEffect(() => {
-    let unmounted = false;
-    setTimeout(() => {
-      if (!unmounted) {
-        password.current = watch("password", "");
+    try {
+      // console.log(JSON.stringify(newUser));
+      if (user.password !== user.verifyPassword) {
+        handleError(event, user);
       }
-    }, 3000);
+      await signup(user);
+    } catch (error) {
+      if (error instanceof UserSignupValidationError) {
+        setErr(error.message);
+      }
 
-    return () => {
-      unmounted = true;
-    };
-  });
+    }
 
+    console.log(user);
+    //navigate("../", { replace: true });
+  };
   return (
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
           marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography>Sign Up</Typography>
-        <Box sx={{ mt: 3 }}>
+        <Typography>
+          Sign Up
+        </Typography>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="signup-form">
+          <Box
+            sx={{
+              visibility: 'hidden',
+              className: 'submit-error',
+              backgroundColor: '#F04848',
+              color: '#fff',
+            }}
+          >
+            <Typography
+              sx={{
+                visibility: 'inherit',
+              }}
+              id="on-error-message"
+              variant="body2"
+            >{err}</Typography>
+          </Box>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
-                {...register("displayName", {
-                  required: "Display Name Required",
-                  minLength: {
-                    value: 4,
-                    message: "Display Names must be at least 4 characters",
-                  },
-                })}
+                onChange={(event) => {
+                  setDisplayName(event.target.value);
+                }}
+                required
                 fullWidth
                 id="displayName"
                 label="Display Name"
                 name="displayName"
-                autoComplete="name"
-                autoFocus
+                autoComplete="display-name"
+                role="display-name-input"
               />
-              {errors.displayName && (
-                <Alert severity="error">{errors.displayName?.message}</Alert>
-              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                {...register("username", {
-                  required: "Username Required",
-                  minLength: {
-                    value: 4,
-                    message: "Username must be at least 4 characters",
-                  },
-                })}
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                }}
+                required
                 fullWidth
                 id="username"
                 label="User Name"
                 name="username"
                 autoComplete="username"
+                role="username-input"
               />
-              {errors.username && (
-                <Alert severity="error">{errors.username?.message}</Alert>
-              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                {...register("email", {
-                  required: "Email address required",
-                  pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: "This doesn't look like an email address...",
-                  },
-                })}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                }}
+                required
                 fullWidth
-                type="email"
                 id="email"
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                role="email-input"
               />
-              {errors.email && (
-                <Alert severity="error">{errors.email?.message}</Alert>
-              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                {...register("password", {
-                  required: "Password required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
-                  },
-                })}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+                required
                 fullWidth
                 name="password"
                 label="Password"
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                role="password-input"
               />
-              {errors.password && (
-                <Alert severity="error">{errors.password?.message}</Alert>
-              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
-                {...register("verifyPassword", {
-                  validate: (value) =>
-                    value === password.current || "The passwords must match!",
-                })}
+                onChange={(event) => {
+                  setVerifyPassword(event.target.value);
+                }}
+                required
                 fullWidth
                 name="verifyPassword"
                 label="Verify Password"
                 type="password"
                 id="verifyPassword"
                 autoComplete="new-password"
+                role="verify-password-input"
               />
-              {errors.verifyPassword && (
-                <Alert severity="error">{errors.verifyPassword?.message}</Alert>
-              )}
             </Grid>
           </Grid>
           <Button
             type="submit"
-            onClick={handleSubmit(onSubmit)}
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
-          </Button>
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            onClick={signInWithGoogle}
-          >
-            Google Sign In
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
@@ -204,5 +189,5 @@ export default function HootSignup() {
         </Box>
       </Box>
     </Container>
-  );
+  )
 }

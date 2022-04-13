@@ -1,0 +1,43 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "ES6",
+            "ESNext"
+        ],
+        "jsx": "react-jsx",
+        "module": "esnext",
+        "rootDir": "./src",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "sourceMap": true,
+        "noEmit": false,
+        "isolatedModules": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "src/**/*",
+        "tests/**/*"
+    ],
+    "watchOptions": {
+        "excludeDirectories": [
+            "**/node_modules",
+            "_build",
+            "public",
+            "git-hooks"
+        ],
+        "watchDirectory": "useFsEvents",
+        "watchFile": "useFsEvents"
+    }
+}
