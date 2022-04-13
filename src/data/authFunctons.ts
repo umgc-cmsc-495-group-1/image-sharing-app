@@ -8,20 +8,23 @@ import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, Us
  ************************************************/
 
 export interface newUser {
-  displayName: string,
-  username: string,
-  email: string,
-  password: string
+  displayName: string;
+  username: string;
+  email: string;
+  password: string;
+  verifyPassword: string;
 }
 
 export interface returnUser {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
 
 // export const signup = async ({ firstName, lastName, email, password, username }) => {   //orig. code
 export const signup = async (user: newUser) => {
-  let res : UserCredential
+
+
+  let res: UserCredential
 
   try {
     res = await createUserWithEmailAndPassword(
