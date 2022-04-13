@@ -15,6 +15,7 @@ import HootUserSettings from './components/HootUserSettings';
 import { CssBaseline } from '@mui/material';
 
 export default function App() {
+  console.log('test');
 
   const routes: RouteObject[] = [
     {
