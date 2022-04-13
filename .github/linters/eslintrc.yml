@@ -29,6 +29,7 @@ parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 2018
   sourceType: module
+  project: "./tsconfig.json"
 
 ###########
 # Plugins #
@@ -47,7 +48,6 @@ rules: { "no-unused-vars": 2 }
 #############
 # Settings #
 #############
-project: "*/tsconfig.json"
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
