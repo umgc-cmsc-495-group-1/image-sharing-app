@@ -48,8 +48,8 @@ jobs:
       ################################
       # Run Linter against code base #
       ################################
-      - name: Lint Code Base      
-        uses: github/super-linter/slim@v4
+      - name: Lint Code Base
+        uses: docker://github/super-linter:slim-latest
         env:
           VALIDATE_ALL_CODEBASE: false
           # Change to 'master' if your main branch differs
