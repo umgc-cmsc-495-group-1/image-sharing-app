@@ -27,8 +27,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
-    // "tests/**/*"
+    "src/**/*"
   ],
   "watchOptions": {
     "excludeDirectories": ["**/node_modules", "_build", "public", "git-hooks"],
