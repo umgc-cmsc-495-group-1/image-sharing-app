@@ -1,10 +1,11 @@
-import "@testing-library/react/dont-cleanup-after-each";
+import React from 'react';
 import {
   MemoryRouter,
   Routes,
   Route
 } from 'react-router-dom';
 import { render, screen, cleanup } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom';
 import HootSignup from "../components/HootSignup";
 
@@ -17,27 +18,19 @@ import HootSignup from "../components/HootSignup";
 //  2. All form fields should be blank when the page is first rendered.
 //  3. Test to sign up user that does not exist
 //  4. Test for valid password during sign up
-//
-//
-
-
-function renderWithMemoryRouter() {
-  return render(
-    <MemoryRouter initialEntries={['/signup']}>
-      <Routes>
-        <Route path="/signup" element={<HootSignup />} />
-      </Routes>
-    </MemoryRouter>
-  );
-}
-
-beforeAll(() => {
-  renderWithMemoryRouter();
-})
-afterAll(() => cleanup())
 
 describe("Module: HootSignup Component Test", () => {
+  afterEach(() => cleanup())
   it('1.Test to validate all form fields should be blank when the page is first rendered.', () => {
+    act(() => {
+      render(
+        <MemoryRouter initialEntries={['/signup']}>
+          <Routes>
+            <Route path="/signup" element={<HootSignup />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    })
     const signupForm = screen.getByRole('signup-form');
     const displayNameField = screen.getByRole('display-name-input');
     const userField = screen.getByRole('username-input');

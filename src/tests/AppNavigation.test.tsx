@@ -1,5 +1,4 @@
 import React from 'react';
-import * as ReactDOM from 'react-dom';
 import '@testing-library/jest-dom';
 import { act } from 'react-dom/test-utils';
 import {

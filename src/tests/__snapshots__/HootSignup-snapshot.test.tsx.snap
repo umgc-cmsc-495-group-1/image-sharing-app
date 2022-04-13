@@ -34,10 +34,20 @@ exports[`Renders correctly 1`] = `
       role="signup-form"
     >
       <div
+        className="MuiBox-root css-12t26nz"
+      >
+        <p
+          className="MuiTypography-root MuiTypography-body2 css-qc26dv-MuiTypography-root"
+          id="on-error-message"
+        >
+          
+        </p>
+      </div>
+      <div
         className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
       >
         <div
-          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-1b3l6lk-MuiGrid-root"
         >
           <div
             className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
@@ -64,8 +74,8 @@ exports[`Renders correctly 1`] = `
             >
               <input
                 aria-invalid={false}
-                autoComplete="name"
-                autoFocus={true}
+                autoComplete="display-name"
+                autoFocus={false}
                 className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
                 disabled={false}
                 id="displayName"
@@ -93,7 +103,6 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
-          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -152,7 +161,6 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
-          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -211,7 +219,6 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
-          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -270,7 +277,6 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
-          
         </div>
         <div
           className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
@@ -329,34 +335,12 @@ exports[`Renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
-          
         </div>
       </div>
-      <button
-        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root Mui-disabled  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
-        disabled={true}
-        onBlur={[Function]}
-        onContextMenu={[Function]}
-        onDragLeave={[Function]}
-        onFocus={[Function]}
-        onKeyDown={[Function]}
-        onKeyUp={[Function]}
-        onMouseDown={[Function]}
-        onMouseLeave={[Function]}
-        onMouseUp={[Function]}
-        onTouchEnd={[Function]}
-        onTouchMove={[Function]}
-        onTouchStart={[Function]}
-        tabIndex={-1}
-        type="submit"
-      >
-        Sign Up
-      </button>
       <button
         className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
         disabled={false}
         onBlur={[Function]}
-        onClick={[Function]}
         onContextMenu={[Function]}
         onDragLeave={[Function]}
         onFocus={[Function]}
@@ -369,9 +353,9 @@ exports[`Renders correctly 1`] = `
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={0}
-        type="button"
+        type="submit"
       >
-        Google Sign In
+        Sign Up
       </button>
       <div
         className="MuiGrid-root MuiGrid-container css-16g5rpk-MuiGrid-root"
