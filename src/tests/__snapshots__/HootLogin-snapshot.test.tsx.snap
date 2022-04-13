@@ -178,7 +178,7 @@ exports[`Renders correctly 1`] = `
           className="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
         >
           <a
-            className="MuiTypography-root MuiTypography-body2 MuiLink-root MuiLink-underlineAlways css-qk1173-MuiTypography-root-MuiLink-root"
+            className="MuiTypography-root MuiTypography-body2 MuiLink-root MuiLink-underlineAlways css-wpssva-MuiTypography-root-MuiLink-root"
             href="/signup"
             onBlur={[Function]}
             onFocus={[Function]}

@@ -40,7 +40,7 @@ export default function HootLogin() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography>Login</Typography>
-        <Box component="form" role="login-form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="login-form">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField

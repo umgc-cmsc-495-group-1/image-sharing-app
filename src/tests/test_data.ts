@@ -32,10 +32,16 @@ import feedImage17 from '../assets/static/images/theaminahmadi-T0WB-E2hcYU-unspl
 import feedImage18 from '../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg'
 import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
 
+/**
+ * Array of test user names to be used in the feed and profile
+ */
 const demoUsernames = [
   'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
   'lina', 'max', 'melanie', 'mounir', 'philipp', 'sour', 'svitlana', 'theaminahmadi', 'tommy', 'yusuf'
 ]
+/**
+ * Array of test profile pictures to be used in the feed and profile
+ */
 const demoProfilePictures = [
   profileImage1,
   profileImage2,
@@ -52,7 +58,9 @@ const demoProfilePictures = [
   profileImage13,
   profileImage14
 ]
-
+/**
+ * Array of test feed posts to be used in the feed
+ */
 const demoFeedImages = [
   feedImage1,
   feedImage2,
@@ -74,26 +82,57 @@ const demoFeedImages = [
   feedImage18,
   feedImage19
 ]
-
+/**
+ * Object of test users and images to be used in the feed and profile
+ */
 const demoContent = {
   profile: demoProfilePictures,
   images: demoFeedImages
 }
 
+/**
+ * @description - User Images Base Interface
+ * @export interface UserImagesInterface
+ * @interface UserImagesInterface
+ * @property {string} imageUrl - location of the image 
+ */
 export interface UserImagesInterface {
   imageUrl: string | undefined;
 }
 
+/**
+ * @description - User Profile Base Interface
+ * @export interface UserInterface
+ * @interface UserInterface
+ * @property {string} uid - user id of the user
+ * @property {string} username - username of the user
+ */
 export interface UserInterface {
   uid: string;
   username: string;
 }
 
+/**
+ * @description - Alternative Comment Interface
+ * @export interface AltCommentInterface
+ * @interface AltCommentInterface
+ * @property {string} comment - comment of the user
+ * @property {UserInterface} user - user of the comment
+ */
 export interface AltCommentInterface {
   user: UserInterface;
   comment: string | string[];
 }
 
+/**
+ * @description - Comment Interface with extended user information
+ * @export interface CommentInterface
+ * @interface CommentInterface
+ * @extends {UserInterface}
+ * @property {string} comment - comment of the user
+ * @property {string} uid - user id of the user
+ * @property {string} username - username of the user
+ */
 export interface CommentInterface extends UserInterface {
   comment: string | string[];
 }
@@ -109,6 +148,19 @@ export interface CommentInterface extends UserInterface {
  */
 export type CommentType = CommentInterface | CommentInterface[];
 
+/**
+ * @description - Specific Feed Post Interface
+ * @export interface FeedPostInterface
+ * @interface FeedPostInterface
+ * @property {string} uid - user id of the user
+ * @property {string} username - username of the user
+ * @property {string} pid - post id of the post
+ * @property {string} postText - caption of the post
+ * @property {number} numberLikes - number of likes on the post
+ * @property {number} numberComments - number of comments on the post
+ * @property {string} imageUrl - location of the image
+ * @property {CommentInterface[]} comments - comments on the post
+ */
 export interface FeedPostInterface {
   uid: string;
   username: string;
@@ -120,8 +172,27 @@ export interface FeedPostInterface {
   comments: CommentInterface[];
 }
 
+/**
+ * @description - Feed Post Type based on the FeedPostInterface
+ * @export type FeedPostType
+ * @type FeedPostType
+ * @extends {FeedPostInterface} FeedPostInterface
+ */
 export type FeedPostType = FeedPostInterface;
 
+/**
+ * @description - User profile interface
+ * @export interface ProfileInterface
+ * @interface ProfileInterface
+ * @extends {UserInterface} UserInterface
+ * @extends {UserImagesInterface} UserImagesInterface
+ * @property {string} imageUrl - location of the image 
+ * @property {string} uid - user id of the user
+ * @property {string} username - username of the user
+ * @property {string} bio - bio of the user
+ * @property {string} posts - number of posts the user has made
+ * @property {string} friends - number of followers the user has
+ */
 export interface ProfileInterface extends UserInterface, UserImagesInterface {
   posts: number;
   friends: number;
@@ -129,8 +200,8 @@ export interface ProfileInterface extends UserInterface, UserImagesInterface {
 }
 
 /**
- * 
- * @returns Generate a random test user to be used in the feed and profile
+ * @description - Generate a random test user to be used in the feed and profile
+ * @returns {ProfileInterface[]} 
  */
 function generateRandomUsers(): ProfileInterface[] {
   const users: ProfileInterface[] = []
@@ -150,8 +221,8 @@ function generateRandomUsers(): ProfileInterface[] {
 }
 
 /**
- * 
- * @returns Generate random comments for the feed
+ * @description - Generate random comments for the feed
+ * @returns {Array<CommentInterface>}
  */
 function generateRandomComments(): Array<CommentInterface> {
   // const comments: AltCommentType[] = []
@@ -168,8 +239,8 @@ function generateRandomComments(): Array<CommentInterface> {
 }
 
 /**
- * 
- * @returns Generate random posts for the feed
+ * @description - Generate random posts for the feed
+ * @returns {FeedPostType[]}
  */
 function generateRandomFeedProps(): FeedPostType[] {
   const posts: FeedPostType[] = [];
@@ -189,6 +260,12 @@ function generateRandomFeedProps(): FeedPostType[] {
   return posts
 }
 
+/**
+ * @description - Get the post data by user id and post id from the feed
+ * @param {string|undefined} userId - The user id of the user
+ * @param {string|undefined} postId  - The post id of the post
+ * @returns {FeedPostType}
+ */
 function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {
   return totalFeedPosts.filter(post => post.uid === userId && post.pid === postId)[0]
 }
