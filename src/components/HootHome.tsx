@@ -24,8 +24,3 @@ export default function HootHome() {
     </Typography>
   )
 }
-
-/**
- *  {currentUser ?
-           <p>{currentUser}</p> : <p>no current user</p>}
- */

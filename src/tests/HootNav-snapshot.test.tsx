@@ -22,5 +22,4 @@ function renderWithMemoryRouter(component: JSX.Element) {
 it('Renders correctly',() => {
   const renderer = renderWithMemoryRouter(<HootNav/>);
   expect(renderer.toJSON()).toMatchSnapshot();
-})
-
+});
