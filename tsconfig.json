@@ -34,5 +34,5 @@
     "excludeDirectories": ["**/node_modules", "_build", "public", "git-hooks"],
     "watchDirectory": "useFsEvents",
     "watchFile": "useFsEvents"
-  },
+  }
 }

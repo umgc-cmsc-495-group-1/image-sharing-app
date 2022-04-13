@@ -42,7 +42,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
+          # Full git history
           fetch-depth: 0
 
       ################################
@@ -55,6 +55,9 @@ jobs:
           # Environments to Prevent Linting #
           ###################################
           VALIDATE_JAVASCRIPT_STANDARD: false
+          VALIDATE_NATURAL_LANGUAGE: false
+          VALIDATE_MARKDOWN: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
           VALIDATE_ALL_CODEBASE: false
           # Change to 'master' if your main branch differs
           DEFAULT_BRANCH: master
