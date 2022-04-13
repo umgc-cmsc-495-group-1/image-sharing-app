@@ -8,16 +8,6 @@ name: Lint Code Base
 
 #
 # Documentation:
----
-#################################
-#################################
-## Super Linter GitHub Actions ##
-#################################
-#################################
-name: Lint Code Base
-
-#
-# Documentation:
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 #
 
