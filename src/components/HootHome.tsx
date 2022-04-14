@@ -16,16 +16,8 @@ export default function HootHome() {
 
   return (
     <Typography>
-      <>
-        This is the homepage for {useCurrentUser(userId)?.username || 'no current user'}
-        {currentUser ?
-          <h1>{currentUser}</h1> : <h1>no current user</h1>}
-      </>
+      This is the homepage for {useCurrentUser(userId)?.username || ' no current user '}
+      {(currentUser !== null) ? currentUser : " no current user "}
     </Typography>
   )
 }
-
-/**
- *  {currentUser ?
-           <p>{currentUser}</p> : <p>no current user</p>}
- */

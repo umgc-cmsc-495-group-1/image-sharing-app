@@ -22,5 +22,4 @@ function renderWithMemoryRouter(component: JSX.Element) {
 it('Renders correctly', () => {
   const renderer = renderWithMemoryRouter(<HootSignup />);
   expect(renderer.toJSON()).toMatchSnapshot();
-})
-
+});

@@ -6,13 +6,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { FirebaseAuthProvider } from './context/AuthContext';
 
+// TODO: need default data for emulator
 ReactDOM.render(
   <FirebaseAuthProvider>
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
   </FirebaseAuthProvider>,
   document.getElementById('root')
 );
