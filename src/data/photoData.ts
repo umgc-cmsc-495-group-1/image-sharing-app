@@ -12,8 +12,6 @@ import { ImgData, photoData } from './PhotoClasses';
 // Usage: uuidv4(); returns uid string
 
 
-
-
 /**
  * Replaces user profile image
  * @param userId
