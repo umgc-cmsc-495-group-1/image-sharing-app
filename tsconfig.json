@@ -30,7 +30,12 @@
     "src/**/*"
   ],
   "watchOptions": {
-    "excludeDirectories": ["**/node_modules", "_build", "public", "git-hooks"],
+    "excludeDirectories": [
+      "**/node_modules", 
+      "_build", 
+      "public", 
+      "git-hooks"
+    ],
     "watchDirectory": "useFsEvents",
     "watchFile": "useFsEvents"
   }
