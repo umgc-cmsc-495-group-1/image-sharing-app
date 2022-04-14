@@ -12,7 +12,7 @@ import { serverTimestamp, FieldValue  } from 'firebase/firestore';
   caption?: string,
   numberLikes: number,
   path?: string,
-  // url?: string,
+  url?: string,
   tags?: string[],
   comments?: string[],
   numberComments: number,
@@ -32,7 +32,7 @@ export class ImgData {
   caption?: string;
   numberLikes: number;
   path?: string;
-  // url?: string;
+  url?: string;
   tags?: string[];
   comments?: string[];
   numberComments: number;
@@ -45,7 +45,7 @@ export class ImgData {
     this.caption = data.caption || "";
     this.numberLikes = 0;
     this.path = data.path;
-    // this.url = data.url ||  "";
+    this.url = data.url ||  "";
     this.tags = data.tags || [];
     this.comments = data.comments || [];
     this.numberComments = 0;

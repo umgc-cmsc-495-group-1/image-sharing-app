@@ -4,7 +4,7 @@ import { cloud, auth, fireStore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc, getDoc, collection, updateDoc, getDocs, query, orderBy } from "firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import { ImgData, photoData } from './PhotoClasses';
+import { ImgData, photoData } from './interfaces';
 // import { setDoc, doc, getDoc, collection, getDocs } from "firebase/firestore";
 
 /**
@@ -50,7 +50,7 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
     const newImgData: photoData = {
       photoId: imgUid,
       userId: userId,
-      displayName: user?.displayName,
+      displayName: user?.displayName || "no name",
       imgName: photoFile.name || "",
       caption: caption || "",
       path: cloudPath,
@@ -160,10 +160,12 @@ export const getOnePhoto = async (imgId: string, userId: string) => { // may hav
   const imgData: photoData = {
     photoId: imgId, // make both ids user id for profile?
     userId: data.userId,
+    displayName: data.displayName,
     imgName: data.imgName,
     caption: data.caption || "",
     numberLikes: data.numberLikes,
     comments: data.comments,
+    numberComments: data.numberComments,
     path: data.path,
     timestamp: data.timestamp,
     tags: data.tags,
@@ -201,11 +203,14 @@ export const getAllUserPhotoData = async (userId: string) => {
     const imgData: photoData = {
       photoId: data.imgId, // make both ids user id for profile?
       userId: data.userId,
+      displayName: data.displayName,
       imgName: data.imgName,
       caption: data.caption || "",
       numberLikes: data.numberLikes,
       comments: data.comments,
-      path: data.path
+      numberComments: data.numberComments,
+      path: data.path,
+      url: data.url || ""
     };
      userPhotos.push(imgData);
   });

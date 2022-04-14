@@ -132,13 +132,6 @@ export const updateUser = async (user: appUser) => {
  *  authFunctions
  * @param userId
  */
-
-
-/**
- * Delete user document from Firestore
- * This function is used by deleteAccount in authFunctions
- * @param userId
- */
 export const deleteUserDoc = async (userId: string) => {
   await deleteDoc(doc(fireStore, 'users', `${userId}`))
 };
