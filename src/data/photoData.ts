@@ -4,7 +4,7 @@ import { cloud, auth, fireStore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc, getDoc, collection, updateDoc, getDocs, query, orderBy } from "firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import { ImgData, photoData } from './interfaces';
+import { photoData } from './interfaces';
 // import { setDoc, doc, getDoc, collection, getDocs } from "firebase/firestore";
 
 /**
@@ -334,6 +334,7 @@ await updateDoc(washingtonRef, {
 */
 
 // Firestore data converter
+/*
 const photoConverter = {
   toFirestore: (imgData: ImgData) => {
     return {
@@ -354,6 +355,7 @@ const photoConverter = {
     return new ImgData(data);
   }
 }
+
 export const getImgData = async (userId: string) => {
   const firestorePath = `photos/${userId}/posts/`;
 
@@ -370,3 +372,4 @@ export const getImgData = async (userId: string) => {
   }
   return null;
 }
+*/

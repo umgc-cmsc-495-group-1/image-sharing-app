@@ -2,7 +2,7 @@ import { auth } from '../firebaseSetup'
 // import firebase from 'firebase/app'
 import 'firebase/auth'
 import { createUser, deleteUserDoc } from './userData'
-import { GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, getRedirectResult, signOut } from 'firebase/auth'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { reauthenticateWithCredential, AuthCredential, UserCredential } from 'firebase/auth'
 import { updatePassword, updateEmail, deleteUser, updateProfile } from 'firebase/auth'
@@ -25,7 +25,8 @@ export interface newUser {
   displayName: string,
   username?: string,
   email: string,
-  password: string
+  password: string,
+  verifyPassword: string
 }
 
 export interface googleUser {
@@ -78,8 +79,8 @@ export const signup = async (user: newUser) => {
  * @returns
  */
 export const logout = async () => {
- return await auth.signOut();
-  // return signOut(auth);
+ // return await auth.signOut();
+  return signOut(auth);
 }
 
 //export const logout = async () => {

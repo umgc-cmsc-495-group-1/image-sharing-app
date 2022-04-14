@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 //import { useNavigate } from 'react-router-dom';
-import { newUser, signup } from '../data/authFunctons';
+import { newUser, signup } from '../data/authFunctions';
 import { UserSignupValidationError } from '../utils/Error';
 
 export default function HootSignup() {

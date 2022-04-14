@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-// import { DocumentData } from 'firebase/firestore';
-// import { fireStore } from '../firebaseSetup';
-import { photoData } from '../data/PhotoClasses';
+import { photoData } from '../data/interfaces';
 import { getAllUserPhotoData, getPhotoUrl } from '../data/photoData';
 
 /**
@@ -21,7 +19,8 @@ export const usePhotos = (userId: string) => {
       let usersPhotos = await getAllUserPhotoData(userId);
       try {
         usersPhotos.map((photo) => {
-          getPhotoUrl(photo.path!).then((url) => !!url && (photo.url = url));
+          if (photo.path)
+            getPhotoUrl(photo.path).then((url) => !!url && (photo.url = url));
         })
       } catch (e) {
         usersPhotos = [];
