@@ -4,13 +4,14 @@ import { cloud, auth, fireStore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc, getDoc, collection, updateDoc, getDocs, query, orderBy } from "firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import { ImgData, photoData } from './interfaces';
+import { ImgData, photoData } from './PhotoClasses';
 // import { setDoc, doc, getDoc, collection, getDocs } from "firebase/firestore";
 
-// need to npm install uuid to create unique filepath for photos
-// & npm install -D @types/uuid or npm i --save-dev @types/uuid
-// Usage: uuidv4(); returns uid string
-
+/**
+ * need to npm install uuid to create unique filepath for photos
+ * & npm install -D @types/uuid or npm i --save-dev @types/uuid
+ * Usage: uuidv4(); returns uid string
+ */
 
 /**
  * Replaces user profile image
@@ -32,7 +33,8 @@ export const updateProfileImg = async (userId: string, file: File) => {
  */
 export const postNewImage = async (photoFile: File, tags: string[], caption: string) => {
   // Get UID of current user if it exists
-  const userId = auth.currentUser?.uid;
+  const user = auth.currentUser;
+  const userId = user?.uid;
   // Create a new UID for the photo
   const imgUid = uuidv4();
   // get ext from file let extension = filename.split(".").pop();
@@ -48,13 +50,15 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
     const newImgData: photoData = {
       photoId: imgUid,
       userId: userId,
+      displayName: user?.displayName,
       imgName: photoFile.name || "",
       caption: caption || "",
       path: cloudPath,
-      // url: "",
+      url: "",
       tags: tags || [],
       numberLikes: 0,
       comments: [],
+      numberComments: 0,
       timestamp: serverTimestamp()
     }
     // Write to firestore db
@@ -63,9 +67,9 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
       await uploadImageFile(photoFile, cloudPath);
       // newImgData.imgURL = url || cloudPath;
       await setDoc(firestoreRef, newImgData);
-      // setting url only works about 1/2 the time. Need to
-      // retrieve using path in useEffect in a photo component
-      // await updatePublicUrl(firestorePath, cloudPath);
+      // await setTimestamp(cloudPath);
+      // const cloudRef = ref(cloud, cloudPath);
+      await updatePublicUrl(firestorePath, cloudPath);
     } catch (error) {
       console.log(error);
     }
@@ -74,8 +78,8 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
 
 /**
  *  Save image file (.png, .jpg) to Cloud Storage path
- * @param file : File image file
- * @param path : cloud storage file path
+ * @param file
+ * @param path
  */
 const uploadImageFile = async (file: File, path: string) => {
 
@@ -118,7 +122,7 @@ const uploadImageFile = async (file: File, path: string) => {
       }
     },
     () => {
-      // Upload completed successfully, now can get the download URL
+      // Upload completed successfully, now we can get the download URL
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         console.log('File available at', downloadURL);
         return downloadURL;
@@ -135,7 +139,6 @@ const uploadImageFile = async (file: File, path: string) => {
 export const getProfileUrl = async (userId: string) => {
   const filePath = `profile-imgs/${userId}/profile-image`;
   const fileRef = ref(cloud, filePath);
-  console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
 
@@ -163,8 +166,8 @@ export const getOnePhoto = async (imgId: string, userId: string) => { // may hav
     comments: data.comments,
     path: data.path,
     timestamp: data.timestamp,
-    tags: data.tags
-    // url: data.url
+    tags: data.tags,
+    url: data.url
   }
   // const url = await getPhotoUrl(imgData.path);
   console.log('post data: ', JSON.stringify(imgData));
@@ -187,18 +190,15 @@ export const getOnePhoto = async (imgId: string, userId: string) => { // may hav
  */
 
 export const getAllUserPhotoData = async (userId: string) => {
-
-  let userPhotos: photoData[];
-  // doc(fireStore, "photos", userId, "posts", imgUid);
-  const collectionRef = collection(fireStore, "photos", userId, "posts");
+  const userPhotos: photoData[] = [];
+  const path = `photos/${userId}/posts`;
+  const collectionRef = collection(fireStore, path);
   const q = query(collectionRef, orderBy("timestamp", "desc"));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     const data = doc.data();
-    // const url = getPhotoUrl(data.imgUrl);
-
-      const imgData: photoData = {
+    const imgData: photoData = {
       photoId: data.imgId, // make both ids user id for profile?
       userId: data.userId,
       imgName: data.imgName,
@@ -207,9 +207,9 @@ export const getAllUserPhotoData = async (userId: string) => {
       comments: data.comments,
       path: data.path
     };
-    userPhotos.push(imgData);
+     userPhotos.push(imgData);
   });
-  // return userPhotos;
+  return userPhotos;
 }
 
 /**
@@ -217,17 +217,21 @@ export const getAllUserPhotoData = async (userId: string) => {
  *
  * @param data : photoData object
  *
- * @returns
+ * @returns Promise<string>
  */
-/*
-export const getPhotoUrl = async (data: photoData) => {
-  const path = data.path;
+
+export const getPhotoUrl = async (path: string) => {
   const fileRef = ref(cloud, path);
-  return await getDownloadURL(fileRef);
+  let url;
+  try {
+    url =  getDownloadURL(fileRef);
+  } catch (e) {
+    console.log(`couldn't get url for photo at ${path}`);
+  }
+  return url;
 };
-*/
+
 /*
-// another exapmle of getting url
 getDownloadURL(ref(cloud, path))
   .then((url) => {
     // `url` is the download URL for 'images/stars.jpg'
@@ -268,9 +272,8 @@ export const setTimestamp = async (path: string) => {
     timestamp: serverTimestamp()
   });
 }
-/*
-// This worked half of the time because it has timing issues
-const updatePublicUrl = async (docPath: string , filePath: string) => {
+
+const updatePublicUrl = async (docPath: string, filePath: string) => {
   try {
     const fileRef = ref(cloud, filePath);
     const docRef = doc(fireStore, docPath);
@@ -279,13 +282,12 @@ const updatePublicUrl = async (docPath: string , filePath: string) => {
         url: url
       }, { merge: true });
       console.log(url);
-    }) ;
+    });
 
   } catch (error) {
     console.error('There was an error uploading a file to Cloud Storage:', error);
   }
 }
-*/
 
 
 // Can create custom file metadata

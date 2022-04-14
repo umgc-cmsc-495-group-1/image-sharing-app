@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { getUserByUserId, appUser } from '../data/userData'
 
-/******************************************************
- *
+/**
  * Custom hook for getting the curent user data
  * (firstName, lastName, username, email, friends, likes)
  * If there is no current user it returns null
- *
- ******************************************************/
+ * @param userId
+ * @returns
+ */
 
 // get current user by id, if there is a logged in user
 export const useCurrentUser = (userId: string) => {
@@ -33,3 +33,4 @@ export const useCurrentUser = (userId: string) => {
   }, [userId])
   return currentUser;
 }
+

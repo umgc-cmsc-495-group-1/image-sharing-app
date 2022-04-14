@@ -7,6 +7,7 @@ import { serverTimestamp, FieldValue  } from 'firebase/firestore';
  export interface photoData {
   photoId: string, // make both ids user id for profile?
   userId: string,
+  displayName: string,
   imgName?: string,
   caption?: string,
   numberLikes: number,
@@ -14,6 +15,7 @@ import { serverTimestamp, FieldValue  } from 'firebase/firestore';
   // url?: string,
   tags?: string[],
   comments?: string[],
+  numberComments: number,
   timestamp?: FieldValue
 }
 
@@ -25,6 +27,7 @@ import { serverTimestamp, FieldValue  } from 'firebase/firestore';
 export class ImgData {
   photoId: string;
   userId: string;
+  displayName: string;
   imgName?: string;
   caption?: string;
   numberLikes: number;
@@ -32,10 +35,12 @@ export class ImgData {
   // url?: string;
   tags?: string[];
   comments?: string[];
+  numberComments: number;
   timestamp?: FieldValue;
   constructor(data: photoData) {
     this.photoId = data.photoId;
     this.userId = data.userId;
+    this.displayName = data.displayName;
     this.imgName = data.imgName;
     this.caption = data.caption || "";
     this.numberLikes = 0;
@@ -43,6 +48,7 @@ export class ImgData {
     // this.url = data.url ||  "";
     this.tags = data.tags || [];
     this.comments = data.comments || [];
+    this.numberComments = 0;
     this.timestamp = data.timestamp || serverTimestamp();
   }
 }
