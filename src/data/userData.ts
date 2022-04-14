@@ -1,6 +1,5 @@
 import 'firebase/storage'
-import { collection, doc, setDoc, deleteDoc, getDoc, getDocs, getDocsFromServer } from 'firebase/firestore'
-import { query, where } from 'firebase/firestore'
+import { collection, doc, setDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore'
 import { fireStore } from '../firebaseSetup'
 import { googleUser, newUser } from './authFunctions'
 import { User } from 'firebase/auth'
@@ -92,20 +91,24 @@ export const getUserByUserId = async (userId: string) => {
 }
 
 /**
- * Get single user with Email value
+ * Checks firestore to see if email is already in
+ * database
+ * returns true if email in db, false if not
  * @param email
+ * @returns boolean
  */
-export const emailInDb = async (email: string) => {
-  const q = query(collection(fireStore, "users"), where("email", "==", email));
+export const isEmailInDb = async (email: string) => {
 
-  const querySnapshot = await getDocsFromServer(q);
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    // console.log(doc.id, " => ", doc.data());
-    console.log(doc.data.length);
-    return doc.data.length > 0;
-  });
+  const docRef = doc(fireStore, "users", email);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return true;
+  }
+  return false;
 }
+
+
 
 // break profile updates out into their own folder?
 // update functions must incorporate db and auth functions

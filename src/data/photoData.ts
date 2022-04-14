@@ -4,7 +4,7 @@ import { cloud, auth, fireStore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc, getDoc, collection, updateDoc, getDocs, query, orderBy } from "firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import { ImgData, photoData } from './PhotoClasses';
+import { ImgData, photoData } from './interfaces';
 // import { setDoc, doc, getDoc, collection, getDocs } from "firebase/firestore";
 
 // need to npm install uuid to create unique filepath for photos
@@ -51,7 +51,7 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
       imgName: photoFile.name || "",
       caption: caption || "",
       path: cloudPath,
-      url: "",
+      // url: "",
       tags: tags || [],
       numberLikes: 0,
       comments: [],
@@ -63,9 +63,9 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
       await uploadImageFile(photoFile, cloudPath);
       // newImgData.imgURL = url || cloudPath;
       await setDoc(firestoreRef, newImgData);
-     // await setTimestamp(cloudPath);
-      // const cloudRef = ref(cloud, cloudPath);
-      await updatePublicUrl(firestorePath, cloudPath);
+      // setting url only works about 1/2 the time. Need to
+      // retrieve using path in useEffect in a photo component
+      // await updatePublicUrl(firestorePath, cloudPath);
     } catch (error) {
       console.log(error);
     }
@@ -74,8 +74,8 @@ export const postNewImage = async (photoFile: File, tags: string[], caption: str
 
 /**
  *  Save image file (.png, .jpg) to Cloud Storage path
- * @param file
- * @param path
+ * @param file : File image file
+ * @param path : cloud storage file path
  */
 const uploadImageFile = async (file: File, path: string) => {
 
@@ -118,7 +118,7 @@ const uploadImageFile = async (file: File, path: string) => {
       }
     },
     () => {
-      // Upload completed successfully, now we can get the download URL
+      // Upload completed successfully, now can get the download URL
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         console.log('File available at', downloadURL);
         return downloadURL;
@@ -163,8 +163,8 @@ export const getOnePhoto = async (imgId: string, userId: string) => { // may hav
     comments: data.comments,
     path: data.path,
     timestamp: data.timestamp,
-    tags: data.tags,
-    url: data.url
+    tags: data.tags
+    // url: data.url
   }
   // const url = await getPhotoUrl(imgData.path);
   console.log('post data: ', JSON.stringify(imgData));
@@ -227,6 +227,7 @@ export const getPhotoUrl = async (data: photoData) => {
 };
 */
 /*
+// another exapmle of getting url
 getDownloadURL(ref(cloud, path))
   .then((url) => {
     // `url` is the download URL for 'images/stars.jpg'
@@ -267,7 +268,8 @@ export const setTimestamp = async (path: string) => {
     timestamp: serverTimestamp()
   });
 }
-
+/*
+// This worked half of the time because it has timing issues
 const updatePublicUrl = async (docPath: string , filePath: string) => {
   try {
     const fileRef = ref(cloud, filePath);
@@ -283,6 +285,7 @@ const updatePublicUrl = async (docPath: string , filePath: string) => {
     console.error('There was an error uploading a file to Cloud Storage:', error);
   }
 }
+*/
 
 
 // Can create custom file metadata
