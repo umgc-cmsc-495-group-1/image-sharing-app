@@ -34,20 +34,10 @@ exports[`Renders correctly 1`] = `
       role="signup-form"
     >
       <div
-        className="MuiBox-root css-12t26nz"
-      >
-        <p
-          className="MuiTypography-root MuiTypography-body2 css-qc26dv-MuiTypography-root"
-          id="on-error-message"
-        >
-          
-        </p>
-      </div>
-      <div
         className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
       >
         <div
-          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-1b3l6lk-MuiGrid-root"
+          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
         >
           <div
             className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
