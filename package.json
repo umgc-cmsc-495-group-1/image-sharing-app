@@ -14,10 +14,6 @@
         "@tensorflow/tfjs-converter": "^3.15.0",
         "@tensorflow/tfjs-core": "^3.15.0",
         "@tensorflow/tfjs-node": "^3.15.0",
-        "@testing-library/jest-dom": "^5.16.2",
-        "@testing-library/react": "^12.1.4",
-        "@testing-library/user-event": "^13.5.0",
-        "@types/jest": "^27.4.1",
         "@types/node": "^16.11.26",
         "@types/react": "^17.0.41",
         "@types/react-dom": "^17.0.14",
@@ -32,6 +28,7 @@
     "scripts": {
         "start": "react-scripts start",
         "start:debug": "BROWSER='google chrome' BROWSER_ARGS='--remote-debugging-port=9222' react-scripts start",
+        "emulators:start": "firebase emulators:start --import=./src/tests/emulatorData --export-on-exit",
         "emulators": "firebase emulators:start",
         "build": "react-scripts build",
         "test": "react-scripts test",
@@ -60,6 +57,10 @@
         ]
     },
     "devDependencies": {
+        "@testing-library/jest-dom": "^5.16.2",
+        "@testing-library/react": "^12.1.4",
+        "@testing-library/user-event": "^13.5.0",
+        "@types/jest": "^27.4.1",
         "@types/react-test-renderer": "^17.0.1",
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.15.0",

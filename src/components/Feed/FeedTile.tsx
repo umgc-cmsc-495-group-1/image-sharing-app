@@ -1,20 +1,8 @@
 import React from 'react'
-import { FeedPostInterface } from '../../tests/test_data';
+import { FeedPostInterface, ImageItemProps } from '../../types/appTypes';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { Box } from '@mui/material';
 import { MetaDataBar } from './MetaDataBar';
-
-export type ImageItemProps = {
-  src: string | undefined;
-  margin: number;
-  padding: number;
-  alt?: string;
-  loading?: "lazy" | "eager" | undefined;
-  sizes?: string | undefined;
-  width?: string | undefined;
-  height?: string | undefined;
-  objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down" | undefined;
-}
 
 function determineMarginAndPadding(width: number) {
   let currentMargin = 0;

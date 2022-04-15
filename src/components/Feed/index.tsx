@@ -1,7 +1,8 @@
 import React from 'react'
 import { Box } from '@mui/material';
 import { FeedTile } from './FeedTile';
-import { totalFeedPosts, FeedPostType } from '../../tests/test_data';
+import { totalFeedPosts } from '../../tests/test_data';
+import { FeedPostType } from '../../types/appTypes';
 
 const Feed: React.FC = (): JSX.Element => {
   console.log(totalFeedPosts.length)

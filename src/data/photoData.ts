@@ -1,8 +1,10 @@
 import 'firebase/storage';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { cloud, auth, fireStore } from '../firebaseSetup';
+import { storage, auth, firestore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc } from "firebase/firestore";
+import { FeedPostInterface } from '../types/appTypes';
+import { PhotoDataInterface } from '../types/photoTypes';
 
 /************************************************************
  *
@@ -20,15 +22,15 @@ import { setDoc, doc } from "firebase/firestore";
  * Interface for firestore data
  * associated with a photo post
  */
-export interface photoData {
-  photoId: string, // make both ids user id for profile?
-  userId: string,
-  imgName?: string,
-  caption?: string,
-  numberLikes: number,
-  comments: string[], // this may need to be moved to a sub-collection
-  imgURL?: string
-}
+// export interface photoData {
+//   photoId: string, // make both ids user id for profile?
+//   userId: string,
+//   imgName?: string,
+//   caption?: string,
+//   numberLikes: number,
+//   comments: string[], // this may need to be moved to a sub-collection
+//   imgURL?: string
+// }
 
 /**
  * get url
@@ -53,7 +55,7 @@ export const updateProfileImg = async (userId: string, file: File) => {
 
 /**
  * Upload new photo post
- * uploads new photo to cloud storage
+ * uploads new photo to storage 
  * and photo data to firestore db
  * @param userId
  * @param data
@@ -69,10 +71,10 @@ export const postNewImage = async (userId: string, caption: string, photoFile: F
   const user = auth.currentUser;
   // Get reference to subcollection path
   // (photos collection->doc w/userId key->posts collection->post data doc)
-  const firestoreRef = doc(fireStore, "photos", userId, "posts", imgUid);
+  const firestoreRef = doc(firestore, "photos", userId, "posts", imgUid);
   if (user) {
     // Post related data to save to firestore collection
-    const newImgData: photoData = {
+    const newImgData: PhotoDataInterface = {
       photoId: imgUid,
       userId: userId,
       imgName: photoFile.name || "",
@@ -99,10 +101,10 @@ export const postNewImage = async (userId: string, caption: string, photoFile: F
  */
 const uploadImageFile = async (file: File, path: string) => {
 
-  // example cloud storage file path: const path = `users/${userId}/profile-img`;
+  // example storage file path: const path = `users/${userId}/profile-img`;
 
-  // Get reference to the cloud storage location & upload file
-  const storageRef = ref(cloud, path);
+  // Get reference to the storage location & upload file
+  const storageRef = ref(storage, path);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
   // Listen for state changes, errors, and completion of the upload.
@@ -153,7 +155,7 @@ const uploadImageFile = async (file: File, path: string) => {
  */
 export const getProfileUrl = async (userId: string) => {
   const filePath = `profile-imgs/${userId}/profile-image`;
-  const fileRef = ref(cloud, filePath);
+  const fileRef = ref(storage, filePath);
   console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
@@ -173,10 +175,10 @@ export const getProfileUrl = async (userId: string) => {
 
 
 /*
-// Get cloud storage url
+// Get storage storage url
 export const getPhotoUrl = async (userId: string, file: File) => {
   const filePath = `photos/${userId}/${file.name}`;
-  const fileRef = ref(cloud, filePath);
+  const fileRef = ref(storage, filePath);
   console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
@@ -194,7 +196,7 @@ const updateTimestamp = await updateDoc(docRef, {
  */
 // Can create custom file metadata
 // ex.
-/** @type {any} */
+//** @type {any} */
 /*
 interface metadata {
   customMetadata: {
