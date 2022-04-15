@@ -7,6 +7,7 @@ import { useFirebaseAuth } from '../context/AuthContext';
 export default function HootHome() {
   // const user = auth.currentUser?.displayName ? auth.currentUser.displayName : 'no user'
   console.log(`user: ${JSON.stringify(auth.currentUser)}`)
+  console.log(window.location.hostname);
   // const userId = (useFirebaseAuth()?.uid || 'not authenticated')
   // let currentUser: appUser
 
