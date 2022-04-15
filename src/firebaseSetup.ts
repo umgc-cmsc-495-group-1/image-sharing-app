@@ -1,62 +1,47 @@
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/firestore'
-import 'firebase/storage'
-import { connectFirestoreEmulator } from 'firebase/firestore'
-import { getAuth, connectAuthEmulator } from 'firebase/auth'
-import { getStorage, connectStorageEmulator, ref } from 'firebase/storage'
+// Import the functions you need from the SDKs you need
+import * as firebase from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getDatabase, connectDatabaseEmulator } from "firebase/database";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-/*************************************************
- *
- * Firebase App config
- * checks hostname and initializes with
- * emulator urls if localhost or app .env variables
- * if not (emulator connections need to be removed
- * if not running on localhost)
- *
- ************************************************/
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBIAhYy5jj2uPLJptA7Agj46jdheAv5SuA",
+  authDomain: "hoot-umgc.firebaseapp.com",
+  databaseURL: "https://hoot-umgc-default-rtdb.firebaseio.com",
+  projectId: "hoot-umgc",
+  storageBucket: "hoot-umgc.appspot.com",
+  messagingSenderId: "614927815368",
+  appId: "1:614927815368:web:add5a55db00e599d790bfd",
+  measurementId: "G-W7J416M731"
+};
 
-let app;
-
-if (location.hostname === 'localhost') {
-
-  app = firebase.initializeApp({
-
-    apiKey: process.env.REACT_APP_API_KEY,
-    databaseURL: 'http://localhost:8080?ns=hoot-umgc',
-    authDomain: 'hoot-umgc.firebaseapp.com',
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: 'http://localhost:9199?ns=hoot-umgc',
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
-
-  })
-
+firebase.initializeApp(firebaseConfig);
+const auth = getAuth(firebase.getApp());
+const firestore = getFirestore(firebase.getApp());
+const database = getDatabase(firebase.getApp());
+const storage = getStorage(firebase.getApp());
+// check for production environment
+if (window.location.hostname === 'localhost') {
+  // connect to emulator
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectFirestoreEmulator(firestore, "localhost", 8080);
+  connectDatabaseEmulator(database, "localhost", 9000);
+  connectStorageEmulator(storage, "localhost", 9199);
 } else {
-
-  app = firebase.initializeApp({
-
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-
-  })
+  // connect application analytics
+  getAnalytics(firebase.getApp());
 }
 
-
-// Firestore DB
-// export const app = initializeApp(config)
-export const fireStore = firebase.firestore();
-// export const fireStore = getFirestore(app)
-
-connectFirestoreEmulator(fireStore, 'localhost', 8080)
-// Firebase Auth
-export const auth = getAuth(app)
-connectAuthEmulator(auth, 'http://localhost:9099?ns=hoot-umgc')
-// Cloud Storage
-export const cloud = getStorage(app)
-export const cloudRef = ref(cloud)
-connectStorageEmulator(cloud, 'localhost', 9199)
-
-console.log(firebase.app().options);
+export {
+  firebase,
+  auth,
+  firestore,
+  database,
+  storage
+}

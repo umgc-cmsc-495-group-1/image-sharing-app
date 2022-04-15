@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { getUserByUserId, appUser } from '../data/userData'
+import { getUserByUserId } from '../data/userData'
+import { AppUserInterface } from '../types/authentication'
 
 /******************************************************
  *
@@ -12,7 +13,7 @@ import { getUserByUserId, appUser } from '../data/userData'
 // get current user by id, if there is a logged in user
 export const useCurrentUser = (userId: string) => {
   const [currentUser, setCurrentUser] =
-    useState<appUser>({
+    useState<AppUserInterface>({
       username: '', displayName: '', email: '', uid: '', first: '',
       last: '', friends: [], likes: [], bio: ''
     })

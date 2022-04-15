@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommentInterface } from '../../tests/test_data';
+import { CommentInterface } from '../../types/appTypes';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 

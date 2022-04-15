@@ -28,7 +28,6 @@ All files                |   11.23 |     4.48 |    7.27 |   11.36 |
   TestPage.tsx           |       0 |      100 |       0 |       0 | 8
  src/data                |    6.66 |        0 |       0 |    6.66 |
   authFunctions.ts       |       0 |        0 |       0 |       0 | 49-306
-  authFunctons.ts        |   27.77 |        0 |       0 |   27.77 | 29-46,52,56,60-61
   photoData.ts           |       0 |        0 |       0 |       0 | 40-158
   photoFunctions.ts      |       0 |        0 |       0 |       0 |
   userData.ts            |   23.33 |        0 |       0 |   23.33 | 46-59,70-91,99-106,118-119,140,147-151
