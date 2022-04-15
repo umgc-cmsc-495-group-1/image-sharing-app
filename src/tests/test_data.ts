@@ -1,3 +1,10 @@
+import {
+  CommentInterface,
+  FeedPostInterface,
+  FeedPostType,
+  ProfileInterface
+} from '../types/appTypes'
+
 import profileImage1 from '../assets/static/profile/aiony-haust-3TLl_97HNJo-unsplash.jpg'
 import profileImage2 from '../assets/static/profile/ali-morshedlou-WMD64tMfc4k-unsplash.jpg'
 import profileImage3 from '../assets/static/profile/almos-bechtold-3402kvtHhOo-unsplash.jpg'
@@ -88,115 +95,6 @@ const demoFeedImages = [
 const demoContent = {
   profile: demoProfilePictures,
   images: demoFeedImages
-}
-
-/**
- * @description - User Images Base Interface
- * @export interface UserImagesInterface
- * @interface UserImagesInterface
- * @property {string} imageUrl - location of the image 
- */
-export interface UserImagesInterface {
-  imageUrl: string | undefined;
-}
-
-/**
- * @description - User Profile Base Interface
- * @export interface UserInterface
- * @interface UserInterface
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- */
-export interface UserInterface {
-  uid: string;
-  username: string;
-}
-
-/**
- * @description - Alternative Comment Interface
- * @export interface AltCommentInterface
- * @interface AltCommentInterface
- * @property {string} comment - comment of the user
- * @property {UserInterface} user - user of the comment
- */
-export interface AltCommentInterface {
-  user: UserInterface;
-  comment: string | string[];
-}
-
-/**
- * @description - Comment Interface with extended user information
- * @export interface CommentInterface
- * @interface CommentInterface
- * @extends {UserInterface}
- * @property {string} comment - comment of the user
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- */
-export interface CommentInterface extends UserInterface {
-  comment: string | string[];
-}
-
-/**
- * @description This interface is used to create a new comment
- * @export interface CommentInterface
- * @interface CommentInterface
- * @extends {UserInterface} UserInterface
- * @property {string} comment - The comment
- * @property {string} uid - The user id
- * @property {string} username - The username
- */
-export type CommentType = CommentInterface | CommentInterface[];
-
-/**
- * @description - Specific Feed Post Interface
- * @export interface FeedPostInterface
- * @interface FeedPostInterface
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- * @property {string} pid - post id of the post
- * @property {string} postText - caption of the post
- * @property {number} numberLikes - number of likes on the post
- * @property {number} numberComments - number of comments on the post
- * @property {string} imageUrl - location of the image
- * @property {CommentInterface[]} comments - comments on the post
- */
-export interface FeedPostInterface {
-  uid: string;
-  username: string;
-  pid: string;
-  postText: string;
-  numberLikes: number;
-  numberComments: number;
-  imageUrl: string | undefined;
-  comments: CommentInterface[];
-}
-
-/**
- * @description - Feed Post Type based on the FeedPostInterface
- * @export type FeedPostType
- * @type FeedPostType
- * @extends {FeedPostInterface} FeedPostInterface
- */
-export type FeedPostType = FeedPostInterface;
-
-/**
- * @description - User profile interface
- * @export interface ProfileInterface
- * @interface ProfileInterface
- * @extends {UserInterface} UserInterface
- * @extends {UserImagesInterface} UserImagesInterface
- * @property {string} imageUrl - location of the image 
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- * @property {string} bio - bio of the user
- * @property {string} posts - number of posts the user has made
- * @property {string} friends - number of followers the user has
- */
-export interface ProfileInterface extends UserInterface, UserImagesInterface {
-  posts: number;
-  friends: number;
-  bio: string;
 }
 
 /**

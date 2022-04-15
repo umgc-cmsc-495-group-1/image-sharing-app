@@ -4,38 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentIcon from '@mui/icons-material/Comment';
-import { FeedPostInterface } from '../../tests/test_data';
+import {
+  MetaDataBarInterface,
+  PostDetailProps,
+  LikeIconProps,
+  CommentIconProps
+} from '../../types/appTypes';
 type IconType = typeof FavoriteIcon | typeof FavoriteBorderIcon | typeof CommentIcon;
-
-export interface MetaDataBarInterface extends FeedPostInterface {
-  margin: number;
-  padding: number;
-  screenWidth: number;
-  screenHeight: number;
-}
-
-interface MarginPadding {
-  margin: number;
-  padding: number;
-}
-
-interface LikeIconProps extends MarginPadding {
-  isLiked: boolean;
-  numberOfLikes: number;
-  favoriteIcon?: IconType | null;
-  favoriteBorderIcon?: IconType | null;
-}
-
-interface CommentIconProps extends MarginPadding {
-  numberOfComments: number;
-  commentIcon?: IconType | null;
-}
-
-interface PostDetailProps extends MarginPadding {
-  username: string;
-  postText: string;
-  metaDataProps?: boolean | false;
-}
 
 function determinBarHeight(width: number): number {
   let barHeight = 0;

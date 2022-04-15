@@ -2,45 +2,81 @@ import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 //import { useNavigate } from 'react-router-dom';
-import { newUser, signup } from '../data/authFunctons';
+import { signup } from '../data/authFunctions';
+import { UserInterface } from '../types/authentication';
 import { UserSignupValidationError } from '../utils/Error';
 
 export default function HootSignup() {
 
   //const navigate = useNavigate();
-
+  // const baseErrors: ReactElement<HTMLUListElement> | null = <ul></ul>;
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-  const [err, setErr] = useState("");
+  // const [err, setErr] = useState(baseErrors);
+  // error divs
+  // let errDiv: HTMLDivElement | null;
+  // let errMessage: HTMLDivElement | null;
 
-  const handleError = async (event: React.FormEvent<HTMLFormElement>, user: newUser) => {
-    event.preventDefault();
-    // verify passwords
-    if (user.password !== user.verifyPassword) {
-      // make the error div visible
-      const errDiv: HTMLDivElement | null = document.querySelector('.submit-error');
-      if (errDiv !== null) {
-        errDiv.style.visibility = 'visible';
-      }
-      // reset forms to blank and display error
-      setDisplayName("");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setVerifyPassword("");
-      throw new UserSignupValidationError(
-        'UserSignupValidation',
-        'Credentials are missing from sign up form'
-      );
-    }
-  }
+  // TODO: write error handler
+  // const handleError = async (user: UserInterface) => {
+  //   const totalErrors: ReactElement<HTMLUListElement>[] = [];
+  //   let currentError: ReactElement<HTMLLIElement> | null;
+
+  //   if (user.displayName === '') {
+  //     currentError = <li>Display Name is required</li>;
+  //     totalErrors.push(currentError);
+  //   } else if (user.username === '') {
+  //     currentError = <li>Username is required</li>;
+  //     totalErrors.push(currentError);
+  //   } else if (user.email === '') {
+  //     currentError = <li>Email is required</li>;
+  //     totalErrors.push(currentError);
+  //   } else if (user.password !== user.verifyPassword) {
+  //     currentError = <li>Passwords do not match</li>;
+  //     totalErrors.push(currentError);
+  //   } else if (user.password === '' || user.verifyPassword === '') {
+  //     currentError = <li>Password is required</li>;
+  //     totalErrors.push(currentError);
+  //   }
+  //   // set the errors
+  //   setErr(<ul>{totalErrors}</ul>);
+  //   // make the error div visible
+  //   errDiv = document.querySelector('#on-error-message-container');
+  //   if (errDiv !== null) {
+  //     errDiv.style.visibility = 'visible';
+  //   }
+  //   // reset forms to blank and display error
+  //   setDisplayName("");
+  //   setUsername("");
+  //   setEmail("");
+  //   setPassword("");
+  //   setVerifyPassword("");
+  //   <Box
+  //   id="on-error-message-container"
+  //   sx={{
+  //     visibility: 'hidden',
+  //     className: 'submit-error',
+  //     backgroundColor: '#F04848',
+  //     color: '#fff',
+  //   }}
+  // >
+  //   {err}
+  //   <Typography
+  //     id="on-error-message"
+  //     sx={{
+  //       visibility: 'inherit',
+  //     }}
+  //     variant="body2"
+  //   ></Typography>
+  // </Box>
+  // }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const user: newUser = {
+    const user: UserInterface = {
       displayName: displayName,
       username: username,
       email: email,
@@ -50,19 +86,30 @@ export default function HootSignup() {
 
     try {
       // console.log(JSON.stringify(newUser));
-      if (user.password !== user.verifyPassword) {
-        handleError(event, user);
-      }
-      await signup(user);
+      // handleError(user);
+
+      await signup(user)
+        .then(res => {
+          if (res !== undefined) {
+            if (res.status === 201) {
+              // TODO: redirect to the profile page after adding stepper fro creating account
+              // navigate('/profile');
+              console.log(res.user);
+              return res.user;
+            }
+          }
+        })
+        .catch(err => {
+          if (err.status == 400) {
+            throw new UserSignupValidationError(
+              'UserSignupValidation',
+              'Credentials are missing from sign up form'
+            );
+          }
+        });
     } catch (error) {
-      if (error instanceof UserSignupValidationError) {
-        setErr(error.message);
-      }
-
+      console.log(error);
     }
-
-    console.log(user);
-    //navigate("../", { replace: true });
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -81,24 +128,8 @@ export default function HootSignup() {
           Sign Up
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="signup-form">
-          <Box
-            sx={{
-              visibility: 'hidden',
-              className: 'submit-error',
-              backgroundColor: '#F04848',
-              color: '#fff',
-            }}
-          >
-            <Typography
-              sx={{
-                visibility: 'inherit',
-              }}
-              id="on-error-message"
-              variant="body2"
-            >{err}</Typography>
-          </Box>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
                   setDisplayName(event.target.value);
