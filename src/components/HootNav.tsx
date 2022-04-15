@@ -13,7 +13,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseSetup";
-import { logout } from "../data/authFunctons";
+import { logout } from "../data/authFunctions";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function HootNav() {
