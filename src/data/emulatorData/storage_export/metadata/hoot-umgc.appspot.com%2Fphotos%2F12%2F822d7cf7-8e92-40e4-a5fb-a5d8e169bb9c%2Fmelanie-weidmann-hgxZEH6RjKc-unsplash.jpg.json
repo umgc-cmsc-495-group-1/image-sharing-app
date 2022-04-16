@@ -1,0 +1,20 @@
+{
+  "name": "photos/12/822d7cf7-8e92-40e4-a5fb-a5d8e169bb9c/melanie-weidmann-hgxZEH6RjKc-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140868004,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "2cca5c4c-ecdb-41d7-92c1-7d33f95a34f4"
+  ],
+  "etag": "Ic+3WV2IqMvvesB+4gAVZjvj2Vo",
+  "timeCreated": "2022-04-16T20:27:48.003Z",
+  "updated": "2022-04-16T20:27:48.006Z",
+  "size": 763210,
+  "md5Hash": "SntTJumDOmvgXcg8L+/h9g==",
+  "crc32c": "907108398"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "profile-imgs/12/profile-image",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140867109,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "e8ac3c41-f05e-4690-a6e1-23c89442125c"
+  ],
+  "etag": "cCvgeeX2xlx4HkirULMp5vwaFxI",
+  "timeCreated": "2022-04-16T20:27:47.108Z",
+  "updated": "2022-04-16T20:27:47.109Z",
+  "size": 362662,
+  "md5Hash": "4MfFpzfw0vwF8ee/HBMWGQ==",
+  "crc32c": "1174697042"
+}
