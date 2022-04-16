@@ -1,6 +1,4 @@
 import { auth } from '../firebaseSetup'
-// import firebase from 'firebase/app'
-// import 'firebase/auth'
 import { createUser, deleteUserDoc } from './userData'
 import {
   GoogleAuthProvider, signInWithPopup,
@@ -11,9 +9,9 @@ import {
 import {
   UserInterface,
   GoogleUserType,
-  ReturnUserInterface,
   UserCheckInterface
 } from '../types/authentication'
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
  *
@@ -27,40 +25,56 @@ import {
  *
  ****************************************************************/
 
-const signup = async (user: UserInterface) => {
+const checkEmptyValues = (user: UserInterface): boolean => {
+  if (user.username === '' ||
+    user.email === '' ||
+    user.password === '') {
+    return true;
+  }
+  return false;
+}
 
+const signup = async (user: UserInterface) => {
 
   let res: UserCredential
   let result: UserCheckInterface | undefined;
-
-  try {
-    // data is empty, do not create user
-    if (user.username === '' ||
-      user.email === '' ||
-      user.password === '') {
-      result = {
-        status: 400,
-        user: null,
-      }
-      return Promise.reject(result);
-      // TODO: write custom error to throw during creation to trigger during Promise
-    } else {
-      // empty data checks have passed, create the user
-      res = await createUserWithEmailAndPassword(
-        auth,
-        user.email,
-        user.password
-      )
-      createUser(res.user, user);
-      result = {
-        status: 200,
-        user: res,
-      }
-      return Promise.resolve(result);
+  // data is empty, do not create user
+  if (checkEmptyValues(user)) {
+    result = {
+      status: 400,
+      user: null,
+      message: 'Required items are missing'
     }
-
-  } catch (e) {
-    console.log(e)
+    return Promise.reject(result);
+    // TODO: write custom error to throw during creation to trigger during Promise
+  } else if (!PASSWORD_REGEX.test(user.password)) {
+    result = {
+      status: 400,
+      user: null,
+      message: 'Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #'
+    }
+    return Promise.reject(result);
+  } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
+    // empty data checks have passed, create the user
+    res = await createUserWithEmailAndPassword(
+      auth,
+      user.email,
+      user.password
+    )
+    createUser(res.user, user);
+    result = {
+      status: 201,
+      user: res.user,
+      message: 'User successfully created'
+    }
+    return Promise.resolve(result);
+  } else {
+    result = {
+      status: 400,
+      user: null,
+      message: 'Unknown issues, please try again'
+    }
+    return Promise.reject(result)
   }
 }
 
@@ -78,9 +92,13 @@ const logout = async () => {
  * @param user
  * @returns
  */
-const login = async (user: ReturnUserInterface) => {
-  const res = await signInWithEmailAndPassword(auth, user.email, user.password)
-  return res.user
+const login = async (email: string, password: string) => {
+  return await signInWithEmailAndPassword(auth, email, password)
+    .then((result) => {
+      return Promise.resolve(result);
+    }).catch((error) => {
+      return Promise.reject(error);
+    });
 }
 
 /**

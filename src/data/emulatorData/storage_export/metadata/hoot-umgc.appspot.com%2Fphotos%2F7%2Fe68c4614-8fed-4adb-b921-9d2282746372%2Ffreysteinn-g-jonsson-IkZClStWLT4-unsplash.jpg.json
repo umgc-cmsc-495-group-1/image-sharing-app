@@ -1,0 +1,20 @@
+{
+  "name": "photos/7/e68c4614-8fed-4adb-b921-9d2282746372/freysteinn-g-jonsson-IkZClStWLT4-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140860479,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "8c59ee86-a79c-45f6-99f1-d87338da8e06"
+  ],
+  "etag": "7s7fjZdGIQKzOtb+O4zvLz+Sb4c",
+  "timeCreated": "2022-04-16T20:27:40.478Z",
+  "updated": "2022-04-16T20:27:40.482Z",
+  "size": 818435,
+  "md5Hash": "9Yh6nzqGo9l8MWhQkGLjeA==",
+  "crc32c": "492985019"
+}

@@ -13,6 +13,7 @@ import HootUser from './components/HootUser';
 import Hoot404 from './components/Hoot404';
 import HootUserSettings from './components/HootUserSettings';
 import { CssBaseline } from '@mui/material';
+import { Profile } from './components/Profile';
 
 export default function App() {
 
@@ -36,6 +37,10 @@ export default function App() {
         {
           path: "/feed",
           element: <Feed />
+        },
+        {
+          path: "/test-profile",
+          element: <Profile />
         },
         {
           path: "/user",

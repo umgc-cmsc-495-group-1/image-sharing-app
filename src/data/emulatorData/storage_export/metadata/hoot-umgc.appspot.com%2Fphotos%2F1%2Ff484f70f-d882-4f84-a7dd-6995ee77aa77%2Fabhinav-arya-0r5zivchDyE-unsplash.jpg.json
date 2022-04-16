@@ -1,0 +1,20 @@
+{
+  "name": "photos/1/f484f70f-d882-4f84-a7dd-6995ee77aa77/abhinav-arya-0r5zivchDyE-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140852612,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "42b654f4-721a-438e-8ca5-1f7f57733d00"
+  ],
+  "etag": "P66djJ9DrNVx+gpMAXvUCxWtDXU",
+  "timeCreated": "2022-04-16T20:27:32.611Z",
+  "updated": "2022-04-16T20:27:32.614Z",
+  "size": 231049,
+  "md5Hash": "wPwBDp2mGqHZtffrS3hWRg==",
+  "crc32c": "2403328195"
+}

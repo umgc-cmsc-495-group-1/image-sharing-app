@@ -1,0 +1,20 @@
+{
+  "name": "photos/3/cdb9335b-1ff8-45d4-9f09-7a5c18540ec3/axel-blanchard-YVKotYBAUko-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140853736,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "eaadf425-1f8d-45b3-804d-1127dc6564d2"
+  ],
+  "etag": "cTojY3EGINpxxp81IWi3FJJrn3Y",
+  "timeCreated": "2022-04-16T20:27:33.735Z",
+  "updated": "2022-04-16T20:27:33.738Z",
+  "size": 668185,
+  "md5Hash": "nAA2B0cRjcn4MHmTJxd2bQ==",
+  "crc32c": "3537295702"
+}
