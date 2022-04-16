@@ -1,0 +1,20 @@
+{
+  "name": "photos/10/6317bd9a-d3c2-4e81-9558-1d8453cfa644/lina-a-3Gacb2IYrAk-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140864039,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "c369c8af-b4a8-4806-bb35-eff868fe708d"
+  ],
+  "etag": "xaF4+631gWhj3V7x0VVg8EqSfxI",
+  "timeCreated": "2022-04-16T20:27:44.038Z",
+  "updated": "2022-04-16T20:27:44.039Z",
+  "size": 294484,
+  "md5Hash": "TT/fAVRuZYxNiH2CobF5Yg==",
+  "crc32c": "1953038121"
+}
