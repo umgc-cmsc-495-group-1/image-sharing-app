@@ -1,0 +1,20 @@
+{
+  "name": "photos/4/f88969dd-d786-42f1-aef4-dffe0f3d7de3/brian-lawson-abiq3vnHjnk-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140855318,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "291fc514-2a70-4bdc-8e1f-da0492d78da0"
+  ],
+  "etag": "VO7LSdYgMB4+vMpG6h/QLpG8lsw",
+  "timeCreated": "2022-04-16T20:27:35.317Z",
+  "updated": "2022-04-16T20:27:35.319Z",
+  "size": 407149,
+  "md5Hash": "2Fub9o5cpDUwuGuuaKkwNA==",
+  "crc32c": "907508167"
+}

@@ -5,6 +5,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { signup } from '../data/authFunctions';
 import { UserInterface } from '../types/authentication';
 import { UserSignupValidationError } from '../utils/Error';
+import Cookies from 'js-cookie';
 
 export default function HootSignup() {
 
@@ -95,7 +96,7 @@ export default function HootSignup() {
               // TODO: redirect to the profile page after adding stepper fro creating account
               // navigate('/profile');
               console.log(res.user);
-              return res.user;
+              Cookies.set('user', JSON.stringify(res.user?.uid), { expires: 1 });
             }
           }
         })
@@ -103,7 +104,7 @@ export default function HootSignup() {
           if (err.status == 400) {
             throw new UserSignupValidationError(
               'UserSignupValidation',
-              'Credentials are missing from sign up form'
+              err.message
             );
           }
         });

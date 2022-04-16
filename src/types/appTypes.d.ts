@@ -5,7 +5,7 @@
  * @property {string} imageUrl - location of the image 
  */
 export interface UserImagesInterface {
-  imageUrl: string | undefined;
+  imageUrl: string;
 }
 
 /**
@@ -71,7 +71,7 @@ export type CommentType = CommentInterface | CommentInterface[];
  */
 export interface FeedPostInterface {
   uid: string;
-  username: string;
+  username: string | null;
   pid: string;
   postText: string;
   numberLikes: number;
@@ -102,8 +102,12 @@ export type FeedPostType = FeedPostInterface;
  * @property {string} friends - number of followers the user has
  */
 export interface ProfileInterface extends UserInterface, UserImagesInterface {
+  displayName: string;
+  email: string;
+  friends: [];
+  likes: [];
   posts: number;
-  friends: number;
+  // friends: number;
   bio: string;
 }
 
@@ -133,7 +137,7 @@ export interface CommentIconProps extends MarginPadding {
 }
 
 export interface PostDetailProps extends MarginPadding {
-  username: string;
+  username: string | null;
   postText: string;
   metaDataProps?: boolean | false;
 }
