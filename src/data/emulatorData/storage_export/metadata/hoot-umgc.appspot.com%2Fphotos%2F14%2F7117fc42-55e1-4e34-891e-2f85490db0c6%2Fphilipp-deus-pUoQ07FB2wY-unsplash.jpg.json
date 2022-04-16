@@ -1,0 +1,20 @@
+{
+  "name": "photos/14/7117fc42-55e1-4e34-891e-2f85490db0c6/philipp-deus-pUoQ07FB2wY-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140871188,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "682c61af-60bd-425a-8a14-402e8e7b4e25"
+  ],
+  "etag": "23cz659YnY5z6fFOglxAq4EApw4",
+  "timeCreated": "2022-04-16T20:27:51.187Z",
+  "updated": "2022-04-16T20:27:51.193Z",
+  "size": 1539718,
+  "md5Hash": "kQYdHOgDTNjYChE54z5f+w==",
+  "crc32c": "180091855"
+}
