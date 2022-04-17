@@ -6,7 +6,7 @@ export default function HootUser() {
   const { uid } = useParams();
   return (
     <>
-      <Typography>
+      <Typography role="user-profile">
         This is user {uid} profile
       </Typography>
       <Outlet />

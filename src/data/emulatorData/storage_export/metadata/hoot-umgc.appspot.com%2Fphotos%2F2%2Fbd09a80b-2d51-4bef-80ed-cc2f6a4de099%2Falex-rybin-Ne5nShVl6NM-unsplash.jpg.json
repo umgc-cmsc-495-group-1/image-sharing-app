@@ -1,19 +1,19 @@
 {
-  "name": "photos/2/a570e7d5-bed5-4203-bf1f-47343865eb97/alex-rybin-Ne5nShVl6NM-unsplash.jpg",
+  "name": "photos/2/bd09a80b-2d51-4bef-80ed-cc2f6a4de099/alex-rybin-Ne5nShVl6NM-unsplash.jpg",
   "bucket": "hoot-umgc.appspot.com",
   "contentType": "image/jpeg",
   "metageneration": 1,
-  "generation": 1650140852694,
+  "generation": 1650222399063,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "49df9eb8-be0d-4f28-aed9-ea664bab80d7"
+    "362c3e02-749a-4f77-be43-1ffa7a5a484b"
   ],
-  "etag": "LSzYuGEVC6KwPkYi7UBDKKxJtiE",
-  "timeCreated": "2022-04-16T20:27:32.693Z",
-  "updated": "2022-04-16T20:27:32.694Z",
+  "etag": "2rgU7CQJPiUddiBHRuAig3z7s78",
+  "timeCreated": "2022-04-17T19:06:39.062Z",
+  "updated": "2022-04-17T19:06:39.062Z",
   "size": 153474,
   "md5Hash": "s729gy5HQZ95TLp6UninEw==",
   "crc32c": "2625751998"

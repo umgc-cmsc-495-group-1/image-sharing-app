@@ -3,17 +3,17 @@
   "bucket": "hoot-umgc.appspot.com",
   "contentType": "image/jpeg",
   "metageneration": 1,
-  "generation": 1650140869708,
+  "generation": 1650222412557,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "227c7af4-aa16-4bb3-a6bd-e185e7a2ad83"
+    "25a99a70-a64b-4d02-95d7-b416a39ae495"
   ],
-  "etag": "e14AzjlHDdR2d+w1nm6xzWNAt90",
-  "timeCreated": "2022-04-16T20:27:49.707Z",
-  "updated": "2022-04-16T20:27:49.710Z",
+  "etag": "Dp6ckQwEAI5PJtbtl2pWP6O1nEs",
+  "timeCreated": "2022-04-17T19:06:52.556Z",
+  "updated": "2022-04-17T19:06:52.560Z",
   "size": 785459,
   "md5Hash": "1IdRJ9FDewzg4yF1aZTHBA==",
   "crc32c": "3167313780"

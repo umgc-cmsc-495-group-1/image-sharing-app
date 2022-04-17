@@ -7,9 +7,9 @@ import {
 } from 'react-router-dom';
 import Feed from '../components/Feed';
 import { UserPost } from '../components/UserPost';
-import { render, screen, cleanup } from '@testing-library/react';
+import HootUser from '../components/HootUser';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event'
 
 
 beforeEach(() => {
@@ -28,6 +28,7 @@ beforeEach(() => {
       <MemoryRouter initialEntries={['/user/1/profile/1']}>
         <Routes location={location}>
           <Route path="/feed" element={<Feed />} />
+          <Route path="/user/:uid/profile" element={<HootUser />} />
           <Route path="/user/:uid/profile/:pid" element={<UserPost />} />
         </Routes>
       </MemoryRouter>
@@ -42,8 +43,8 @@ describe('Feed Page Functionality', () => {
     // get the like buttons
     const likeButton = screen.getAllByRole('button', { name: 'like' });
     const currLike = parseInt(likeButton[0].textContent!);
-    // fireEvent.click(likeButton[0]);
-    userEvent.click(likeButton[0]);
+    fireEvent.click(likeButton[0]);
+    // userEvent.click(likeButton[0]);
     const newLike = parseInt(likeButton[0].textContent!);
     expect(newLike === (currLike + 1));
   });
@@ -55,10 +56,11 @@ describe('Feed Page Functionality', () => {
     //expect commentBox to exist, then click
     expect(commentBox[0]).toBeInTheDocument();
     expect(commentBox[0]).not.toBeDisabled();
-    userEvent.click(commentBox[0]);
+    fireEvent.click(commentBox[0]);
 
     const username = screen.getAllByRole('username');
     //Test comments are on screen
     expect(username[0]).toBeInTheDocument();
+    expect(username[0]).toHaveTextContent('Angel Egotrip')
   });
 });
