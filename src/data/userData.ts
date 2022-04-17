@@ -49,9 +49,9 @@ const createUser = async (user: User, userInfo: UserInterface | GoogleUserType) 
       uid: user.uid,
       first: userInfo.first || '',
       last: userInfo.last || '',
-      displayName: user.displayName,
-      username: user.displayName,
-      email: user.email,
+      displayName: userInfo.displayName,
+      username: userInfo.username,
+      email: userInfo.email,
       bio: '',
       friends: [],
       likes: []

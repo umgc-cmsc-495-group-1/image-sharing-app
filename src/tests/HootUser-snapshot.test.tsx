@@ -1,7 +1,7 @@
 import React from 'react';
 import "@testing-library/react/dont-cleanup-after-each";
 import '@testing-library/jest-dom';
-import { 
+import {
   MemoryRouter,
   Routes,
   Route
@@ -9,17 +9,13 @@ import {
 import HootUser from '../components/HootUser';
 import { create } from 'react-test-renderer';
 
-function renderWithMemoryRouter(component: JSX.Element) {
-  return create(
+it('Renders correctly', () => {
+  const renderer = create(
     <MemoryRouter initialEntries={['/user']}>
       <Routes>
-        <Route path='/user' element={component} />
+        <Route path='/user' element={<HootUser />} />
       </Routes>
     </MemoryRouter>
   );
-}
-
-it('Renders correctly',() => {
-  const renderer = renderWithMemoryRouter(<HootUser/>);
   expect(renderer.toJSON()).toMatchSnapshot();
 });

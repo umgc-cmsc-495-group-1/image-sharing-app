@@ -4,7 +4,9 @@ import {
   FeedPostType,
   ProfileInterface
 } from '../types/appTypes'
-
+import { UserInterface } from '../types/authentication'
+import { signup } from '../data/authFunctions'
+import { postNewImage, updateProfileImg } from '../data/photoData'
 import profileImage1 from '../assets/static/profile/aiony-haust-3TLl_97HNJo-unsplash.jpg'
 import profileImage2 from '../assets/static/profile/ali-morshedlou-WMD64tMfc4k-unsplash.jpg'
 import profileImage3 from '../assets/static/profile/almos-bechtold-3402kvtHhOo-unsplash.jpg'
@@ -42,9 +44,12 @@ import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplas
 /**
  * Array of test user names to be used in the feed and profile
  */
-const demoUsernames = [
+const demoDisplayNames = [
   'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
   'lina', 'max', 'melanie', 'mounir', 'philipp', 'sour', 'svitlana', 'theaminahmadi', 'tommy', 'yusuf'
+]
+
+const demoUsernames = ['Angel Egotrip', 'Made Savage', 'Binary Bark', 'The Deal', 'Fiddle Pie', 'Raid Brigade', 'Geez God', 'Mindhack Diva', 'Sugar Lump', 'K For Kun', 'Armor of Odd', 'Loop Hole Mindset', 'Asterism Zeevine', 'Droolbug', 'Starry Divinity', 'Zig Wagon', 'Blu Zoo', 'Lens Patriot', 'Doll Throne', 'Sweetielicious', 'Krazy Encounter', 'Strife Life', 'Ice Minister', 'Twinkle Doll', 'Meat Mojo', 'Evil Rage', 'Apogee Point', 'Cluster of Hope', 'Angel Berry', 'Mind Pixell', 'It Was Me', 'Marker Dee', 'Ahem Girl', 'Emoster Pink', 'Diva Comet', 'Prep Station', 'Whack Stack', 'Cutefest Fizzle', 'Him Again', 'Dread Monster', 'Exit Hound', 'Mind Trick Poodle', 'Prom Doll', 'Rainbow Passion', 'Cislunar Doll', 'Bright Nut', 'Fruit Loop Diva', 'Grimster', 'Cynic Poet', 'Illustrious Doom'
 ]
 /**
  * Array of test profile pictures to be used in the feed and profile
@@ -65,6 +70,27 @@ const demoProfilePictures = [
   profileImage13,
   profileImage14
 ]
+// const demoProfilePicturesFullPath = [
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/abhinav-arya-0r5zivchDyE-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/alex-rybin-Ne5nShVl6NM-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/axel-blanchard-YVKotYBAUko-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/brian-lawson-abiq3vnHjnk-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/brynn-thorn-RIIMd1r-n_M-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/eugene-tkachenko-XHDP42n5Yu0-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/freysteinn-g-jonsson-IkZClStWLT4-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/giorgio-manenti-MNlKblRC98k-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/hana-4mpn4AWt7SM-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/lina-a-3Gacb2IYrAk-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/max-lissenden-0MHf_nafpaw-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/melanie-weidmann-hgxZEH6RjKc-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/mounir-abdi-wYPG-eyGal0-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/philipp-deus-pUoQ07FB2wY-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/sour-moha-fFEX3kFoe00-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/svitlana-w7dlfv2BWvs-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/theaminahmadi-T0WB-E2hcYU-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg',
+//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
+// ]
 /**
  * Array of test feed posts to be used in the feed
  */
@@ -108,7 +134,11 @@ function generateRandomUsers(): ProfileInterface[] {
       uid: `${i + 1}`,
       username: `${demoUsernames[i]}`,
       posts: Math.floor(Math.random() * 100),
-      friends: Math.floor(Math.random() * 30),
+      displayName: `${demoDisplayNames[i]}`,
+      friends: [],
+      likes: [],
+      email: `${demoUsernames[i]}@test.com`,
+      // friends: Math.floor(Math.random() * 30),
       bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
     }
@@ -116,6 +146,37 @@ function generateRandomUsers(): ProfileInterface[] {
   }
 
   return users
+}
+
+export async function registerRandomUsers(profilePhotos: File[], feedPhotos: File[]) {
+  const totalUsers = generateRandomUsers();
+  for (let i = 0; i < totalUsers.length; i++) {
+    const currentUser: UserInterface = {
+      displayName: totalUsers[i].displayName,
+      username: totalUsers[i].username,
+      email: totalUsers[i].email,
+      password: 'Password18!',
+      verifyPassword: 'Password18!'
+    }
+    // add user info to db
+    await signup(currentUser)
+      .then(res => {
+        if (res.status == 201) {
+          console.log(res.user)
+        }
+      })
+      .catch(err => {
+        if (err.status === 400) {
+          console.log(err.message)
+        }
+      })
+    // add user image info to db
+    // let currentFile: File = createFileFromPath(totalUsers[i].imageUrl)
+    await updateProfileImg(totalUsers[i].uid, profilePhotos[i])
+    await postNewImage(totalUsers[i].uid,
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+      feedPhotos[i])
+  }
 }
 
 /**
@@ -165,6 +226,10 @@ function generateRandomFeedProps(): FeedPostType[] {
  * @returns {FeedPostType}
  */
 function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {
+  if (userId === undefined || postId === undefined) {
+    userId = '1';
+    postId = '1';
+  }
   return totalFeedPosts.filter(post => post.uid === userId && post.pid === postId)[0]
 }
 

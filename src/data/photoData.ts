@@ -1,10 +1,9 @@
-import 'firebase/storage';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { storage, auth, firestore } from '../firebaseSetup';
 import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc } from "firebase/firestore";
-import { FeedPostInterface } from '../types/appTypes';
-import { PhotoDataInterface } from '../types/photoTypes';
+// import { PhotoDataInterface } from '../types/photoTypes';
+import { FeedPostType } from '../types/appTypes'
 
 /************************************************************
  *
@@ -14,31 +13,13 @@ import { PhotoDataInterface } from '../types/photoTypes';
  *
  ************************************************************/
 
-// need to npm install uuid to create unique filepath for photos
-// & npm install -D @types/uuid or npm i --save-dev @types/uuid
-// Usage: uuidv4(); returns uid string
-
-/**
- * Interface for firestore data
- * associated with a photo post
- */
-// export interface photoData {
-//   photoId: string, // make both ids user id for profile?
-//   userId: string,
-//   imgName?: string,
-//   caption?: string,
-//   numberLikes: number,
-//   comments: string[], // this may need to be moved to a sub-collection
-//   imgURL?: string
-// }
-
 /**
  * get url
  * Returns the signed-in user's profile Pic URL
  * or if URL is empty returns placeholder image
  * @returns
  */
-export function getProfilePicUrl() {
+function getProfilePicUrl() {
   if (auth.currentUser)
     return auth.currentUser.photoURL || '/profile_placeholder.png';
 }
@@ -48,7 +29,7 @@ export function getProfilePicUrl() {
  * @param userId
  * @param file
  */
-export const updateProfileImg = async (userId: string, file: File) => {
+const updateProfileImg = async (userId: string, file: File) => {
   const path = `profile-imgs/${userId}/profile-image`;
   await uploadImageFile(file, path);
 }
@@ -61,28 +42,41 @@ export const updateProfileImg = async (userId: string, file: File) => {
  * @param data
  * @param photoFile
  */
-export const postNewImage = async (userId: string, caption: string, photoFile: File) => {
+const postNewImage = async (userId: string, caption: string, photoFile: File) => {
   // Create a new UID for the photo
   const imgUid = uuidv4();
   // get ext from file let extension = filename.split(".").pop();
   // imgName = imgUid + . + ext
   const path = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
+
   // Check for valid user
   const user = auth.currentUser;
+  // check for username
+  const username = (auth.currentUser !== null) ? auth.currentUser.displayName : 'Chicken Sandwich'
   // Get reference to subcollection path
   // (photos collection->doc w/userId key->posts collection->post data doc)
   const firestoreRef = doc(firestore, "photos", userId, "posts", imgUid);
   if (user) {
-    // Post related data to save to firestore collection
-    const newImgData: PhotoDataInterface = {
-      photoId: imgUid,
-      userId: userId,
-      imgName: photoFile.name || "",
-      caption: caption || "",
+    // Post related data to save to firestore collection 
+    const newImgData: FeedPostType = {
+      uid: userId,
+      username: username,
+      pid: imgUid,
+      postText: caption || "",
+      numberLikes: 0,
+      numberComments: 0,
+      imageUrl: path,
       comments: [],
-      imgURL: path,
-      numberLikes: 0
     }
+    // const newImgData: PhotoDataInterface = {
+    //   photoId: imgUid,
+    //   userId: userId,
+    //   imgName: photoFile.name || "",
+    //   caption: caption || "",
+    //   comments: [],
+    //   imgURL: path,
+    //   numberLikes: 0
+    // }
     // Write to firestore db
     try {
       // set document data
@@ -102,10 +96,12 @@ export const postNewImage = async (userId: string, caption: string, photoFile: F
 const uploadImageFile = async (file: File, path: string) => {
 
   // example storage file path: const path = `users/${userId}/profile-img`;
-
+  const metadata = {
+    contentType: 'image/jpeg'
+  }
   // Get reference to the storage location & upload file
   const storageRef = ref(storage, path);
-  const uploadTask = uploadBytesResumable(storageRef, file);
+  const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
   uploadTask.on('state_changed',
@@ -153,12 +149,21 @@ const uploadImageFile = async (file: File, path: string) => {
  * @param userId
  * @returns
  */
-export const getProfileUrl = async (userId: string) => {
+const getProfileUrl = async (userId: string) => {
   const filePath = `profile-imgs/${userId}/profile-image`;
   const fileRef = ref(storage, filePath);
   console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
+
+export {
+  getProfilePicUrl,
+  updateProfileImg,
+  postNewImage,
+  uploadImageFile,
+  getProfileUrl
+}
+
 
 // TODO:
 
