@@ -1,19 +1,19 @@
 {
-  "name": "photos/6/0ecc239b-43d7-4e17-b911-de2d65460e7a/eugene-tkachenko-XHDP42n5Yu0-unsplash.jpg",
+  "name": "photos/6/e87f2023-e4e6-48c4-9017-9f71f3a048c2/eugene-tkachenko-XHDP42n5Yu0-unsplash.jpg",
   "bucket": "hoot-umgc.appspot.com",
   "contentType": "image/jpeg",
   "metageneration": 1,
-  "generation": 1650140858769,
+  "generation": 1650222404259,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "fad7bfef-e2a1-4533-a61c-7ec8afa71bff"
+    "68d93ef3-e0ed-4eba-984d-e14e3494a6b8"
   ],
-  "etag": "Fxx3k6vYYf6akvpcLvncrPRYW40",
-  "timeCreated": "2022-04-16T20:27:38.768Z",
-  "updated": "2022-04-16T20:27:38.773Z",
+  "etag": "71+IujFYisOrGLjwNHeDyFIt1ig",
+  "timeCreated": "2022-04-17T19:06:44.258Z",
+  "updated": "2022-04-17T19:06:44.263Z",
   "size": 986975,
   "md5Hash": "SQ+nunf2y5RzMOFaAuhKMA==",
   "crc32c": "486589750"

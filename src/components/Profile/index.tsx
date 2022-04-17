@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Box } from '@mui/system';
-import { registerRandomUsers } from '../../tests/test_data'
+import { registerRandomUsers, demoFeedImages, getProfileData } from '../../tests/test_data'
+import { useParams, Outlet } from 'react-router-dom';
+import { Box, Container } from '@mui/material';
+import { UserMetaData } from './UserMetaData';
 
-const Profile: React.FC = () => {
+const TestUpload: React.FC = () => {
 
   const [profile, setProfile] = useState<File[]>()
   const [feed, setFeed] = useState<File[]>()
@@ -37,13 +39,9 @@ const Profile: React.FC = () => {
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // console.log(profile)
-    // console.log(feed)
     if (profile !== undefined && feed !== undefined) {
       // add test data to databasa
       registerRandomUsers(profile, feed)
-      // console.log(profile)
-      // console.log(feed)
     }
   }
 
@@ -72,6 +70,35 @@ const Profile: React.FC = () => {
   )
 }
 
+const Profile: React.FC = () => {
+  const { uid } = useParams();
+  const profileData = getProfileData(uid);
+  return (
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          my: 10
+        }}
+      >
+        <UserMetaData
+          uid={profileData.uid}
+          username={profileData.username}
+          posts={profileData.posts}
+          displayName={profileData.displayName}
+          friends={profileData.friends}
+          likes={profileData.likes}
+          email={profileData.email}
+          bio={profileData.bio}
+          imageUrl={profileData.imageUrl}
+          testImages={demoFeedImages}
+        />
+      </Box>
+      <Outlet />
+    </Container>
+  )
+}
+
 export {
-  Profile
+  Profile,
+  TestUpload
 }
