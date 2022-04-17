@@ -16,6 +16,7 @@ import { auth } from "../firebaseSetup";
 import { logout } from "../data/authFunctions";
 import { onAuthStateChanged } from "firebase/auth";
 
+
 export default function HootNav() {
   const [uid, setUid] = useState("");
 
