@@ -96,14 +96,7 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
   const [numberOfLikes, setNumberOfLikes] = useState(numberLikes);
   const navigate = useNavigate();
   function handleNavigate() {
-    navigate(`/user/${uid}/profile/${pid}`,
-      {
-        state: currentState
-      })
-  }
-  const currentState = {
-    uid: uid,
-    pid: pid
+    navigate(`/user/${uid}/profile/${pid}`)
   }
   return (
     <Box

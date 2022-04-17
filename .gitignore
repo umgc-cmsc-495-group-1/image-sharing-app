@@ -5,8 +5,6 @@
 /.pnp
 .pnp.js
 
-# testing
-/coverage
 
 # production
 /build
@@ -32,7 +30,6 @@ _SpecRunner.html
 __benchmarks__
 build/
 remote-repo/
-coverage/
 .module-cache
 fixtures/dom/public/react-dom.js
 fixtures/dom/public/react.js
