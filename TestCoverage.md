@@ -20,4 +20,4 @@ Jest: "global" coverage threshold for branches (80%) not met: 25.8%
 Jest: "global" coverage threshold for lines (80%) not met: 50.98%
 Jest: "global" coverage threshold for functions (80%) not met: 40%
 
-<a href="https://github.com/umgc-cmsc-495-group-1/image-sharing-app/tree/dev/coverage/lcov-report/index.html" target="_blank">Interactive Report with Coverage</a>
+<a href="https://github.com/umgc-cmsc-495-group-1/image-sharing-app/tree/master/coverage/lcov-report/index.html" target="_blank">Interactive Report with Coverage</a>
