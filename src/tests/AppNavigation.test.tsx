@@ -11,6 +11,8 @@ import HootHome from '../components/HootHome';
 import HootLogin from '../components/HootLogin';
 import HootSignup from '../components/HootSignup';
 import { screen, fireEvent, cleanup, render } from '@testing-library/react';
+// import UserEvent  from '@testing-library/user-event'
+// import { UserEvent } from '@testing-library/user-event'
 
 describe('App Navigation - Render/Navigate', () => {
   beforeEach(() => {
