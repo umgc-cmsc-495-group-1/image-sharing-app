@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Feed from './components/Feed';
-import UserPost from './components/UserPost';
+import { UserPost } from './components/UserPost';
 import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
 import HootNav from './components/HootNav';

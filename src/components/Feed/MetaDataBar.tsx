@@ -81,8 +81,8 @@ const PostDetails: React.FC<PostDetailProps> = ({
         justifyContent: 'space-between',
       }}
     >
-      <p style={userStyle}>{username}</p>
-      <p style={postStyle}>{postText}</p>
+      <p role='username' style={userStyle}>{username}</p>
+      <p role='description' style={postStyle}>{postText}</p>
     </Box>
   );
 };
@@ -95,6 +95,16 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
   const [isLiked, setIsLiked] = useState(numberLikes > 0);
   const [numberOfLikes, setNumberOfLikes] = useState(numberLikes);
   const navigate = useNavigate();
+  function handleNavigate() {
+    navigate(`/user/${uid}/profile/${pid}`,
+      {
+        state: currentState
+      })
+  }
+  const currentState = {
+    uid: uid,
+    pid: pid
+  }
   return (
     <Box
       className='MetaDataBar'
@@ -144,7 +154,7 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
           edge="end"
           size="large"
           aria-label="comment"
-          onClick={() => navigate(`/user/${uid}/profile/${pid}`)}
+          onClick={handleNavigate}
         >
           <CommentIconCustom
             numberOfComments={numberComments}

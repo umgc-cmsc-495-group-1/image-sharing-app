@@ -226,6 +226,10 @@ function generateRandomFeedProps(): FeedPostType[] {
  * @returns {FeedPostType}
  */
 function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {
+  if (userId === undefined || postId === undefined) {
+    userId = '1';
+    postId = '1';
+  }
   return totalFeedPosts.filter(post => post.uid === userId && post.pid === postId)[0]
 }
 
