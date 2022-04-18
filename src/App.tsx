@@ -13,6 +13,7 @@ import Hoot404 from './components/Hoot404';
 import HootUserSettings from './components/HootUserSettings';
 import { CssBaseline } from '@mui/material';
 import { Profile } from './components/Profile';
+import { UploadImage } from './components/UploadImage';
 
 export default function App() {
 
@@ -59,6 +60,10 @@ export default function App() {
                   path: "settings",
                   element: <HootUserSettings />
                 },
+                {
+                  path: "upload-image",
+                  element: <UploadImage />
+                }
               ]
             },
           ],

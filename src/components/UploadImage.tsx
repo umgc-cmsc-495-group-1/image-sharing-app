@@ -1,9 +1,13 @@
 import React from 'react';
 
-export default function UploadImage() {
-    return (
-        <div>
-            
-        </div>
-    );
+const UploadImage = () => {
+  return (
+    <div>
+
+    </div>
+  );
+}
+
+export {
+  UploadImage
 }

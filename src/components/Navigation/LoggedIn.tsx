@@ -15,6 +15,9 @@ const LoggedIn = ({ uid }: { uid: string | null }) => {
       <ListItem button component={Link} to={`/user/${uid}/settings`} role="navigation-user-settings">
         <ListItemText primary="Settings" />
       </ListItem>
+      <ListItem button component={Link} to={`/user/${uid}/upload-image`} role="navigation-user-upload-image">
+        <ListItemText primary="Upload Image" />
+      </ListItem>
       <ListItem button component={Link} to="/" role="navigation-logout"
         onClick={() => {
           logout();

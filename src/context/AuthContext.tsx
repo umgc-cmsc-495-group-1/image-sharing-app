@@ -1,18 +1,7 @@
 import React from "react";
 import * as firebase from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-// import Cookies from 'js-cookie';
-// import {
-//   UserInterface,
-//   GoogleUserType,
-//   ReturnUserInterface
-// } from '../types/authentication';
-// import { UserInterface } from '../types/authentication';
-// , onAuthStateChanged, connectAuthEmulator
 import { User } from '@firebase/auth';
-// import { firebase } from '../firebaseSetup';
-// import firebase from 'firebase/compat/app';
-// import "firebase/compat/auth";
 
 /*************************************************
  * React Context and Provider for Current User
