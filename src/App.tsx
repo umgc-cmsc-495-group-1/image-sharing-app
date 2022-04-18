@@ -4,12 +4,11 @@ import {
 } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Feed from './components/Feed';
-import UserPost from './components/UserPost';
+import { UserPost } from './components/UserPost';
 import HootHome from './components/HootHome';
 import HootLogin from './components/HootLogin';
-import HootNav from './components/HootNav';
+import { Navigation } from './components/Navigation';
 import HootSignup from './components/HootSignup';
-import HootUser from './components/HootUser';
 import Hoot404 from './components/Hoot404';
 import HootUserSettings from './components/HootUserSettings';
 import { CssBaseline } from '@mui/material';
@@ -20,7 +19,7 @@ export default function App() {
   const routes: RouteObject[] = [
     {
       path: "/",
-      element: <HootNav />,
+      element: <Navigation />,
       children: [
         {
           index: true,
@@ -39,10 +38,6 @@ export default function App() {
           element: <Feed />
         },
         {
-          path: "/test-profile",
-          element: <Profile />
-        },
-        {
           path: "/user",
           children: [
             {
@@ -51,7 +46,7 @@ export default function App() {
                 {
                   path: "profile",
                   children: [
-                    { index: true, element: <HootUser /> },
+                    { index: true, element: <Profile /> },
                     {
                       path: ":pid",
                       children: [

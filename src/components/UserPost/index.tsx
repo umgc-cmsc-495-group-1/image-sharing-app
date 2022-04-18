@@ -11,7 +11,7 @@ import { ImageItem } from '../Feed/FeedTile';
 import { determineMarginAndPadding } from '../../utils/marginPadding'
 import CommentItem from './CommentItem';
 
-export default function UserPost() {
+const UserPost: React.FC = () => {
   const { uid, pid } = useParams();
   const postData = getPostData(uid, pid);
   const { width } = useWindowDimensions();
@@ -77,4 +77,8 @@ export default function UserPost() {
       </Box>
     </Box>
   );
+}
+
+export {
+  UserPost
 }

@@ -9,71 +9,14 @@ import Cookies from 'js-cookie';
 
 export default function HootSignup() {
 
-  //const navigate = useNavigate();
-  // const baseErrors: ReactElement<HTMLUListElement> | null = <ul></ul>;
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-  // const [err, setErr] = useState(baseErrors);
-  // error divs
-  // let errDiv: HTMLDivElement | null;
-  // let errMessage: HTMLDivElement | null;
+
 
   // TODO: write error handler
-  // const handleError = async (user: UserInterface) => {
-  //   const totalErrors: ReactElement<HTMLUListElement>[] = [];
-  //   let currentError: ReactElement<HTMLLIElement> | null;
-
-  //   if (user.displayName === '') {
-  //     currentError = <li>Display Name is required</li>;
-  //     totalErrors.push(currentError);
-  //   } else if (user.username === '') {
-  //     currentError = <li>Username is required</li>;
-  //     totalErrors.push(currentError);
-  //   } else if (user.email === '') {
-  //     currentError = <li>Email is required</li>;
-  //     totalErrors.push(currentError);
-  //   } else if (user.password !== user.verifyPassword) {
-  //     currentError = <li>Passwords do not match</li>;
-  //     totalErrors.push(currentError);
-  //   } else if (user.password === '' || user.verifyPassword === '') {
-  //     currentError = <li>Password is required</li>;
-  //     totalErrors.push(currentError);
-  //   }
-  //   // set the errors
-  //   setErr(<ul>{totalErrors}</ul>);
-  //   // make the error div visible
-  //   errDiv = document.querySelector('#on-error-message-container');
-  //   if (errDiv !== null) {
-  //     errDiv.style.visibility = 'visible';
-  //   }
-  //   // reset forms to blank and display error
-  //   setDisplayName("");
-  //   setUsername("");
-  //   setEmail("");
-  //   setPassword("");
-  //   setVerifyPassword("");
-  //   <Box
-  //   id="on-error-message-container"
-  //   sx={{
-  //     visibility: 'hidden',
-  //     className: 'submit-error',
-  //     backgroundColor: '#F04848',
-  //     color: '#fff',
-  //   }}
-  // >
-  //   {err}
-  //   <Typography
-  //     id="on-error-message"
-  //     sx={{
-  //       visibility: 'inherit',
-  //     }}
-  //     variant="body2"
-  //   ></Typography>
-  // </Box>
-  // }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -86,8 +29,6 @@ export default function HootSignup() {
     }
 
     try {
-      // console.log(JSON.stringify(newUser));
-      // handleError(user);
 
       await signup(user)
         .then(res => {
