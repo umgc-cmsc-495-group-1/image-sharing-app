@@ -12,7 +12,6 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { login } from "../data/authFunctions";
-import Cookies from 'js-cookie';
 
 export default function HootLogin() {
   const navigate = useNavigate();
@@ -25,17 +24,16 @@ export default function HootLogin() {
     await login(email, password)
       .then((res) => {
         console.log(res);
-        Cookies.set('user', JSON.stringify(res.user.uid), { expires: 1 });
+        navigate("/feed");
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
     console.log({
       email,
       password,
     });
-    // TODO: navigate them to profile 
-    navigate("/");
+    // TODO: navigate them to profile
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -51,7 +49,13 @@ export default function HootLogin() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography>Login</Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="login-form">
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{ mt: 3 }}
+          role="login-form"
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
