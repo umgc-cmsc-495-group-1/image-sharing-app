@@ -1,3 +1,12 @@
+import {
+  CommentInterface,
+  FeedPostInterface,
+  FeedPostType,
+  ProfileInterface
+} from '../types/appTypes'
+import { UserInterface } from '../types/authentication'
+import { signup } from '../data/authFunctions'
+import { postNewImage, updateProfileImg } from '../data/photoData'
 import profileImage1 from '../assets/static/profile/aiony-haust-3TLl_97HNJo-unsplash.jpg'
 import profileImage2 from '../assets/static/profile/ali-morshedlou-WMD64tMfc4k-unsplash.jpg'
 import profileImage3 from '../assets/static/profile/almos-bechtold-3402kvtHhOo-unsplash.jpg'
@@ -35,9 +44,12 @@ import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplas
 /**
  * Array of test user names to be used in the feed and profile
  */
-const demoUsernames = [
+const demoDisplayNames = [
   'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
   'lina', 'max', 'melanie', 'mounir', 'philipp', 'sour', 'svitlana', 'theaminahmadi', 'tommy', 'yusuf'
+]
+
+const demoUsernames = ['Angel Egotrip', 'Made Savage', 'Binary Bark', 'The Deal', 'Fiddle Pie', 'Raid Brigade', 'Geez God', 'Mindhack Diva', 'Sugar Lump', 'K For Kun', 'Armor of Odd', 'Loop Hole Mindset', 'Asterism Zeevine', 'Droolbug', 'Starry Divinity', 'Zig Wagon', 'Blu Zoo', 'Lens Patriot', 'Doll Throne', 'Sweetielicious', 'Krazy Encounter', 'Strife Life', 'Ice Minister', 'Twinkle Doll', 'Meat Mojo', 'Evil Rage', 'Apogee Point', 'Cluster of Hope', 'Angel Berry', 'Mind Pixell', 'It Was Me', 'Marker Dee', 'Ahem Girl', 'Emoster Pink', 'Diva Comet', 'Prep Station', 'Whack Stack', 'Cutefest Fizzle', 'Him Again', 'Dread Monster', 'Exit Hound', 'Mind Trick Poodle', 'Prom Doll', 'Rainbow Passion', 'Cislunar Doll', 'Bright Nut', 'Fruit Loop Diva', 'Grimster', 'Cynic Poet', 'Illustrious Doom'
 ]
 /**
  * Array of test profile pictures to be used in the feed and profile
@@ -91,115 +103,6 @@ const demoContent = {
 }
 
 /**
- * @description - User Images Base Interface
- * @export interface UserImagesInterface
- * @interface UserImagesInterface
- * @property {string} imageUrl - location of the image 
- */
-export interface UserImagesInterface {
-  imageUrl: string | undefined;
-}
-
-/**
- * @description - User Profile Base Interface
- * @export interface UserInterface
- * @interface UserInterface
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- */
-export interface UserInterface {
-  uid: string;
-  username: string;
-}
-
-/**
- * @description - Alternative Comment Interface
- * @export interface AltCommentInterface
- * @interface AltCommentInterface
- * @property {string} comment - comment of the user
- * @property {UserInterface} user - user of the comment
- */
-export interface AltCommentInterface {
-  user: UserInterface;
-  comment: string | string[];
-}
-
-/**
- * @description - Comment Interface with extended user information
- * @export interface CommentInterface
- * @interface CommentInterface
- * @extends {UserInterface}
- * @property {string} comment - comment of the user
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- */
-export interface CommentInterface extends UserInterface {
-  comment: string | string[];
-}
-
-/**
- * @description This interface is used to create a new comment
- * @export interface CommentInterface
- * @interface CommentInterface
- * @extends {UserInterface} UserInterface
- * @property {string} comment - The comment
- * @property {string} uid - The user id
- * @property {string} username - The username
- */
-export type CommentType = CommentInterface | CommentInterface[];
-
-/**
- * @description - Specific Feed Post Interface
- * @export interface FeedPostInterface
- * @interface FeedPostInterface
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- * @property {string} pid - post id of the post
- * @property {string} postText - caption of the post
- * @property {number} numberLikes - number of likes on the post
- * @property {number} numberComments - number of comments on the post
- * @property {string} imageUrl - location of the image
- * @property {CommentInterface[]} comments - comments on the post
- */
-export interface FeedPostInterface {
-  uid: string;
-  username: string;
-  pid: string;
-  postText: string;
-  numberLikes: number;
-  numberComments: number;
-  imageUrl: string | undefined;
-  comments: CommentInterface[];
-}
-
-/**
- * @description - Feed Post Type based on the FeedPostInterface
- * @export type FeedPostType
- * @type FeedPostType
- * @extends {FeedPostInterface} FeedPostInterface
- */
-export type FeedPostType = FeedPostInterface;
-
-/**
- * @description - User profile interface
- * @export interface ProfileInterface
- * @interface ProfileInterface
- * @extends {UserInterface} UserInterface
- * @extends {UserImagesInterface} UserImagesInterface
- * @property {string} imageUrl - location of the image 
- * @property {string} uid - user id of the user
- * @property {string} username - username of the user
- * @property {string} bio - bio of the user
- * @property {string} posts - number of posts the user has made
- * @property {string} friends - number of followers the user has
- */
-export interface ProfileInterface extends UserInterface, UserImagesInterface {
-  posts: number;
-  friends: number;
-  bio: string;
-}
-
-/**
  * @description - Generate a random test user to be used in the feed and profile
  * @returns {ProfileInterface[]} 
  */
@@ -210,7 +113,11 @@ function generateRandomUsers(): ProfileInterface[] {
       uid: `${i + 1}`,
       username: `${demoUsernames[i]}`,
       posts: Math.floor(Math.random() * 100),
-      friends: Math.floor(Math.random() * 30),
+      displayName: `${demoDisplayNames[i]}`,
+      friends: [],
+      likes: [],
+      email: `${demoDisplayNames[i]}@test.com`,
+      // friends: Math.floor(Math.random() * 30),
       bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
     }
@@ -218,6 +125,37 @@ function generateRandomUsers(): ProfileInterface[] {
   }
 
   return users
+}
+
+export async function registerRandomUsers(profilePhotos: File[], feedPhotos: File[]) {
+  const totalUsers = generateRandomUsers();
+  for (let i = 0; i < totalUsers.length; i++) {
+    const currentUser: UserInterface = {
+      displayName: totalUsers[i].displayName,
+      username: totalUsers[i].username,
+      email: totalUsers[i].email,
+      password: 'Password18!',
+      verifyPassword: 'Password18!'
+    }
+    // add user info to db
+    await signup(currentUser)
+      .then(res => {
+        if (res.status == 201) {
+          console.log(res.user)
+        }
+      })
+      .catch(err => {
+        if (err.status === 400) {
+          console.log(err.message)
+        }
+      })
+    // add user image info to db
+    // let currentFile: File = createFileFromPath(totalUsers[i].imageUrl)
+    await updateProfileImg(totalUsers[i].uid, profilePhotos[i])
+    await postNewImage(totalUsers[i].uid,
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+      feedPhotos[i])
+  }
 }
 
 /**
@@ -267,7 +205,18 @@ function generateRandomFeedProps(): FeedPostType[] {
  * @returns {FeedPostType}
  */
 function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {
+  if (userId === undefined || postId === undefined) {
+    userId = '1';
+    postId = '1';
+  }
   return totalFeedPosts.filter(post => post.uid === userId && post.pid === postId)[0]
+}
+
+function getProfileData(userId: string | undefined): ProfileInterface {
+  if (userId === undefined) {
+    userId = '1'
+  }
+  return totalDemoUsers.filter(profile => profile.uid === userId)[0];
 }
 
 const totalDemoUsers: ProfileInterface[] = generateRandomUsers();
@@ -276,5 +225,9 @@ const totalFeedPosts: FeedPostInterface[] = generateRandomFeedProps();
 export {
   totalDemoUsers,
   totalFeedPosts,
-  getPostData
+  demoFeedImages,
+  generateRandomFeedProps,
+  generateRandomUsers,
+  getPostData,
+  getProfileData
 }

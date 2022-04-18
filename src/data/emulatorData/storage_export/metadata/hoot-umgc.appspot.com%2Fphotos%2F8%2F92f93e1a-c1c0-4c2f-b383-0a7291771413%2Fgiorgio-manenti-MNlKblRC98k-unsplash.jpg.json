@@ -1,0 +1,20 @@
+{
+  "name": "photos/8/92f93e1a-c1c0-4c2f-b383-0a7291771413/giorgio-manenti-MNlKblRC98k-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650222406176,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "31cef422-89a5-41ce-9086-3896c58ca866"
+  ],
+  "etag": "7lCluLn+6ROUamk6wfmK/Y+BRnk",
+  "timeCreated": "2022-04-17T19:06:46.175Z",
+  "updated": "2022-04-17T19:06:46.177Z",
+  "size": 447542,
+  "md5Hash": "YhLE5iW79nZ9CRTljG1OTQ==",
+  "crc32c": "806365787"
+}

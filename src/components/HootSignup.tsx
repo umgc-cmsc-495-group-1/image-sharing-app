@@ -2,45 +2,25 @@ import React, { useState } from 'react';
 import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 //import { useNavigate } from 'react-router-dom';
-import { newUser, signup } from '../data/authFunctons';
+import { signup } from '../data/authFunctions';
+import { UserInterface } from '../types/authentication';
 import { UserSignupValidationError } from '../utils/Error';
+import Cookies from 'js-cookie';
 
 export default function HootSignup() {
-
-  //const navigate = useNavigate();
 
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-  const [err, setErr] = useState("");
 
-  const handleError = async (event: React.FormEvent<HTMLFormElement>, user: newUser) => {
-    event.preventDefault();
-    // verify passwords
-    if (user.password !== user.verifyPassword) {
-      // make the error div visible
-      const errDiv: HTMLDivElement | null = document.querySelector('.submit-error');
-      if (errDiv !== null) {
-        errDiv.style.visibility = 'visible';
-      }
-      // reset forms to blank and display error
-      setDisplayName("");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setVerifyPassword("");
-      throw new UserSignupValidationError(
-        'UserSignupValidation',
-        'Credentials are missing from sign up form'
-      );
-    }
-  }
+
+  // TODO: write error handler
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const user: newUser = {
+    const user: UserInterface = {
       displayName: displayName,
       username: username,
       email: email,
@@ -49,20 +29,29 @@ export default function HootSignup() {
     }
 
     try {
-      // console.log(JSON.stringify(newUser));
-      if (user.password !== user.verifyPassword) {
-        handleError(event, user);
-      }
-      await signup(user);
+
+      await signup(user)
+        .then(res => {
+          if (res !== undefined) {
+            if (res.status === 201) {
+              // TODO: redirect to the profile page after adding stepper fro creating account
+              // navigate('/profile');
+              console.log(res.user);
+              Cookies.set('user', JSON.stringify(res.user?.uid), { expires: 1 });
+            }
+          }
+        })
+        .catch(err => {
+          if (err.status == 400) {
+            throw new UserSignupValidationError(
+              'UserSignupValidation',
+              err.message
+            );
+          }
+        });
     } catch (error) {
-      if (error instanceof UserSignupValidationError) {
-        setErr(error.message);
-      }
-
+      console.log(error);
     }
-
-    console.log(user);
-    //navigate("../", { replace: true });
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -81,24 +70,8 @@ export default function HootSignup() {
           Sign Up
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="signup-form">
-          <Box
-            sx={{
-              visibility: 'hidden',
-              className: 'submit-error',
-              backgroundColor: '#F04848',
-              color: '#fff',
-            }}
-          >
-            <Typography
-              sx={{
-                visibility: 'inherit',
-              }}
-              id="on-error-message"
-              variant="body2"
-            >{err}</Typography>
-          </Box>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
                   setDisplayName(event.target.value);

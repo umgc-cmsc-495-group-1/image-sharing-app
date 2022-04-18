@@ -1,0 +1,20 @@
+{
+  "name": "photos/5/c1e28206-00d5-4540-bfe5-0cd7474adf14/brynn-thorn-RIIMd1r-n_M-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650222402882,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "dc1269f9-ebb2-4b55-8b81-31f8bd138126"
+  ],
+  "etag": "Dh4uoZLDIOshWtjTu9uuaz5Pmu0",
+  "timeCreated": "2022-04-17T19:06:42.881Z",
+  "updated": "2022-04-17T19:06:42.885Z",
+  "size": 871297,
+  "md5Hash": "bcNhMfssjvK55bLO9PKDEA==",
+  "crc32c": "511814835"
+}

@@ -4,12 +4,14 @@ import {
 } from '../Feed/MetaDataBar';
 import { Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getPostData, CommentInterface } from '../../tests/test_data';
+import { getPostData } from '../../tests/test_data';
+import { CommentInterface } from '../../types/appTypes';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { ImageItem, determineMarginAndPadding } from '../Feed/FeedTile';
+import { ImageItem } from '../Feed/FeedTile';
+import { determineMarginAndPadding } from '../../utils/marginPadding'
 import CommentItem from './CommentItem';
 
-export default function UserPost() {
+const UserPost: React.FC = () => {
   const { uid, pid } = useParams();
   const postData = getPostData(uid, pid);
   const { width } = useWindowDimensions();
@@ -75,4 +77,8 @@ export default function UserPost() {
       </Box>
     </Box>
   );
+}
+
+export {
+  UserPost
 }

@@ -1,0 +1,20 @@
+{
+  "name": "photos/13/78c028e7-9a67-4df6-96b9-3da4ee2baf49/mounir-abdi-wYPG-eyGal0-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650222412562,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "197e8342-3648-4aaf-8373-0f9e21f6e2dc"
+  ],
+  "etag": "WW3hMiAdSDdICoLuVaTVs7rrQuo",
+  "timeCreated": "2022-04-17T19:06:52.561Z",
+  "updated": "2022-04-17T19:06:52.565Z",
+  "size": 865983,
+  "md5Hash": "B5lWWUUjm13o6xWyNn532Q==",
+  "crc32c": "2843069033"
+}

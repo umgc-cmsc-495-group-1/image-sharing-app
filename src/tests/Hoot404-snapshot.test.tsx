@@ -1,24 +1,21 @@
 import React from 'react';
 import "@testing-library/react/dont-cleanup-after-each";
 import '@testing-library/jest-dom';
-import { 
+import {
   MemoryRouter,
   Routes,
   Route
 } from 'react-router-dom';
-import Hoot404  from '../components/Hoot404';
+import Hoot404 from '../components/Hoot404';
 import { create } from 'react-test-renderer';
 
-function renderWithMemoryRouter(component: JSX.Element) {
-  return create(
+it('Renders correctly', () => {
+  const renderer = create(
     <MemoryRouter>
       <Routes>
-        <Route path='*' element={component} />
+        <Route path='*' element={<Hoot404 />} />
       </Routes>
     </MemoryRouter>
   );
-}
-it('Renders correctly',() => {
-  const renderer = renderWithMemoryRouter(<Hoot404/>);
   expect(renderer.toJSON()).toMatchSnapshot();
 });

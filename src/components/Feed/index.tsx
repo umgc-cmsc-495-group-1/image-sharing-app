@@ -1,10 +1,11 @@
 import React from 'react'
 import { Box } from '@mui/material';
 import { FeedTile } from './FeedTile';
-import { totalFeedPosts, FeedPostType } from '../../tests/test_data';
+import { generateRandomFeedProps } from '../../tests/test_data';
+import { FeedPostType } from '../../types/appTypes';
 
 const Feed: React.FC = (): JSX.Element => {
-  console.log(totalFeedPosts.length)
+  const totalFeedPosts = generateRandomFeedProps()
   return (
     <Box
       sx={{

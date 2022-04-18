@@ -4,90 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentIcon from '@mui/icons-material/Comment';
-import { FeedPostInterface } from '../../tests/test_data';
+import {
+  MetaDataBarInterface,
+  PostDetailProps,
+  LikeIconProps,
+  CommentIconProps
+} from '../../types/appTypes';
+import { determinBarHeight, determineIconSize } from '../../utils/marginPadding';
 type IconType = typeof FavoriteIcon | typeof FavoriteBorderIcon | typeof CommentIcon;
-
-export interface MetaDataBarInterface extends FeedPostInterface {
-  margin: number;
-  padding: number;
-  screenWidth: number;
-  screenHeight: number;
-}
-
-interface MarginPadding {
-  margin: number;
-  padding: number;
-}
-
-interface LikeIconProps extends MarginPadding {
-  isLiked: boolean;
-  numberOfLikes: number;
-  favoriteIcon?: IconType | null;
-  favoriteBorderIcon?: IconType | null;
-}
-
-interface CommentIconProps extends MarginPadding {
-  numberOfComments: number;
-  commentIcon?: IconType | null;
-}
-
-interface PostDetailProps extends MarginPadding {
-  username: string;
-  postText: string;
-  metaDataProps?: boolean | false;
-}
-
-function determinBarHeight(width: number): number {
-  let barHeight = 0;
-
-  if (width >= 1536) {
-    barHeight = 222.086;
-  } else if (width >= 1200 && width < 1536) {
-    barHeight = 240.086;
-  } else if (width >= 900 && width < 1200) {
-    barHeight = 220.086;
-  } else if (width >= 600 && width < 900) {
-    barHeight = 234.086;
-  } else if (width >= 400 && width < 600) {
-    barHeight = 248.086;
-  } else if (width >= 300 && width < 400) {
-    barHeight = 268.086;
-  } else if (width >= 250 && width < 300) {
-    barHeight = 386.086;
-  } else {
-    barHeight = 400;
-  }
-
-  return barHeight;
-}
-
-function determineIconSize(margin: number): number {
-  let fontSize = 0;
-
-  switch (margin) {
-    case 20:
-      fontSize = 70;
-      break;
-    case 15:
-      fontSize = 50;
-      break;
-    case 10:
-      fontSize = 40;
-      break;
-    case 5:
-      fontSize = 30;
-      break;
-    case 3:
-      fontSize = 25;
-      break;
-    default:
-      fontSize = 20;
-      break;
-  }
-
-  return fontSize;
-}
-
 
 const LikeIcon: React.FC<LikeIconProps> = ({
   isLiked, numberOfLikes, margin
@@ -157,8 +81,8 @@ const PostDetails: React.FC<PostDetailProps> = ({
         justifyContent: 'space-between',
       }}
     >
-      <p style={userStyle}>{username}</p>
-      <p style={postStyle}>{postText}</p>
+      <p role='username' style={userStyle}>{username}</p>
+      <p role='description' style={postStyle}>{postText}</p>
     </Box>
   );
 };
@@ -171,6 +95,9 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
   const [isLiked, setIsLiked] = useState(numberLikes > 0);
   const [numberOfLikes, setNumberOfLikes] = useState(numberLikes);
   const navigate = useNavigate();
+  function handleNavigate() {
+    navigate(`/user/${uid}/profile/${pid}`)
+  }
   return (
     <Box
       className='MetaDataBar'
@@ -220,7 +147,7 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
           edge="end"
           size="large"
           aria-label="comment"
-          onClick={() => navigate(`/user/${uid}/profile/${pid}`)}
+          onClick={handleNavigate}
         >
           <CommentIconCustom
             numberOfComments={numberComments}
@@ -252,7 +179,5 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
 
 export {
   MetaDataBar,
-  determinBarHeight,
-  determineIconSize,
   PostDetails
 }
