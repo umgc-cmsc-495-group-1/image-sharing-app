@@ -1,19 +1,19 @@
 {
-  "name": "photos/10/6317bd9a-d3c2-4e81-9558-1d8453cfa644/lina-a-3Gacb2IYrAk-unsplash.jpg",
+  "name": "photos/10/145b3a67-aa0f-4d97-a642-4f68404a6a94/lina-a-3Gacb2IYrAk-unsplash.jpg",
   "bucket": "hoot-umgc.appspot.com",
   "contentType": "image/jpeg",
   "metageneration": 1,
-  "generation": 1650140864039,
+  "generation": 1650222408143,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "c369c8af-b4a8-4806-bb35-eff868fe708d"
+    "2964da19-7924-40d7-bcc5-e539e59c501a"
   ],
-  "etag": "xaF4+631gWhj3V7x0VVg8EqSfxI",
-  "timeCreated": "2022-04-16T20:27:44.038Z",
-  "updated": "2022-04-16T20:27:44.039Z",
+  "etag": "Mx2iOxd09Gkudukk6LwcDel8KVQ",
+  "timeCreated": "2022-04-17T19:06:48.142Z",
+  "updated": "2022-04-17T19:06:48.143Z",
   "size": 294484,
   "md5Hash": "TT/fAVRuZYxNiH2CobF5Yg==",
   "crc32c": "1953038121"

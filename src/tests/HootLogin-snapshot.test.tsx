@@ -9,17 +9,13 @@ import {
 import HootLogin from '../components/HootLogin';
 import { create } from 'react-test-renderer';
 
-function renderWithMemoryRouter(component: JSX.Element) {
-  return create(
+it('Renders correctly', () => {
+  const renderer = create(
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
-        <Route path='/login' element={component} />
+        <Route path='/login' element={<HootLogin />} />
       </Routes>
     </MemoryRouter>
   );
-}
-
-it('Renders correctly', () => {
-  const renderer = renderWithMemoryRouter(<HootLogin />);
   expect(renderer.toJSON()).toMatchSnapshot();
 });

@@ -70,27 +70,6 @@ const demoProfilePictures = [
   profileImage13,
   profileImage14
 ]
-// const demoProfilePicturesFullPath = [
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/abhinav-arya-0r5zivchDyE-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/alex-rybin-Ne5nShVl6NM-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/axel-blanchard-YVKotYBAUko-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/brian-lawson-abiq3vnHjnk-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/brynn-thorn-RIIMd1r-n_M-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/eugene-tkachenko-XHDP42n5Yu0-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/freysteinn-g-jonsson-IkZClStWLT4-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/giorgio-manenti-MNlKblRC98k-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/hana-4mpn4AWt7SM-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/lina-a-3Gacb2IYrAk-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/max-lissenden-0MHf_nafpaw-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/melanie-weidmann-hgxZEH6RjKc-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/mounir-abdi-wYPG-eyGal0-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/philipp-deus-pUoQ07FB2wY-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/sour-moha-fFEX3kFoe00-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/svitlana-w7dlfv2BWvs-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/theaminahmadi-T0WB-E2hcYU-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg',
-//   '/Users/dylan/dev/umgc/cmsc-495/fork/image-sharing-app/src/assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
-// ]
 /**
  * Array of test feed posts to be used in the feed
  */
@@ -137,7 +116,7 @@ function generateRandomUsers(): ProfileInterface[] {
       displayName: `${demoDisplayNames[i]}`,
       friends: [],
       likes: [],
-      email: `${demoUsernames[i]}@test.com`,
+      email: `${demoDisplayNames[i]}@test.com`,
       // friends: Math.floor(Math.random() * 30),
       bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
@@ -226,7 +205,18 @@ function generateRandomFeedProps(): FeedPostType[] {
  * @returns {FeedPostType}
  */
 function getPostData(userId: string | undefined, postId: string | undefined): FeedPostType {
+  if (userId === undefined || postId === undefined) {
+    userId = '1';
+    postId = '1';
+  }
   return totalFeedPosts.filter(post => post.uid === userId && post.pid === postId)[0]
+}
+
+function getProfileData(userId: string | undefined): ProfileInterface {
+  if (userId === undefined) {
+    userId = '1'
+  }
+  return totalDemoUsers.filter(profile => profile.uid === userId)[0];
 }
 
 const totalDemoUsers: ProfileInterface[] = generateRandomUsers();
@@ -235,5 +225,9 @@ const totalFeedPosts: FeedPostInterface[] = generateRandomFeedProps();
 export {
   totalDemoUsers,
   totalFeedPosts,
-  getPostData
+  demoFeedImages,
+  generateRandomFeedProps,
+  generateRandomUsers,
+  getPostData,
+  getProfileData
 }
