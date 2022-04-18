@@ -1,6 +1,6 @@
 # Hoot
 
-[![Lint Code Base](https://github.com/umgc-cmsc-495-group-1/image-sharing-app/actions/workflows/super-linter.yml/badge.svg)](https://github.com/d-bryan/image-sharing-app/actions/workflows/super-linter.yml)
+[![Lint Code Base](https://github.com/umgc-cmsc-495-group-1/image-sharing-app/actions/workflows/super-linter.yml/badge.svg)](https://github.com/umgc-cmsc-495-group-1/image-sharing-app/actions/workflows/super-linter.yml)
 ![Hoot Version](https://img.shields.io/badge/Hoot-0.1.0-blue)
 
 - [Hoot](#hoot)
