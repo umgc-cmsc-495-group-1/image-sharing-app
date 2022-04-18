@@ -146,6 +146,7 @@ export default function HootSignup() {
           </Grid>
           <Button
             type="submit"
+            data-testid='submit-input'
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
