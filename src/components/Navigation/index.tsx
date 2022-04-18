@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   AppBar,
@@ -6,26 +6,19 @@ import {
   Drawer,
   List,
   Toolbar,
-  Typography
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Outlet } from "react-router-dom";
-import { auth } from "../../firebaseSetup";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
-
+import { FirebaseAuthContext } from "../../context/AuthContext";
+import { User } from "firebase/auth";
 
 const Navigation: React.FC = () => {
-  const [uid, setUid] = useState("");
-  const [username, setUsername] = useState<string | null>("")
-  const [isOpen, setIsOpen] = useState(false);
+  const user: User | null = useContext(FirebaseAuthContext);
 
-  auth.onAuthStateChanged(user => {
-    if (user !== null) {
-      setUid(user.uid)
-      setUsername(user.displayName)
-    }
-  })
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="class.navigation">
@@ -38,7 +31,7 @@ const Navigation: React.FC = () => {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
-              role='menu-icon'
+              role="menu-icon"
               onClick={() => setIsOpen(!isOpen)}
             >
               <MenuIcon />
@@ -52,7 +45,7 @@ const Navigation: React.FC = () => {
               src={require("../../assets/logo/png/simple-72x72.png")}
             />
             <Typography variant="h6">
-              {username ? username + " - Hoot!" : "Hoot!"}
+              {user ? user.email + " - Hoot!" : "Hoot!"}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -70,22 +63,12 @@ const Navigation: React.FC = () => {
           role="presentation"
           onClick={() => setIsOpen(false)}
         >
-          <List>
-            {(auth.currentUser !== null) ?
-              <LoggedIn
-                uid={uid}
-              />
-              :
-              <NotLoggedIn />
-            }
-          </List>
+          <List>{user ? <LoggedIn uid={user.uid} /> : <NotLoggedIn />}</List>
         </Box>
       </Drawer>
       <Outlet />
     </div>
-  )
-}
+  );
+};
 
-export {
-  Navigation
-}
+export { Navigation };

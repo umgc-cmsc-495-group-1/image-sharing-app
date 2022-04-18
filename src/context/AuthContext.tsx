@@ -1,28 +1,26 @@
 import React from "react";
-import * as firebase from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { User } from '@firebase/auth';
+import { auth } from "../firebaseSetup";
+import { User } from "@firebase/auth";
 
 /*************************************************
  * React Context and Provider for Current User
  ************************************************/
 
+const FirebaseAuthContext = React.createContext<User | null>(null);
 
-type appUser = User | null;
-type ContextState = { user: appUser };
-
-const FirebaseAuthContext = React.createContext<ContextState | undefined>(undefined);
 const FirebaseAuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = React.useState<appUser>(null);
-  const value = { user };
+  const [user, setUser] = React.useState<User | null>(null);
 
   React.useEffect(() => {
-    // const unsubscribe = firebase.auth().onAuthStateChanged((setUser));
-    const unsubscribe = getAuth(firebase.getApp()).onAuthStateChanged((setUser));
+    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+      setUser(firebaseUser);
+    });
+
     return unsubscribe;
   }, []);
+
   return (
-    <FirebaseAuthContext.Provider value={value}>
+    <FirebaseAuthContext.Provider value={user}>
       {children}
     </FirebaseAuthContext.Provider>
   );
@@ -30,12 +28,12 @@ const FirebaseAuthProvider: React.FC = ({ children }) => {
 
 function useFirebaseAuth() {
   const context = React.useContext(FirebaseAuthContext);
-  if (context === undefined) {
+  if (context === null) {
     throw new Error(
       "useFirebaseAuth must be used within a FirebaseAuthProvider"
     );
   }
-  return context.user;
+  return context;
 }
 
-export { FirebaseAuthProvider, useFirebaseAuth };
+export { FirebaseAuthContext, FirebaseAuthProvider, useFirebaseAuth };
