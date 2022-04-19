@@ -65,7 +65,7 @@ const UploadImage = () => {
     return <h2>Model Loading...</h2>
   }
 
-  console.log('test')
+  // console.log('test')
 
   return (
     <div>
