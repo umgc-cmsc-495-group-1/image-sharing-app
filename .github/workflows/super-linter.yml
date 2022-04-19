@@ -36,14 +36,18 @@ jobs:
     # Load all steps #
     ##################
     steps:
+
+      - name: work around permission issue
+        run: |
+          git config --global --add safe.directory /__w/image-sharing-app/image-sharing-app
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory /github/workspace
+
       ##########################
       # Checkout the code base #
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v3
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global --add safe.directory /github/workspace
         with:
           # Full git history
           fetch-depth: 0
@@ -53,9 +57,6 @@ jobs:
       ################################
       - name: Lint Code Base
         uses: docker://github/super-linter:slim-latest
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global --add safe.directory /github/workspace
         env:
           ###################################
           # Environments to Prevent Linting #
