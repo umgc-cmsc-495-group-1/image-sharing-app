@@ -46,7 +46,9 @@ jobs:
           fetch-depth: 0
 
       - name: Trust the Directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory /github/workspace
 
       ################################
       # Run Linter against code base #
