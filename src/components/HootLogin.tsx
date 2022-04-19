@@ -12,7 +12,6 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { login } from "../data/authFunctions";
-import Cookies from 'js-cookie';
 
 export default function HootLogin() {
   const navigate = useNavigate();
@@ -25,7 +24,6 @@ export default function HootLogin() {
     await login(email, password)
       .then((res) => {
         console.log(res);
-        Cookies.set('user', JSON.stringify(res.user.uid), { expires: 1 });
       })
       .catch((err) => {
         console.log(err);

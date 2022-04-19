@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc } from "firebase/firestore";
 // import { PhotoDataInterface } from '../types/photoTypes';
 import { FeedPostType } from '../types/appTypes'
-
 /************************************************************
  *
  * Photo data functions
@@ -47,7 +46,7 @@ const postNewImage = async (userId: string, caption: string, photoFile: File) =>
   const imgUid = uuidv4();
   // get ext from file let extension = filename.split(".").pop();
   // imgName = imgUid + . + ext
-  const path = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
+  const path = `photos/${userId}/${imgUid}`;  // decide on path
 
   // Check for valid user
   const user = auth.currentUser;
@@ -68,15 +67,6 @@ const postNewImage = async (userId: string, caption: string, photoFile: File) =>
       imageUrl: path,
       comments: [],
     }
-    // const newImgData: PhotoDataInterface = {
-    //   photoId: imgUid,
-    //   userId: userId,
-    //   imgName: photoFile.name || "",
-    //   caption: caption || "",
-    //   comments: [],
-    //   imgURL: path,
-    //   numberLikes: 0
-    // }
     // Write to firestore db
     try {
       // set document data
