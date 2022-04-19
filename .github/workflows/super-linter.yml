@@ -41,20 +41,21 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v3
-        with:
-          # Full git history
-          fetch-depth: 0
-
-      - name: Trust the Directory
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config --global --add safe.directory /github/workspace
+        with:
+          # Full git history
+          fetch-depth: 0
 
       ################################
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
         uses: docker://github/super-linter:slim-latest
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory /github/workspace
         env:
           ###################################
           # Environments to Prevent Linting #
