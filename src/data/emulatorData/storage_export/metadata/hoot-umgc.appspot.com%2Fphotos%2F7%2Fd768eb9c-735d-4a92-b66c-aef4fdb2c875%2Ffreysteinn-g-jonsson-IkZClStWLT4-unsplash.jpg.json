@@ -1,19 +1,19 @@
 {
-  "name": "photos/7/e68c4614-8fed-4adb-b921-9d2282746372/freysteinn-g-jonsson-IkZClStWLT4-unsplash.jpg",
+  "name": "photos/7/d768eb9c-735d-4a92-b66c-aef4fdb2c875/freysteinn-g-jonsson-IkZClStWLT4-unsplash.jpg",
   "bucket": "hoot-umgc.appspot.com",
   "contentType": "image/jpeg",
   "metageneration": 1,
-  "generation": 1650140860479,
+  "generation": 1650222405555,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "8c59ee86-a79c-45f6-99f1-d87338da8e06"
+    "401101f1-e750-4bd5-b7b9-7b5a578884f0"
   ],
-  "etag": "7s7fjZdGIQKzOtb+O4zvLz+Sb4c",
-  "timeCreated": "2022-04-16T20:27:40.478Z",
-  "updated": "2022-04-16T20:27:40.482Z",
+  "etag": "SlHimSwdWbIZnRh6sEYDE3FVABA",
+  "timeCreated": "2022-04-17T19:06:45.554Z",
+  "updated": "2022-04-17T19:06:45.557Z",
   "size": 818435,
   "md5Hash": "9Yh6nzqGo9l8MWhQkGLjeA==",
   "crc32c": "492985019"

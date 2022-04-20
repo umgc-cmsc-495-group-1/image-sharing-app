@@ -107,8 +107,11 @@ export interface ProfileInterface extends UserInterface, UserImagesInterface {
   friends: [];
   likes: [];
   posts: number;
-  // friends: number;
   bio: string;
+}
+
+export interface TestProfileInterface extends ProfileInterface {
+  testImages: string[];
 }
 
 
@@ -154,3 +157,6 @@ export type ImageItemProps = {
   objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down" | undefined;
 }
 
+export interface ProfileImageInterface extends ImageItemProps {
+  username: string;
+}

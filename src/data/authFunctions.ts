@@ -11,6 +11,7 @@ import {
   GoogleUserType,
   UserCheckInterface
 } from '../types/authentication'
+import Cookies from 'js-cookie';
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
@@ -83,8 +84,8 @@ const signup = async (user: UserInterface) => {
  * @returns
  */
 const logout = async () => {
+  Cookies.remove('user')
   return await auth.signOut();
-  // return signOut(auth);
 }
 
 /**
