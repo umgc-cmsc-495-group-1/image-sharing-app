@@ -37,10 +37,6 @@ const UploadImage = () => {
   }
 
   const identify = async () => {
-    //   let results: Promise<{
-    //     className: string;
-    //     probability: number;
-    // }[]>
     if (model !== null) {
       const results = await model.classify(imageRef.current)
       console.log(results)
