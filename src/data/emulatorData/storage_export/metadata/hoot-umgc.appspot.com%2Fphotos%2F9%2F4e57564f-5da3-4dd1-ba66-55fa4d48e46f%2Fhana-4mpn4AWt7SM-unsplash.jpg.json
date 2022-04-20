@@ -1,0 +1,20 @@
+{
+  "name": "photos/9/4e57564f-5da3-4dd1-ba66-55fa4d48e46f/hana-4mpn4AWt7SM-unsplash.jpg",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1650140863010,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "6dfeaeec-8321-42a9-80ac-c5a29679f8bf"
+  ],
+  "etag": "D0/IxQZNMWF2OkgQXGKGKmggJrU",
+  "timeCreated": "2022-04-16T20:27:43.009Z",
+  "updated": "2022-04-16T20:27:43.010Z",
+  "size": 293931,
+  "md5Hash": "5hr0NaFobEvoZP8QAdKzCQ==",
+  "crc32c": "1471620330"
+}

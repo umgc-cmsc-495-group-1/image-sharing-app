@@ -1,4 +1,4 @@
-// import { User } from '@firebase/auth';
+import { User } from '@firebase/auth';
 //@firebase/auth/dist/auth-public
 
 export interface BaseUserInterface {
@@ -30,5 +30,6 @@ export interface AppUserInterface extends BaseUserInterface {
 
 export interface UserCheckInterface {
   status: number | null;
-  user: UserCredential | null;
+  user: User | null;
+  message?: string | undefined;
 }
