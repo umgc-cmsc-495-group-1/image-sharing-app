@@ -1,26 +1,41 @@
-import React from 'react';
-import { Typography } from '@mui/material';
-import { auth } from '../firebaseSetup'
-import { useCurrentUser } from '../hooks/useCurrentUser'
-import { useFirebaseAuth } from '../context/AuthContext';
-// import { AppUserInterface } from '../types/authentication';
-// import Cookies from 'js-cookie';
+import React, { useContext } from "react";
+import { User } from "firebase/auth";
+import { FirebaseAuthContext } from "../context/AuthContext";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import HootHero from "./HootHero";
+import { useNavigate } from "react-router-dom";
 
 export default function HootHome() {
-  // const user = auth.currentUser?.displayName ? auth.currentUser.displayName : 'no user'
-  console.log(`user: ${JSON.stringify(auth.currentUser)}`)
-  console.log(window.location.hostname);
-  // const userId = (useFirebaseAuth()?.uid || 'not authenticated')
-  // let currentUser: appUser
-  // const currentUser = 
-  const userId: string = (useFirebaseAuth()?.uid || 'not authenticated')
-  const currentUser: string = (useCurrentUser(userId)?.username || 'no current user')
-
+  const navigate = useNavigate();
+  const user: User | null = useContext(FirebaseAuthContext);
 
   return (
-    <Typography>
-      This is the homepage for {useCurrentUser(userId)?.username || ' no current user '}
-      {(currentUser !== null) ? currentUser : " no current user "}
-    </Typography>
-  )
+    <>
+      {user ? (
+        navigate("/feed")
+      ) : (
+        <Grid container component="main" sx={{ height: "100vh" }}>
+          <HootHero />
+          <Grid item xs={12} component={Paper} elevation={6} square>
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">
+                Let your imagination run wild!
+              </Typography>
+              <Button href="/signup" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                Sign Up
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      )}
+    </>
+  );
 }
