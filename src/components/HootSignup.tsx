@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
-import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 //import { useNavigate } from 'react-router-dom';
-import { signup } from '../data/authFunctions';
-import { UserInterface } from '../types/authentication';
-import { UserSignupValidationError } from '../utils/Error';
-import Cookies from 'js-cookie';
+import { signup } from "../data/authFunctions";
+import { UserInterface } from "../types/authentication";
+import { UserSignupValidationError } from "../utils/Error";
+import Cookies from "js-cookie";
 
 export default function HootSignup() {
-
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-
 
   // TODO: write error handler
 
@@ -25,26 +32,27 @@ export default function HootSignup() {
       username: username,
       email: email,
       password: password,
-      verifyPassword: verifyPassword
-    }
+      verifyPassword: verifyPassword,
+    };
 
     try {
-
       await signup(user)
-        .then(res => {
+        .then((res) => {
           if (res !== undefined) {
             if (res.status === 201) {
               // TODO: redirect to the profile page after adding stepper fro creating account
               // navigate('/profile');
               console.log(res.user);
-              Cookies.set('user', JSON.stringify(res.user?.uid), { expires: 1 });
+              Cookies.set("user", JSON.stringify(res.user?.uid), {
+                expires: 1,
+              });
             }
           }
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.status == 400) {
             throw new UserSignupValidationError(
-              'UserSignupValidation',
+              "UserSignupValidation",
               err.message
             );
           }
@@ -58,18 +66,22 @@ export default function HootSignup() {
       <Box
         sx={{
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography>
-          Sign Up
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="signup-form">
+        <Typography>Sign Up</Typography>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{ mt: 3 }}
+          role="signup-form"
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -162,5 +174,5 @@ export default function HootSignup() {
         </Box>
       </Box>
     </Container>
-  )
+  );
 }
