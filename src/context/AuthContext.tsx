@@ -17,9 +17,13 @@ import { User } from "@firebase/auth";
  * React Context and Provider for Current User
  ************************************************/
 
+interface ContextProps {
+  children: React.ReactNode
+}
+
 const FirebaseAuthContext = React.createContext<User | null>(null);
 
-const FirebaseAuthProvider: React.FC = ({ children }) => {
+const FirebaseAuthProvider: React.FC<ContextProps> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
 
   React.useEffect(() => {

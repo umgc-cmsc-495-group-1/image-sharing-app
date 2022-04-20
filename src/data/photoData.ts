@@ -55,7 +55,7 @@ const postNewImage = async (userId: string, caption: string, photoFile: File) =>
   const username = (auth.currentUser !== null) ? auth.currentUser.displayName : 'Chicken Sandwich'
   // Get reference to subcollection path
   // (photos collection->doc w/userId key->posts collection->post data doc)
-  const firestoreRef = doc(firestore, "photos", userId, "posts", imgUid);
+  const firestoreRef = doc(firestore, "posts", imgUid);
   if (user) {
     // Post related data to save to firestore collection
     const newImgData: FeedPostType = {
