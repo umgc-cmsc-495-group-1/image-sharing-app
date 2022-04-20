@@ -49,8 +49,9 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        run: git config --global --add safe.directory /github/workspace
         uses: docker://github/super-linter:slim-latest
+        with:
+          run: git config --global --add safe.directory /github/workspace
         env:
           ###################################
           # Environments to Prevent Linting #
