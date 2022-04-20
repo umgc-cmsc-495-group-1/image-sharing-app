@@ -45,6 +45,9 @@ jobs:
           # Full git history
           fetch-depth: 0
 
+      - name: Add safe workspace
+        run: /usr/bin/git config --global --add safe.directory /github/workspace
+
       ################################
       # Run Linter against code base #
       ################################
