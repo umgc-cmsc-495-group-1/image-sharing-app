@@ -36,13 +36,6 @@ jobs:
     # Load all steps #
     ##################
     steps:
-
-      - name: work around permission issue
-        run: |
-          git config --global --add safe.directory /__w/image-sharing-app/image-sharing-app
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global --add safe.directory /github/workspace
-
       ##########################
       # Checkout the code base #
       ##########################
@@ -56,6 +49,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
+        run: git config --global --add safe.directory /github/workspace
         uses: docker://github/super-linter:slim-latest
         env:
           ###################################
