@@ -9,10 +9,10 @@ import { Navigation } from "./components/Navigation";
 import HootSignup from "./components/HootSignup";
 import Hoot404 from "./components/Hoot404";
 import HootUserSettings from "./components/HootUserSettings";
-import { CssBaseline } from "@mui/material";
 import { Profile } from "./components/Profile";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import HomeRoute from "./components/HomeRoute";
+import UploadImage from "./components/UploadImage";
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -42,11 +42,11 @@ export default function App() {
         },
         {
           path: "/feed",
-          element: (
-            <ProtectedRoute>
-              <Feed />
-            </ProtectedRoute>
-          ),
+          element: <ProtectedRoute component={Feed} />,
+        },
+        {
+          path: "/upload",
+          element: <ProtectedRoute component={UploadImage} />,
         },
         {
           path: "/user",
@@ -59,22 +59,14 @@ export default function App() {
                   children: [
                     {
                       index: true,
-                      element: (
-                        <ProtectedRoute>
-                          <Profile />
-                        </ProtectedRoute>
-                      ),
+                      element: <ProtectedRoute component={Profile} />,
                     },
                     {
                       path: ":pid",
                       children: [
                         {
                           index: true,
-                          element: (
-                            <ProtectedRoute>
-                              <UserPost />
-                            </ProtectedRoute>
-                          ),
+                          element: <ProtectedRoute component={UserPost} />,
                         },
                       ],
                     },
@@ -82,11 +74,7 @@ export default function App() {
                 },
                 {
                   path: "settings",
-                  element: (
-                    <ProtectedRoute>
-                      <HootUserSettings />
-                    </ProtectedRoute>
-                  ),
+                  element: <ProtectedRoute component={HootUserSettings} />,
                 },
               ],
             },
@@ -128,7 +116,6 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
       <div className="App">{element}</div>
     </ThemeProvider>
   );
