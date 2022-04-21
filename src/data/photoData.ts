@@ -105,7 +105,7 @@ const uploadImageFile = async (file: File, path: string) => {
   // example storage file path: const path = `users/${userId}/profile-img`;
   // TODO: make this match photo extension? does this allow png upload?
   const metadata = {
-    //   contentType: 'image/jpeg'
+    contentType: file.type
   }
   // Get reference to the storage location & upload file
   const storageRef = ref(storage, path);
