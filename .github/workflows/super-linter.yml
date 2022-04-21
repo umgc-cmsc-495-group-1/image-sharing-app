@@ -40,10 +40,13 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Full git history
           fetch-depth: 0
+
+      - name: Add safe workspace
+        run: /usr/bin/git config --global --add safe.directory /github/workspace
 
       ################################
       # Run Linter against code base #

@@ -1,19 +1,19 @@
 {
-  "name": "photos/11/48396712-b74d-40d8-9959-a5993b272619/max-lissenden-0MHf_nafpaw-unsplash.jpg",
+  "name": "photos/11/e05c7a55-264e-4915-b47a-36c9df32c93a/max-lissenden-0MHf_nafpaw-unsplash.jpg",
   "bucket": "hoot-umgc.appspot.com",
   "contentType": "image/jpeg",
   "metageneration": 1,
-  "generation": 1650140866373,
+  "generation": 1650222409466,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "d2691db4-ee22-40f8-8889-353e5daa809c"
+    "ed8dfe30-cf4e-4524-adbe-d4f5b65d708d"
   ],
-  "etag": "ef6iBdy892TTLdquQ3OGlYSaZdE",
-  "timeCreated": "2022-04-16T20:27:46.372Z",
-  "updated": "2022-04-16T20:27:46.374Z",
+  "etag": "pdUX1qJi4Ox5OzzTQy6eLv0xcSU",
+  "timeCreated": "2022-04-17T19:06:49.465Z",
+  "updated": "2022-04-17T19:06:49.467Z",
   "size": 391470,
   "md5Hash": "ccObR0zuXj2WutF570+nLQ==",
   "crc32c": "94443884"
