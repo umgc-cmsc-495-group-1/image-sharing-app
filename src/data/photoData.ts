@@ -370,7 +370,6 @@ export {
   getOnePost,
   getProfileUrl,
   getPhotoUrl,
-  // getProfileUrlFromAuth,
   incrementLikes,
   deleteAllPosts,
   deletePostByPid
