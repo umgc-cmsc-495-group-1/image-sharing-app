@@ -16,7 +16,7 @@ import { FirebaseAuthContext } from "../../context/AuthContext";
 import { User } from "firebase/auth";
 
 const Navigation: React.FC = () => {
-  const user: User | null = useContext(FirebaseAuthContext);
+  const user: User | null | undefined = useContext(FirebaseAuthContext)?.user;
 
   const [isOpen, setIsOpen] = useState(false);
 

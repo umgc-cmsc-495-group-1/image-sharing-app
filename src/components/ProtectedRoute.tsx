@@ -1,14 +1,20 @@
-import { User } from "firebase/auth";
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { FirebaseAuthContext } from "../context/AuthContext";
+import Spinner from "./Spinner";
 
-export default function ProtectedRoute({
-  children,
-}: {
-  children: JSX.Element;
-}) {
-  const user: User | null = useContext(FirebaseAuthContext);
-
-  return user ? children : <Navigate to="/login" replace />;
+interface Props {
+  component: React.ComponentType;
+  path?: string;
 }
+
+export const ProtectedRoute: React.FC<Props> = ({
+  component: RouteCompoonent,
+}) => {
+  const authValue = useContext(FirebaseAuthContext);
+
+  if (!authValue?.userDataPresent) return <Spinner />;
+  if (authValue?.user) return <RouteCompoonent />;
+
+  return <Navigate to="/signup" />;
+};
