@@ -3,7 +3,7 @@ import { ListItem, ListItemText } from '@mui/material';
 import { logout } from '../../data/authFunctions';
 import { Link } from 'react-router-dom';
 
-const LoggedIn = ({ uid }: { uid: string | null }) => {
+const LoggedIn = ({ uid }: { uid: string | undefined }) => {
   return (
     <>
       <ListItem button component={Link} to="/feed" role="navigation-feed">

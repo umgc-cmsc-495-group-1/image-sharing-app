@@ -24,16 +24,16 @@ export default function HootLogin() {
     await login(email, password)
       .then((res) => {
         console.log(res);
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
     console.log({
       email,
       password,
     });
-    // TODO: navigate them to profile 
-    navigate("/");
+    // TODO: navigate them to profile
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -49,7 +49,13 @@ export default function HootLogin() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography>Login</Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} role="login-form">
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{ mt: 3 }}
+          role="login-form"
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
