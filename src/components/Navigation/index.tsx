@@ -12,11 +12,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Outlet } from "react-router-dom";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
-import { FirebaseAuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { User } from "firebase/auth";
 
 const Navigation: React.FC = () => {
-  const user: User | null | undefined = useContext(FirebaseAuthContext)?.user;
+  const user: User | null | undefined = useContext(AuthContext);
 
   const [isOpen, setIsOpen] = useState(false);
 

@@ -1,20 +1,22 @@
 import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { FirebaseAuthContext } from "../context/AuthContext";
-import Spinner from "./Spinner";
+import { AuthContext } from "../context/AuthContext";
+import HootLogin from "./HootLogin";
 
 interface Props {
   component: React.ComponentType;
+  fallback?: React.ComponentType;
   path?: string;
 }
 
 export const ProtectedRoute: React.FC<Props> = ({
   component: RouteCompoonent,
+  fallback: FallbackComponent,
 }) => {
-  const authValue = useContext(FirebaseAuthContext);
+  const authValue = useContext(AuthContext);
 
-  if (!authValue?.userDataPresent) return <Spinner />;
-  if (authValue?.user) return <RouteCompoonent />;
+  if (!FallbackComponent) FallbackComponent = HootLogin;
 
-  return <Navigate to="/signup" />;
+  if (authValue) return <RouteCompoonent />;
+
+  return <FallbackComponent />;
 };
