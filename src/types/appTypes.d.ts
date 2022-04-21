@@ -1,8 +1,10 @@
+import { FieldValue } from "firebase/firestore";
+
 /**
  * @description - User Images Base Interface
  * @export interface UserImagesInterface
  * @interface UserImagesInterface
- * @property {string} imageUrl - location of the image 
+ * @property {string} imageUrl - location of the image
  */
 export interface UserImagesInterface {
   imageUrl: string;
@@ -78,6 +80,8 @@ export interface FeedPostInterface {
   numberComments: number;
   imageUrl: string | undefined;
   comments: CommentInterface[];
+  path?: string;
+  timestamp?: FieldValue;
 }
 
 /**
@@ -94,7 +98,7 @@ export type FeedPostType = FeedPostInterface;
  * @interface ProfileInterface
  * @extends {UserInterface} UserInterface
  * @extends {UserImagesInterface} UserImagesInterface
- * @property {string} imageUrl - location of the image 
+ * @property {string} imageUrl - location of the image
  * @property {string} uid - user id of the user
  * @property {string} username - username of the user
  * @property {string} bio - bio of the user

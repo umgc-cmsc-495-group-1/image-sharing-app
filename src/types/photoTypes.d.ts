@@ -1,5 +1,5 @@
 export interface PhotoDataInterface {
-  photoId: string, // make both ids user id for profile?
+  photoId: string,
   userId: string,
   imgName?: string,
   caption?: string,

@@ -3,6 +3,7 @@ import { collection, doc, setDoc, deleteDoc, getDoc, getDocs, getDocsFromServer 
 import { query, where } from 'firebase/firestore'
 import { firestore } from '../firebaseSetup'
 import { GoogleUserType, UserInterface, AppUserInterface } from '../types/authentication'
+import { ProfileInterface } from '../types/appTypes'
 // import { googleUser, newUser } from './authFunctions'
 import { User } from '@firebase/auth';
 
@@ -114,10 +115,10 @@ const emailInDb = async (email: string) => {
  * Update user profile information not in auth.currentUser
  * @param user
  */
-const updateUser = async (user: AppUserInterface) => {
+const updateUser = async (userId: string, profileData: ProfileInterface) => {
   // const docSnap = await getDoc(docRef);
-  const docRef = doc(firestore, 'users', `${user.uid}`)
-  await setDoc(docRef, { user }, { merge: true })
+  const docRef = doc(firestore, 'users', `${userId}`)
+  await setDoc(docRef, { profileData }, { merge: true })
 
   // return docRef.update(user);
 }
@@ -161,15 +162,3 @@ export {
   deleteUserDoc,
   getAllUsers
 }
-/**
- * import {query, collection, onSnapshot, orderBy} from 'firebase/firestore'
-...
-const orderedOrders = query(ref, orderBy('created', 'desc'))
-onSnapshot(orderedOrders, snapshot => {
-     setOrders(snapshot.docs.map(doc => ({
-       id: doc.id,
-       data: doc.data()
-     })))
-  })
-...
- */
