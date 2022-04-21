@@ -86,7 +86,8 @@ const getUserByUserId = async (userId: string) => {
     email: data.email,
     bio: data.bio,
     likes: data.likes,
-    friends: data.friends
+    friends: data.friends,
+    interests: data.interests
   }
   console.log('user data: ', user.username)
 
