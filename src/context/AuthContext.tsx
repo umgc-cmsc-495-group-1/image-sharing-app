@@ -71,20 +71,44 @@ function FirebaseAuthProvider(props: Props) {
 const FirebaseAuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
 
-  React.useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      setUser(firebaseUser);
-    });
+function FirebaseAuthProvider(props: Props) {
+  const [state, changeState] = useState<StateData>({
+    userDataPresent: false,
+    user: null,
+    listener: null,
+  });
 
-    return unsubscribe;
-  }, []);
+  useEffect(() => {
+    if (state.listener == null) {
+      changeState({
+        ...state,
+        listener: auth.onAuthStateChanged((user) => {
+          if (user)
+            changeState((oldState) => ({
+              ...oldState,
+              userDataPresent: true,
+              user: user,
+            }));
+          else
+            changeState((oldState) => ({
+              ...oldState,
+              userDataPresent: true,
+              user: null,
+            }));
+        }),
+      });
+    }
+    return () => {
+      if (state.listener) state.listener();
+    };
+  }, [state]);
 
   return (
-    <FirebaseAuthContext.Provider value={user}>
-      {children}
+    <FirebaseAuthContext.Provider value={state}>
+      {props.children}
     </FirebaseAuthContext.Provider>
   );
-};
+}
 
 function useFirebaseAuth() {
   const context = React.useContext(FirebaseAuthContext);
