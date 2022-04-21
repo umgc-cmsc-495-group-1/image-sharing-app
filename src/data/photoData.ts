@@ -59,7 +59,6 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
   // get ext from file let extension = filename.split(".").pop();
   // imgName = imgUid + . + ext
   const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
-
   // Check for valid user
   const user = auth.currentUser;
   // check for username
@@ -374,36 +373,4 @@ export {
   deleteAllPosts,
   deletePostByPid
 }
-
-
-// TODO:
-
-// 1. Done - needs testing - Delete one photo, file in storage and data in firestore
-
-// 2. Done - needs - testing - Delete all users photo files and photo data
-
-///////////////////////////////////////////////////////
-
-/*
-// Get storage storage url
-export const getPhotoUrl = async (userId: string, file: File) => {
-  const filePath = `photos/${userId}/${file.name}`;
-  const fileRef = ref(storage, filePath);
-  console.log("url: ", getDownloadURL(fileRef));
-  return await getDownloadURL(fileRef);
-};
-*/
-
-// Can create custom file metadata
-// ex.
-//** @type {any} */
-/*
-interface metadata {
-  customMetadata: {
-    'type': string,
-    'size': number,
-    "date": Date
-  }
-}
-*/
 

@@ -12,7 +12,7 @@ import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import HomeRoute from "./components/HomeRoute";
-import UploadImage from "./components/UploadImage";
+import { UploadImage } from "./components/UploadImage";
 
 export default function App() {
   const routes: RouteObject[] = [
