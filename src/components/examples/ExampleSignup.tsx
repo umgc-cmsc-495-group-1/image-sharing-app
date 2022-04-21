@@ -1,8 +1,8 @@
 import React from 'react'
 // import { useNavigate } from 'react-router-dom'
-import { logout } from '../../data/authFunctions'
-import { useFirebaseAuth } from '../../context/AuthContext'
-import { useCurrentUser } from '../../hooks/useCurrentUser'
+// import { logout } from '../../data/authFunctions'
+// import { useFirebaseAuth } from '../../context/AuthContext'
+// import { useCurrentUser } from '../../hooks/useCurrentUser'
 // import { deleteUser } from '../../data/userData'
 
 /****************************************************
@@ -16,14 +16,13 @@ function ExampleSignupPage() {
   // const [email, setEmail] = useState({email: ''});
   // const [password, setPassword] = useState({password:''});
 
-  const userId = (useFirebaseAuth()?.uid || 'not authenticated')
-  const currentUser = (useCurrentUser(userId)?.username || 'no current user')
-  console.log('user: ', userId)
+  // const userId = (useFirebaseAuth()?.uid || 'not authenticated')
+  // const currentUser = (useCurrentUser(userId)?.username || 'no current user')
 
-  const userLogout = async () => {
-    await logout();
+  // const userLogout = async () => {
+    /// await logout();
     // navigate('/login', { replace: true });
-  }
+ // }
 
 /*
 
@@ -143,10 +142,7 @@ function ExampleSignupPage() {
             delete account
           </button>
           <br />
-          {currentUser ?
-           <p>{currentUser}</p> : <p>no current user</p>}
-          {userId != 'not authenticated' ?
-            <button onClick={userLogout}>Logout</button> : <button>Login</button>}
+
         </>
         <form
         // onSubmit={handleLogin}
@@ -180,3 +176,10 @@ function ExampleSignupPage() {
   );
 }
 export default ExampleSignupPage;
+
+/*
+ {currentUser ?
+           <p>{currentUser}</p> : <p>no current user</p>}
+          {userId != 'not authenticated' ?
+            <button onClick={userLogout}>Logout</button> : <button>Login</button>}
+*/

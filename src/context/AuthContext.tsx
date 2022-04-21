@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { auth } from "../firebaseSetup";
 // import Cookies from 'js-cookie';
 // import {
@@ -8,7 +8,7 @@ import { auth } from "../firebaseSetup";
 // } from '../types/authentication';
 // import { UserInterface } from '../types/authentication';
 // , onAuthStateChanged, connectAuthEmulator
-import { User } from "@firebase/auth";
+import { Unsubscribe, User } from "@firebase/auth";
 // import { firebase } from '../firebaseSetup';
 // import firebase from 'firebase/compat/app';
 // import "firebase/compat/auth";
@@ -17,29 +17,55 @@ import { User } from "@firebase/auth";
  * React Context and Provider for Current User
  ************************************************/
 
-interface ContextProps {
-  children: React.ReactNode
+const FirebaseAuthContext = React.createContext<StateData | null>(null);
+type Props = {
+  children: JSX.Element;
+};
+
+interface StateData {
+  userDataPresent: boolean;
+  user: User | null;
+  listener: Unsubscribe | null;
 }
 
-const FirebaseAuthContext = React.createContext<User | null>(null);
+function FirebaseAuthProvider(props: Props) {
+  const [state, changeState] = useState<StateData>({
+    userDataPresent: false,
+    user: null,
+    listener: null,
+  });
 
-const FirebaseAuthProvider: React.FC<ContextProps> = ({ children }) => {
-  const [user, setUser] = React.useState<User | null>(null);
-
-  React.useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      setUser(firebaseUser);
-    });
-
-    return unsubscribe;
-  }, []);
+  useEffect(() => {
+    if (state.listener == null) {
+      changeState({
+        ...state,
+        listener: auth.onAuthStateChanged((user) => {
+          if (user)
+            changeState((oldState) => ({
+              ...oldState,
+              userDataPresent: true,
+              user: user,
+            }));
+          else
+            changeState((oldState) => ({
+              ...oldState,
+              userDataPresent: true,
+              user: null,
+            }));
+        }),
+      });
+    }
+    return () => {
+      if (state.listener) state.listener();
+    };
+  }, [state]);
 
   return (
-    <FirebaseAuthContext.Provider value={user}>
-      {children}
+    <FirebaseAuthContext.Provider value={state}>
+      {props.children}
     </FirebaseAuthContext.Provider>
   );
-};
+}
 
 function useFirebaseAuth() {
   const context = React.useContext(FirebaseAuthContext);
@@ -52,3 +78,15 @@ function useFirebaseAuth() {
 }
 
 export { FirebaseAuthContext, FirebaseAuthProvider, useFirebaseAuth };
+
+/*
+function useFirebaseAuth() {
+  const context = React.useContext(FirebaseAuthContext);
+  if (context === null) {
+    throw new Error(
+      "useFirebaseAuth must be used within a FirebaseAuthProvider"
+    );
+  }
+  return context;
+}
+*/
