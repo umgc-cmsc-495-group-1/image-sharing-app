@@ -1,21 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import './css/index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { FirebaseAuthProvider } from './context/AuthContext';
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import "./css/index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { AuthProvider } from "./provider/AuthProvider";
 
 // TODO: need default data for emulator
 ReactDOM.render(
-  <FirebaseAuthProvider>
-    <React.StrictMode>
+  <React.StrictMode>
+    <AuthProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </React.StrictMode>
-  </FirebaseAuthProvider>,
-  document.getElementById('root')
+    </AuthProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
