@@ -4,16 +4,16 @@ import { BrowserRouter } from "react-router-dom";
 import "./css/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { FirebaseAuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./provider/AuthProvider";
 
 // TODO: need default data for emulator
 ReactDOM.render(
   <React.StrictMode>
-    <FirebaseAuthProvider>
+    <AuthProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </FirebaseAuthProvider>
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
