@@ -19,6 +19,7 @@ import {
   deleteDoc
 } from "firebase/firestore";
 import { FeedPostType } from '../types/appTypes'
+import Resizer from 'react-image-file-resizer'
 import { AppUserInterface } from '../types/authentication'
 
 /************************************************************
@@ -34,6 +35,15 @@ import { AppUserInterface } from '../types/authentication'
  * Increment Likes on photo
  *
  ************************************************************/
+
+/*
+// Firebase cannot get photo urls or display post photos without a path
+// may try to use this function to fix issue as sort of an constant variable
+// firebase also needs the path to delete the posts
+const postCloudPath = (uid: string, pid: string, name: string) => {
+  return `photos/${uid}/${pid}/${name}`;
+}
+*/
 
 /**
  * @description Replaces user profile image
@@ -58,7 +68,7 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
   const imgUid = uuidv4();
   // get ext from file let extension = filename.split(".").pop();
   // imgName = imgUid + . + ext
-  const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
+  const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;
 
   // Check for valid user
   const user = auth.currentUser;
@@ -80,7 +90,7 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
       imageUrl: "",
       comments: [],
       path: cloudPath,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp() // a timestamp makes it possible to easily get feed posts in chronological order
     }
     // Write to firestore db
     try {
@@ -109,7 +119,11 @@ const uploadImageFile = async (file: File, path: string) => {
   }
   // Get reference to the storage location & upload file
   const storageRef = ref(storage, path);
-  const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+  const imgForUpload: File = await resizeImage(file);
+  //Stores image in variable to allow resizing
+
+  const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
   uploadTask.on('state_changed',
@@ -154,6 +168,26 @@ const uploadImageFile = async (file: File, path: string) => {
 }
 
 /**
+ * Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
+ * @param source Source file object
+ * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
+ */
+const resizeImage = async (source: File) => new Promise<File>((resolve) => {
+  const resolution = 100;
+  //Resizer.imageFileResizer uses a 1-100 scale for image quality. 100 is max quality.
+  if (source.size > 8000000) {
+    /*Checks if image is above 8MB limit. File.size counts in bytes, 1,000,000 bytes per megabyte,
+    so 8,000,000 bytes. If it exceeds limit, calls logic to resize the image. Otherwise ignores
+    resizing logic and returns original file.*/
+    Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
+      console.log(uri)
+    }, "base64")
+  }
+  resolve(source)
+})
+
+/**
+ * Get URL for profile image
  * @description Get URL for profile image
  * @param userId
  * @returns
@@ -333,7 +367,7 @@ const deleteAllPosts = async (userId: string) => {
   });
   photoRefs.forEach(async (photo) => {
     // Delete the file
-    deleteObject(photo).then(() => {
+    await deleteObject(photo).then(() => {
       // File deleted successfully
       console.log("image file deleted");
     }).catch((error) => {
@@ -344,16 +378,14 @@ const deleteAllPosts = async (userId: string) => {
 }
 
 /**
- * @description Deletes a single post
- * @param pid photo post's unique id
- * @param path location path of file in
+ * @description Deletes profile image
+ * @param uid user id
  * Cloud Storage
  */
-const deletePostByPid = async (pid: string, path: string) => {
-  await deleteDoc(doc(firestore, "posts", pid));
-
+ const deleteProfileImg = async (uid: string) => {
+  const path = `profile-imgs/${uid}/profile-image`;
   const photoRef = ref(storage, path);
-  deleteObject(photoRef).then(() => {
+  await deleteObject(photoRef).then(() => {
     // File deleted successfully
     console.log("image file deleted");
   }).catch((error) => {
@@ -361,6 +393,26 @@ const deletePostByPid = async (pid: string, path: string) => {
     console.log(error);
   });
 }
+
+/**
+ * @description Deletes a single post
+ * @param pid photo post's unique id
+ * @param path location path of file in
+ * Cloud Storage
+ */
+ const deletePostByPid = async (pid: string, path: string) => {
+  await deleteDoc(doc(firestore, "posts", pid));
+
+  const photoRef = ref(storage, path);
+  await deleteObject(photoRef).then(() => {
+    // File deleted successfully
+    console.log("image file deleted");
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+    console.log(error);
+  });
+}
+
 
 export {
   updateProfileImg,
@@ -372,38 +424,7 @@ export {
   getPhotoUrl,
   incrementLikes,
   deleteAllPosts,
-  deletePostByPid
+  deletePostByPid,
+  deleteProfileImg
 }
-
-
-// TODO:
-
-// 1. Done - needs testing - Delete one photo, file in storage and data in firestore
-
-// 2. Done - needs - testing - Delete all users photo files and photo data
-
-///////////////////////////////////////////////////////
-
-/*
-// Get storage storage url
-export const getPhotoUrl = async (userId: string, file: File) => {
-  const filePath = `photos/${userId}/${file.name}`;
-  const fileRef = ref(storage, filePath);
-  console.log("url: ", getDownloadURL(fileRef));
-  return await getDownloadURL(fileRef);
-};
-*/
-
-// Can create custom file metadata
-// ex.
-//** @type {any} */
-/*
-interface metadata {
-  customMetadata: {
-    'type': string,
-    'size': number,
-    "date": Date
-  }
-}
-*/
 
