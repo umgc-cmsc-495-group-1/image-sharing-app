@@ -3,7 +3,13 @@ import { getPhotoUrl } from '../data/photoData';
 import { auth } from '../firebaseSetup'
 import { onAuthStateChanged } from "firebase/auth";
 
-
+/**
+ * @description example of a simple component which gets
+ * the url of a photo from cloud storage using the path
+ * then displays it in the <img> if it exists
+ * @param {*} param0
+ * @returns
+ */
 export const PostImage = ({ path }) => {
 
   const [uid, setUid] = useState("");
