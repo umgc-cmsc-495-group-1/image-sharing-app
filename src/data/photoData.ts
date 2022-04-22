@@ -36,6 +36,15 @@ import Resizer from "react-image-file-resizer";
  *
  ************************************************************/
 
+/*
+// Firebase cannot get photo urls or display post photos without a path
+// may try to use this function to fix issue as sort of an constant variable
+// firebase also needs the path to delete the posts
+const postCloudPath = (uid: string, pid: string, name: string) => {
+  return `photos/${uid}/${pid}/${name}`;
+}
+*/
+
 /**
  * @description Replaces user profile image
  * @param userId
@@ -59,7 +68,8 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
   const imgUid = uuidv4();
   // get ext from file let extension = filename.split(".").pop();
   // imgName = imgUid + . + ext
-  const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
+  const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;
+
   // Check for valid user
   const user = auth.currentUser;
   // check for username
@@ -80,7 +90,7 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
       imageUrl: "",
       comments: [],
       path: cloudPath,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp() // a timestamp makes it possible to easily get feed posts in chronological order
     }
     // Write to firestore db
     try {
@@ -156,6 +166,23 @@ const uploadImageFile = async (file: File, path: string) => {
 }
 
 /**
+ * Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
+ * @param source Source file object
+ * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
+ */
+const resizeImage = async (source: File) => new Promise<File>((resolve) => {
+  const resolution = 100;
+  if (source.size > 8000000) {
+    Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => uri, "base64")
+    // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
+    //   console.log(uri)
+    // }, "base64")
+  }
+  resolve(source)
+})
+
+/**
+ * Get URL for profile image
  * @description Get URL for profile image
  * @param userId
  * @returns
@@ -335,7 +362,7 @@ const deleteAllPosts = async (userId: string) => {
   });
   photoRefs.forEach(async (photo) => {
     // Delete the file
-    deleteObject(photo).then(() => {
+    await deleteObject(photo).then(() => {
       // File deleted successfully
       console.log("image file deleted");
     }).catch((error) => {
@@ -343,6 +370,23 @@ const deleteAllPosts = async (userId: string) => {
       console.log(error);
     });
   })
+}
+
+/**
+ * @description Deletes profile image
+ * @param uid user id
+ * Cloud Storage
+ */
+const deleteProfileImg = async (uid: string) => {
+  const path = `profile-imgs/${uid}/profile-image`;
+  const photoRef = ref(storage, path);
+  await deleteObject(photoRef).then(() => {
+    // File deleted successfully
+    console.log("image file deleted");
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+    console.log(error);
+  });
 }
 
 /**
@@ -355,7 +399,7 @@ const deletePostByPid = async (pid: string, path: string) => {
   await deleteDoc(doc(firestore, "posts", pid));
 
   const photoRef = ref(storage, path);
-  deleteObject(photoRef).then(() => {
+  await deleteObject(photoRef).then(() => {
     // File deleted successfully
     console.log("image file deleted");
   }).catch((error) => {
@@ -363,17 +407,6 @@ const deletePostByPid = async (pid: string, path: string) => {
     console.log(error);
   });
 }
-
-const resizeImage = async (source: File) => new Promise<File>((resolve) => {
-  const resolution = 100;
-  if (source.size > 8000000) {
-    Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => uri, "base64")
-    // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
-    //   console.log(uri)
-    // }, "base64")
-  }
-  resolve(source)
-})
 
 export {
   updateProfileImg,
@@ -385,6 +418,7 @@ export {
   getPhotoUrl,
   incrementLikes,
   deleteAllPosts,
-  deletePostByPid
+  deletePostByPid,
+  deleteProfileImg
 }
 
