@@ -251,12 +251,13 @@ const changePassword = async (newPassword: string, verifyNewPassword: string) =>
 
   if (newPassword !== verifyNewPassword) {
     return Promise.reject(`Passwords do not match`)
-  } else if (newPassword.length < 6) {
-    return Promise.reject(`Password must be at least 6 characters`)
+  } else if (newPassword.length < 8 && !PASSWORD_REGEX.test(newPassword)) {
+    return Promise.reject(`Password must be at least 8 characters`)
   } else {
-    if (user && newPassword.length > 0) {
+    if (user && newPassword.length > 0 && PASSWORD_REGEX.test(newPassword)) {
       await updatePassword(user, newPassword).then(() => {
         alert('Password successfully updated.')
+        Promise.resolve('Password successfully updated')
       }).catch((error) => {
         console.log(error)
         alert('Password update failed.')

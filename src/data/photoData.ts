@@ -20,6 +20,7 @@ import {
 } from "firebase/firestore";
 import { FeedPostType } from '../types/appTypes'
 import { AppUserInterface } from '../types/authentication'
+import Resizer from "react-image-file-resizer";
 
 /************************************************************
  *
@@ -108,7 +109,9 @@ const uploadImageFile = async (file: File, path: string) => {
   }
   // Get reference to the storage location & upload file
   const storageRef = ref(storage, path);
-  const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+  // const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+  const imgForUpload: File = await resizeImage(file);
+  const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
   uploadTask.on('state_changed',
@@ -360,6 +363,17 @@ const deletePostByPid = async (pid: string, path: string) => {
     console.log(error);
   });
 }
+
+const resizeImage = async (source: File) => new Promise<File>((resolve) => {
+  const resolution = 100;
+  if (source.size > 8000000) {
+    Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => uri, "base64")
+    // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
+    //   console.log(uri)
+    // }, "base64")
+  }
+  resolve(source)
+})
 
 export {
   updateProfileImg,
