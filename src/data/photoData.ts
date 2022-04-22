@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { setDoc, doc } from "firebase/firestore";
 // import { PhotoDataInterface } from '../types/photoTypes';
 import { FeedPostType } from '../types/appTypes'
+import Resizer from 'react-image-file-resizer'
 
 /************************************************************
  *
@@ -101,7 +102,11 @@ const uploadImageFile = async (file: File, path: string) => {
   }
   // Get reference to the storage location & upload file
   const storageRef = ref(storage, path);
-  const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+  const imgForUpload: File = await resizeImage(file);
+  //Stores image in variable to allow resizing
+  
+  const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
   uploadTask.on('state_changed',
@@ -143,6 +148,25 @@ const uploadImageFile = async (file: File, path: string) => {
     }
   );
 }
+
+/**
+ * Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
+ * @param source Source file object
+ * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
+ */
+const resizeImage = async (source: File) => new Promise<File>((resolve) => {
+  const resolution = 100;
+  //Resizer.imageFileResizer uses a 1-100 scale for image quality. 100 is max quality.
+  if (source.size > 8000000) {
+    /*Checks if image is above 8MB limit. File.size counts in bytes, 1,000,000 bytes per megabyte,
+    so 8,000,000 bytes. If it exceeds limit, calls logic to resize the image. Otherwise ignores
+    resizing logic and returns original file.*/
+    Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
+      console.log(uri)
+    }, "base64")
+  }
+  resolve(source)
+})
 
 /**
  * Get URL for profile image
