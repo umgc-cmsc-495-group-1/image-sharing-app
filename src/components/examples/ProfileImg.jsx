@@ -4,7 +4,15 @@ import { auth } from '../firebaseSetup'
 import { onAuthStateChanged } from "firebase/auth";
 
 
-
+/**
+ * @description example of a simple component to
+ * display a profile image, it gets the image url
+ * (location in storage) to use as src attribute in
+ * <img> tag
+ * A placeholder is displayed if the image does not
+ * exist
+ * @returns
+ */
 export const ProfileImage = () => {
 
   const [uid, setUid] = useState("");

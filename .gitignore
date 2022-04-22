@@ -77,8 +77,3 @@ src/dbHandlers/fs_emulator_connect.ts
 */src/dbHandlers/fs_emulator_connect.ts
 # WE DONT USE YARN - ENSURE THAT YOU ARE USING PACKAGE-LOCK.JSON
 yarn.lock
-
-*/.gitignore
-*/tsconfig.json
-*/package.json
-*/package-lock.json
