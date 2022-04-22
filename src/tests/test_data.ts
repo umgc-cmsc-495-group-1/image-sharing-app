@@ -6,7 +6,7 @@ import {
 } from '../types/appTypes'
 import { UserInterface } from '../types/authentication'
 import { signup } from '../data/authFunctions'
-import { postNewImage, updateProfileImg } from '../data/photoData'
+import { createNewPost, updateProfileImg } from '../data/photoData'
 import profileImage1 from '../assets/static/profile/aiony-haust-3TLl_97HNJo-unsplash.jpg'
 import profileImage2 from '../assets/static/profile/ali-morshedlou-WMD64tMfc4k-unsplash.jpg'
 import profileImage3 from '../assets/static/profile/almos-bechtold-3402kvtHhOo-unsplash.jpg'
@@ -104,7 +104,7 @@ const demoContent = {
 
 /**
  * @description - Generate a random test user to be used in the feed and profile
- * @returns {ProfileInterface[]} 
+ * @returns {ProfileInterface[]}
  */
 function generateRandomUsers(): ProfileInterface[] {
   const users: ProfileInterface[] = []
@@ -152,7 +152,7 @@ export async function registerRandomUsers(profilePhotos: File[], feedPhotos: Fil
     // add user image info to db
     // let currentFile: File = createFileFromPath(totalUsers[i].imageUrl)
     await updateProfileImg(totalUsers[i].uid, profilePhotos[i])
-    await postNewImage(totalUsers[i].uid,
+    await createNewPost(totalUsers[i].uid,
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       feedPhotos[i])
   }

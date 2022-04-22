@@ -11,7 +11,8 @@ import {
   GoogleUserType,
   UserCheckInterface
 } from '../types/authentication'
-import Cookies from 'js-cookie';
+import { deleteAllPosts, deleteProfileImg } from '../data/photoData'
+// import Cookies from 'js-cookie';
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
@@ -84,7 +85,7 @@ const signup = async (user: UserInterface) => {
  * @returns
  */
 const logout = async () => {
-  Cookies.remove('user')
+  // Cookies.remove('user')
   return await auth.signOut();
 }
 
@@ -291,15 +292,17 @@ const reAuth = async () => {
 }
 
 /**
- * Delete user's auth and data from databases
- * TODO: add to userData deleteUserDoc function
+ * @description Deletes user's auth and data from databases
+ * including profile photo and all posts
  * so any photos will be removed
  */
-const deleteAccount = async () => {
+ const deleteAccount = async () => {
   const user = auth.currentUser;
   if (user) {
-    deleteUserDoc(user.uid);
-    deleteUser(user).then(() => {
+    await deleteAllPosts(user.uid);
+    await deleteProfileImg(user.uid);
+    await deleteUserDoc(user.uid);
+    await deleteUser(user).then(() => {
       console.log(`The account number ${user.uid} has been deleted`)
     }).catch((error) => {
       // An error ocurred
