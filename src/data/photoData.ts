@@ -36,6 +36,15 @@ import { AppUserInterface } from '../types/authentication'
  *
  ************************************************************/
 
+/*
+// Firebase cannot get photo urls or display post photos without a path
+// may try to use this function to fix issue as sort of an constant variable
+// firebase also needs the path to delete the posts
+const postCloudPath = (uid: string, pid: string, name: string) => {
+  return `photos/${uid}/${pid}/${name}`;
+}
+*/
+
 /**
  * @description Replaces user profile image
  * @param userId
@@ -59,7 +68,7 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
   const imgUid = uuidv4();
   // get ext from file let extension = filename.split(".").pop();
   // imgName = imgUid + . + ext
-  const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;  // decide on path
+  const cloudPath = `photos/${userId}/${imgUid}/${photoFile.name}`;
 
   // Check for valid user
   const user = auth.currentUser;
@@ -81,7 +90,7 @@ const createNewPost = async (userId: string, caption: string, photoFile: File) =
       imageUrl: "",
       comments: [],
       path: cloudPath,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp() // a timestamp makes it possible to easily get feed posts in chronological order
     }
     // Write to firestore db
     try {
@@ -113,7 +122,7 @@ const uploadImageFile = async (file: File, path: string) => {
 
   const imgForUpload: File = await resizeImage(file);
   //Stores image in variable to allow resizing
-  
+
   const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
@@ -358,7 +367,7 @@ const deleteAllPosts = async (userId: string) => {
   });
   photoRefs.forEach(async (photo) => {
     // Delete the file
-    deleteObject(photo).then(() => {
+    await deleteObject(photo).then(() => {
       // File deleted successfully
       console.log("image file deleted");
     }).catch((error) => {
@@ -369,16 +378,14 @@ const deleteAllPosts = async (userId: string) => {
 }
 
 /**
- * @description Deletes a single post
- * @param pid photo post's unique id
- * @param path location path of file in
+ * @description Deletes profile image
+ * @param uid user id
  * Cloud Storage
  */
-const deletePostByPid = async (pid: string, path: string) => {
-  await deleteDoc(doc(firestore, "posts", pid));
-
+ const deleteProfileImg = async (uid: string) => {
+  const path = `profile-imgs/${uid}/profile-image`;
   const photoRef = ref(storage, path);
-  deleteObject(photoRef).then(() => {
+  await deleteObject(photoRef).then(() => {
     // File deleted successfully
     console.log("image file deleted");
   }).catch((error) => {
@@ -386,6 +393,26 @@ const deletePostByPid = async (pid: string, path: string) => {
     console.log(error);
   });
 }
+
+/**
+ * @description Deletes a single post
+ * @param pid photo post's unique id
+ * @param path location path of file in
+ * Cloud Storage
+ */
+ const deletePostByPid = async (pid: string, path: string) => {
+  await deleteDoc(doc(firestore, "posts", pid));
+
+  const photoRef = ref(storage, path);
+  await deleteObject(photoRef).then(() => {
+    // File deleted successfully
+    console.log("image file deleted");
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+    console.log(error);
+  });
+}
+
 
 export {
   updateProfileImg,
@@ -397,6 +424,7 @@ export {
   getPhotoUrl,
   incrementLikes,
   deleteAllPosts,
-  deletePostByPid
+  deletePostByPid,
+  deleteProfileImg
 }
 

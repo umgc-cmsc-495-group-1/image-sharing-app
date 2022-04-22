@@ -9,7 +9,7 @@ import { User } from '@firebase/auth';
 
 /***********************************************************
  *
- * User Functions: Create New User, Delete User (not tested)
+ * User Functions: Create New User, Delete User
  * getUserById, getAllUsers
  * https://firebase.google.com/docs/reference/js/v8/firebase.User
  * latest syntax:
@@ -122,16 +122,6 @@ const updateUser = async (userId: string, profileData: ProfileInterface) => {
 
   // return docRef.update(user);
 }
-
-
-/**
- * Delete User
- * this function deletes the user document in Firestore
- * it is called by main delete function in
- *  authFunctions
- * @param userId
- */
-
 
 /**
  * Delete user document from Firestore
