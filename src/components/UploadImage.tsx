@@ -7,7 +7,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function UploadImage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -19,7 +19,6 @@ export default function UploadImage() {
 
   interface State {
     currentFile: File | null;
-    previewImage: string | null;
     progress: number;
     isError: boolean;
     message: string;
@@ -28,19 +27,24 @@ export default function UploadImage() {
 
   const [state, setState] = useState<State>({
     currentFile: null,
-    previewImage: null,
     progress: 0,
     message: "",
     isError: false,
     imageInfos: [],
   });
 
+  const [previewImage, setPreviewImage] = useState<string>("");
+
+  useEffect(() => {
+    if (!state.currentFile) return;
+    setPreviewImage(URL.createObjectURL(state.currentFile));
+  }, [state]);
+
   const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState((previous) => ({
       ...previous,
       currentFile: event.target.files ? event.target.files[0] : null,
     }));
-    console.log(state);
   };
 
   return (
@@ -65,6 +69,11 @@ export default function UploadImage() {
           role="upload-image"
         ></Box>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Box>
+              <img src={previewImage} width="100%" />
+            </Box>
+          </Grid>
           <Grid item xs={12}>
             <Button fullWidth variant="contained" component="label">
               Select Image
