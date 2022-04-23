@@ -11,7 +11,7 @@ import Hoot404 from "./components/Hoot404";
 import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import UploadImage from "./components/UploadImage";
+import Post from "./components/Post";
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -40,8 +40,8 @@ export default function App() {
           element: <ProtectedRoute component={Feed} />,
         },
         {
-          path: "/upload",
-          element: <ProtectedRoute component={UploadImage} />,
+          path: "/post",
+          element: <ProtectedRoute component={Post} />,
         },
         {
           path: "/user",
