@@ -26,7 +26,7 @@ export interface AppUserInterface extends BaseUserInterface {
   bio?: string;
   friends: string[];
   likes: string[];
-  interests: UserInterestsType[] | null;
+  interests: UserInterestsType | UserInterestsType[] | [];
 }
 
 export interface UserCheckInterface {

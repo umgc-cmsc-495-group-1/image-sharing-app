@@ -26,6 +26,8 @@ const Feed: React.FC = (): JSX.Element => {
           postText={item.postText}
           numberLikes={item.numberLikes}
           numberComments={item.numberComments}
+          classification={item.classification}
+          timestamp={item.timestamp}
           comments={item.comments}
         />
       ))}

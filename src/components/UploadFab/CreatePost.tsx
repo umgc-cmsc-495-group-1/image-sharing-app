@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
 import "@tensorflow/tfjs-core"
 import "@tensorflow/tfjs-converter"
 import "@tensorflow/tfjs-backend-webgl"
@@ -7,13 +7,14 @@ import {
   Modal, Box, Typography, TextareaAutosize,
   FormGroup, FormControlLabel, Switch, styled, alpha, Button
 } from '@mui/material';
+import ImageIcon from '@mui/icons-material/Image';
 import { pink } from '@mui/material/colors';
 import { LoadingBackdrop } from './LoadingBackdrop'
-
-interface CreatePostInterface {
-  open: boolean;
-  handleClose: () => void
-}
+import ErrorsDisplay from "../ErrorsDisplay";
+import {CreatePostInterface, ImageClassificationType, UserInterestsType} from "../../types/interests";
+import {User} from "firebase/auth";
+import {AuthContext} from "../../context/AuthContext";
+import {fabPostCallback} from "../../data/photoData";
 
 const modalStyle: React.CSSProperties = {
   position: 'absolute',
@@ -24,7 +25,8 @@ const modalStyle: React.CSSProperties = {
   backgroundColor: 'rgb(255, 255, 255)',
   border: '2px solid #000',
   paddingTop: 3,
-  paddingBottom: 10
+  paddingBottom: 10,
+  borderRadius: 3
 }
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
@@ -47,6 +49,9 @@ const CreatePost: React.FC<CreatePostInterface> = ({
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [description, setDescription] = useState<string>("")
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
+  const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+  const [errors, setErrors] = useState<string[]>([]);
+  const user: User | null = useContext(AuthContext);
   const imageRef = useRef<any>()
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)
   const handleIsPrivate = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -74,38 +79,80 @@ const CreatePost: React.FC<CreatePostInterface> = ({
     const { files } = e.target;
     if (files !== null && files.length > 0) {
       const url = URL.createObjectURL(files[0]);
+      setFileToUpload(files[0]);
       setImageUrl(url);
     } else {
       setImageUrl(undefined);
+      setFileToUpload(undefined);
     }
   }
 
-  const identify = async () => {
+  const identify = async () => new Promise<ImageClassificationType>((resolve) => {
     if (model !== null) {
-      const results = await model.classify(imageRef.current)
-      console.log(results)
+      const results = model.classify(imageRef.current);
+      return resolve(results);
+    }
+  })
+
+  const validateData = () => {
+    if (imageUrl === undefined && description.length < 10 || description.length > 140) {
+      setErrors( ["Please upload an image", "Description must be between 10 and 140 characters"])
+      return false;
+    } else if (imageUrl === undefined) {
+      setErrors(["Please upload an image"])
+      return false;
+    } else if (description.length < 10) {
+      setErrors(["Description must be between 10 and 140 characters"])
+      return false;
+    } else {
+      errors.pop()
+      setErrors([])
+      const errorNode = document.querySelector('.error--list');
+      if (errorNode !== null) {
+        errorNode.remove();
+      }
+      return true;
     }
   }
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    identify() // identify the image
-    // log out all the values
-    console.log("DESCRIPTION \n", description)
-    console.log("ISPRIVATE \n", isPrivate);
+    if (validateData()) {
+      // todo: send the data to the database
+      const results = await identify() // identify the image
+      const classification: UserInterestsType = {
+        classifications: results,
+        viewCount: 0,
+        isLiked: false,
+        isCommentedOn: false
+      }
+      // upload the data to the database
+      await fabPostCallback(classification, description,
+          isPrivate, user, fileToUpload)
+      // log out all the values
+      // console.log(data)
+      console.log(user)
+      console.log(results)
+      console.log("DESCRIPTION \n", description)
+      console.log("ISPRIVATE \n", isPrivate)
+      console.log("IMAGEURL \n", imageUrl)
+      console.log("FILETOUPLOAD \n", fileToUpload)
+    } else {
+      console.log("valid")
+    }
 
   }
 
-  useEffect(() => {
+  useEffect( () => {
     loadModel()
   }, [])
 
   const imageContainerCss: React.CSSProperties = {
     marginTop: 10,
-    marginBottom: 10
+    marginBottom: 10,
   }
   const imageCss: React.CSSProperties = {
-    width: '25%',
+    width: '50%',
     height: '25%',
   }
   const positionRelativeCenter: React.CSSProperties = {
@@ -130,12 +177,22 @@ const CreatePost: React.FC<CreatePostInterface> = ({
         <Box
           sx={positionRelativeCenter}
         >
-          <input id='add-image-for-upload' type="file" accept='image/*'
-            capture='environment' onChange={uploadImage}
-          />
+          <Button
+              variant="contained"
+              component="label"
+              color="primary"
+              sx={{
+                width: '50%',
+                marginBottom: 2
+              }}
+          >
+            <ImageIcon />
+            <input id='add-image-for-upload' type="file" accept='image/*'
+                   capture='environment' hidden={true} onChange={uploadImage} />
+          </Button>
         </Box>
         <Box className='post-preview' sx={positionRelativeCenter}>
-          <Typography variant='h4' component='h2' className='post-preview'>
+          <Typography variant='h4' component='h3' className='post-preview'>
             Post Preview
           </Typography>
           <Box className='post-preview image-holder' style={imageContainerCss}>
@@ -150,19 +207,31 @@ const CreatePost: React.FC<CreatePostInterface> = ({
                 </>
             }
           </Box>
-          <Box className='post-preview post-description'>
+          <Box
+            className='post-preview post-description'
+            sx={{
+              width: '50%',
+            }}
+          >
             <TextareaAutosize
               maxLength={140}
               minLength={10}
               minRows={3}
               maxRows={8}
+              style={{
+                width: '100%',
+              }}
               name='post-description'
               placeholder='Enter the description about your photo for others to see. No more than 140 characters, no less than 10.'
               onChange={handleDescription}
               value={description}
             />
           </Box>
-          <FormGroup>
+          <FormGroup
+            sx={{
+              my: 2
+            }}
+          >
             <FormControlLabel
               control={<StyledSwitch
                 value={isPrivate}
@@ -174,13 +243,18 @@ const CreatePost: React.FC<CreatePostInterface> = ({
           </FormGroup>
           <Box>
             <Button
+              color="primary"
               variant="contained"
               onClick={handleSubmit}
               sx={{
-
+                width: '50%',
+                marginBottom: 2
               }}
             >Create Post</Button>
           </Box>
+        </Box>
+        <Box>
+          <ErrorsDisplay errors={errors} />
         </Box>
       </Box>
     </Modal>

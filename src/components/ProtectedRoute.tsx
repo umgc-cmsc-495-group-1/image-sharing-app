@@ -32,14 +32,14 @@ interface Props {
 // }
 
 export const ProtectedRoute: React.FC<Props> = ({
-  component: RouteCompoonent,
+  component: RouteComponent,
   fallback: FallbackComponent,
 }) => {
   const authValue = useContext(AuthContext);
 
   if (!FallbackComponent) FallbackComponent = HootLogin;
 
-  if (authValue) return <RouteCompoonent />;
+  if (authValue) return <RouteComponent />;
 
   return <FallbackComponent />;
 };

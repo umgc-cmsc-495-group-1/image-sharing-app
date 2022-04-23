@@ -30,7 +30,9 @@ const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX
 }
 
 const FeedTile: React.FC<FeedPostInterface> = ({
-  imageUrl, uid, username, pid, postText, numberLikes, numberComments, comments
+  imageUrl, uid, username, pid,
+  postText, numberLikes, numberComments, comments,
+  classification, timestamp
 }): JSX.Element => {
   const { width, height } = useWindowDimensions();
   const { margin, padding } = determineMarginAndPadding(width);
@@ -54,6 +56,8 @@ const FeedTile: React.FC<FeedPostInterface> = ({
         username={username}
         postText={postText}
         imageUrl={imageUrl}
+        classification={classification}
+        timestamp={timestamp}
         comments={comments}
         margin={margin}
         padding={padding}
