@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { FeedTile } from './FeedTile';
 import { generateRandomFeedProps } from '../../tests/test_data';
 import { FeedPostType } from '../../types/appTypes';
+import { UploadFab } from '../UploadFab';
 
 const Feed: React.FC = (): JSX.Element => {
   const totalFeedPosts = generateRandomFeedProps()
@@ -28,6 +29,9 @@ const Feed: React.FC = (): JSX.Element => {
           comments={item.comments}
         />
       ))}
+      <Box>
+        <UploadFab />
+      </Box>
     </Box>
   );
 }

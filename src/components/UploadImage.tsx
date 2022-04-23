@@ -13,7 +13,6 @@ const UploadImage = () => {
 
   const loadModel = async () => {
     setIsModelLoading(true);
-
     try {
       const model = await mobilenet.load()
       console.log(model)
@@ -23,7 +22,6 @@ const UploadImage = () => {
       console.error(error);
       setIsModelLoading(false);
     }
-
   }
 
   const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +42,10 @@ const UploadImage = () => {
 
   }
 
+  useEffect(() => {
+    loadModel()
+  }, [])
+
   const imageCss: React.CSSProperties = {
     width: '25%',
     height: '25%',
@@ -53,15 +55,9 @@ const UploadImage = () => {
     marginBottom: 10
   }
 
-  useEffect(() => {
-    loadModel()
-  }, [])
-
   if (isModelLoading) {
     return <h2>Model Loading...</h2>
   }
-
-  console.log('test')
 
   return (
     <div>

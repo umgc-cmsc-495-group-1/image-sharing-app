@@ -12,6 +12,7 @@ import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { UploadImage } from "./components/UploadImage";
+import { EasterEgg } from "./components/EasterEgg";
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -34,6 +35,10 @@ export default function App() {
         {
           path: "/signup",
           element: <HootSignup />,
+        },
+        {
+          path: "/candy-mountain",
+          element: <ProtectedRoute component={EasterEgg} />
         },
         {
           path: "/feed",
