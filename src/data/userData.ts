@@ -36,7 +36,9 @@ import { User } from '@firebase/auth';
 /**
  * Gets reference to the User collection
  */
-const usersRef = collection(firestore, 'users')
+const usersRef = collection(firestore, 'users');
+const displayNameRef = collection(firestore, 'displaynames');
+
 
 /**
  * Createa a new user document in Firestore 'users' collection
@@ -145,11 +147,37 @@ const getAllUsers = async () => {
   })
 }
 
+/**
+ * @description Returns true if displayName exists in
+ * displayName firestore collection
+ * @param name : string
+ * @returns boolean
+ */
+const displayNameExists = async (name: string) => {
+  const nameRef = doc(displayNameRef, name);
+  const docSnap = await getDoc(nameRef);
+  return docSnap.exists();
+}
+
+/**
+ * @description creates a document with displayName as unique key
+ * @param name : string user's displayName
+ * @param uid : string
+ */
+const saveDisplayName = async (name: string, uid: string) => {
+  await setDoc(doc(displayNameRef, name), {
+    uid: uid,
+  });
+}
+
+
 export {
   createUser,
   getUserByUserId,
   emailInDb,
   updateUser,
   deleteUserDoc,
-  getAllUsers
+  getAllUsers,
+  displayNameExists,
+  saveDisplayName
 }
