@@ -1,5 +1,5 @@
-import React from "react";
-import { FeedPostInterface, ImageItemProps } from "../../types/appTypes";
+import React, {useState} from "react";
+import {FeedPostInterface, ImageItemProps, LikeIconProps} from "../../types/appTypes";
 import {
   Avatar,
   Box,
@@ -8,11 +8,23 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  IconButton,
+  IconButton, SvgIcon,
   Typography,
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import {useNavigate} from "react-router-dom";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+
+const LikeIcon: React.FC<LikeIconProps> = ({
+  isLiked
+}): JSX.Element => {
+  let Icon: JSX.Element = <SvgIcon component={FavoriteBorderIcon} color='info' />;
+  if (isLiked) {
+    Icon = <SvgIcon component={FavoriteIcon} color='warning' />;
+  }
+  return Icon
+};
 
 const ImageItem: React.FC<ImageItemProps> = ({
   src,
@@ -45,12 +57,19 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   pid,
   postText,
   numberLikes,
-  numberComments,
-  comments,
-  classification,
-  timestamp,
+  numberComments
 }): JSX.Element => {
-  console.log(uid, pid, comments, classification, timestamp);
+  const [isLiked, setIsLiked] = useState(false);
+  const [numberOfLikes, setNumberOfLikes] = useState(numberLikes);
+  const navigate = useNavigate();
+  function handleNavigate() {
+    navigate(`/user/${uid}/profile/${pid}`)
+  }
+  function handleLike() {
+    setIsLiked(!isLiked);
+    setNumberOfLikes(numberOfLikes + (isLiked ? -1 : 1));
+  }
+
   return (
     <Card
       raised={true}
@@ -72,11 +91,11 @@ const FeedTile: React.FC<FeedPostInterface> = ({
         <Typography>{postText}</Typography>
       </CardContent>
       <CardActions>
-        <IconButton aria-label="like">
-          <FavoriteIcon />
+        <IconButton aria-label="like" onClick={handleLike}>
+          <LikeIcon isLiked={isLiked} />
         </IconButton>
-        <Typography>{numberLikes}</Typography>
-        <IconButton aria-label="comment">
+        <Typography>{numberOfLikes}</Typography>
+        <IconButton aria-label="comment" onClick={handleNavigate}>
           <CommentIcon />
         </IconButton>
         <Typography>{numberComments}</Typography>

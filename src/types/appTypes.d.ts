@@ -133,9 +133,9 @@ export interface MarginPadding {
   padding: number;
 }
 
-export interface LikeIconProps extends MarginPadding {
+export interface LikeIconProps {
   isLiked: boolean;
-  numberOfLikes: number;
+  numberOfLikes?: number;
   favoriteIcon?: IconType | null;
   favoriteBorderIcon?: IconType | null;
 }

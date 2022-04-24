@@ -14,12 +14,11 @@ import { determinBarHeight, determineIconSize } from '../../utils/marginPadding'
 type IconType = typeof FavoriteIcon | typeof FavoriteBorderIcon | typeof CommentIcon;
 
 const LikeIcon: React.FC<LikeIconProps> = ({
-  isLiked, numberOfLikes, margin
+  isLiked, numberOfLikes
 }): JSX.Element => {
-  const fontSize = determineIconSize(margin);
-  let Icon: JSX.Element = <SvgIcon component={FavoriteBorderIcon} color='info' sx={{ fontSize: fontSize }} />;
+  let Icon: JSX.Element = <SvgIcon component={FavoriteBorderIcon} color='info' sx={{ fontSize: 16 }} />;
   if (isLiked) {
-    Icon = <SvgIcon component={FavoriteIcon} color='warning' sx={{ fontSize: fontSize }} />;
+    Icon = <SvgIcon component={FavoriteIcon} color='warning' sx={{ fontSize: 16 }} />;
   }
   return (
     <Box
@@ -133,8 +132,6 @@ const MetaDataBar: React.FC<MetaDataBarInterface> = ({
           <LikeIcon
             isLiked={isLiked}
             numberOfLikes={numberOfLikes}
-            margin={margin}
-            padding={padding}
           />
         </IconButton>
         <IconButton

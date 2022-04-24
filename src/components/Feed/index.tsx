@@ -3,10 +3,11 @@ import { Box } from "@mui/material";
 import { FeedTile } from "./FeedTile";
 import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
-import { useFeed } from "../../hooks/useFeed";
+// import { useFeed } from "../../hooks/useFeed";
+import { totalFeedPosts } from "../../tests/test_data"
 
 const Feed: React.FC = (): JSX.Element => {
-  const feed = useFeed();
+  // const feed = useFeed();
   return (
     <Box
       sx={{
@@ -16,7 +17,7 @@ const Feed: React.FC = (): JSX.Element => {
         width: "100%",
       }}
     >
-      {feed.map((item: FeedPostType) => (
+      {totalFeedPosts.map((item: FeedPostType) => (
         <FeedTile
           key={item.pid}
           path={item.path}
