@@ -66,7 +66,6 @@ const CreatePost: React.FC<CreatePostInterface> = ({
     setIsModelLoading(true);
     try {
       const model = await mobilenet.load()
-      console.log(model)
       setModel(model);
       setIsModelLoading(false);
     } catch (error) {
@@ -118,7 +117,6 @@ const CreatePost: React.FC<CreatePostInterface> = ({
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     if (validateData()) {
-      // todo: send the data to the database
       const results = await identify() // identify the image
       const classification: UserInterestsType = {
         classifications: results,
@@ -129,16 +127,8 @@ const CreatePost: React.FC<CreatePostInterface> = ({
       // upload the data to the database
       await fabPostCallback(classification, description,
           isPrivate, user, fileToUpload)
-      // log out all the values
-      // console.log(data)
-      console.log(user)
-      console.log(results)
-      console.log("DESCRIPTION \n", description)
-      console.log("ISPRIVATE \n", isPrivate)
-      console.log("IMAGEURL \n", imageUrl)
-      console.log("FILETOUPLOAD \n", fileToUpload)
     } else {
-      console.log("valid")
+      setErrors(["Error uploading image"])
     }
 
   }

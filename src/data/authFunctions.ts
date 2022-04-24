@@ -63,7 +63,7 @@ const signup = async (user: UserInterface) => {
       user.email,
       user.password
     )
-    createUser(res.user, user);
+    await createUser(res.user, user);
     result = {
       status: 201,
       user: res.user,
