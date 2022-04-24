@@ -63,7 +63,7 @@ const signup = async (user: UserInterface) => {
       user.email,
       user.password
     )
-    createUser(res.user, user);
+    await createUser(res.user, user);
     result = {
       status: 201,
       user: res.user,
@@ -85,7 +85,6 @@ const signup = async (user: UserInterface) => {
  * @returns
  */
 const logout = async () => {
-  // Cookies.remove('user')
   return await auth.signOut();
 }
 
@@ -254,12 +253,13 @@ const changePassword = async (newPassword: string, verifyNewPassword: string) =>
 
   if (newPassword !== verifyNewPassword) {
     return Promise.reject(`Passwords do not match`)
-  } else if (newPassword.length < 6) {
-    return Promise.reject(`Password must be at least 6 characters`)
+  } else if (newPassword.length < 8 && !PASSWORD_REGEX.test(newPassword)) {
+    return Promise.reject(`Password must be at least 8 characters`)
   } else {
-    if (user && newPassword.length > 0) {
+    if (user && newPassword.length > 0 && PASSWORD_REGEX.test(newPassword)) {
       await updatePassword(user, newPassword).then(() => {
         alert('Password successfully updated.')
+        Promise.resolve('Password successfully updated')
       }).catch((error) => {
         console.log(error)
         alert('Password update failed.')
@@ -296,7 +296,7 @@ const reAuth = async () => {
  * including profile photo and all posts
  * so any photos will be removed
  */
- const deleteAccount = async () => {
+const deleteAccount = async () => {
   const user = auth.currentUser;
   if (user) {
     await deleteAllPosts(user.uid);
