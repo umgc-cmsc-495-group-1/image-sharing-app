@@ -13,8 +13,6 @@ import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Signup } from "./components/Signup";
 import { EasterEgg } from "./components/EasterEgg";
-import Post from "./components/Post";
-
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -44,15 +42,11 @@ export default function App() {
         },
         {
           path: "/candy-mountain",
-          element: <ProtectedRoute component={EasterEgg} />
+          element: <ProtectedRoute component={EasterEgg} />,
         },
         {
           path: "/feed",
           element: <ProtectedRoute component={Feed} />,
-        },
-        {
-          path: "/post",
-          element: <ProtectedRoute component={Post} />,
         },
         {
           path: "/user",
