@@ -11,7 +11,6 @@ import Hoot404 from "./components/Hoot404";
 import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Signup } from "./components/Signup";
 import { EasterEgg } from "./components/EasterEgg";
 
 export default function App() {
@@ -35,10 +34,6 @@ export default function App() {
         {
           path: "/signup",
           element: <HootSignup />,
-        },
-        {
-          path: "/test-signup",
-          element: <Signup />,
         },
         {
           path: "/candy-mountain",

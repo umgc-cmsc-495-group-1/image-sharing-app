@@ -300,7 +300,6 @@ const getOnePost = async (postId: string) => { // may have to rethink having use
   * @param userId : string
   * @returns
   */
-
 const getAllPostData = async (userId: string) => {
   const userPosts: FeedPostType[] = [];
   const collectionRef = collection(firestore, "posts");
