@@ -1,17 +1,31 @@
-import React from 'react'
-import { FeedPostInterface, ImageItemProps } from '../../types/appTypes';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { Box } from '@mui/material';
-import { MetaDataBar } from './MetaDataBar';
-import { determineMarginAndPadding } from '../../utils/marginPadding';
+import React from "react";
+import { FeedPostInterface, ImageItemProps } from "../../types/appTypes";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import CommentIcon from "@mui/icons-material/Comment";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
-const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX.Element => {
-  const isAlt = (alt !== "") ? alt : 'image';
+const ImageItem: React.FC<ImageItemProps> = ({
+  src,
+  alt,
+  margin,
+  padding,
+}): JSX.Element => {
+  const isAlt = alt !== "" ? alt : "image";
   const details: React.CSSProperties = {
     height: "100%",
     width: "100%",
     objectFit: "contain",
-  }
+  };
   return (
     <Box
       sx={{
@@ -19,56 +33,56 @@ const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX
         mx: margin,
       }}
     >
-      <img
-        src={src}
-        alt={isAlt}
-        style={details}
-        loading="lazy"
-      />
+      <img src={src} alt={isAlt} style={details} loading="lazy" />
     </Box>
   );
-}
+};
 
 const FeedTile: React.FC<FeedPostInterface> = ({
-  imageUrl, uid, username, pid,
-  postText, numberLikes, numberComments, comments,
-  classification, timestamp
+  imageUrl,
+  uid,
+  username,
+  pid,
+  postText,
+  numberLikes,
+  numberComments,
+  comments,
+  classification,
+  timestamp,
 }): JSX.Element => {
-  const { width, height } = useWindowDimensions();
-  const { margin, padding } = determineMarginAndPadding(width);
+  console.log(uid, pid, comments, classification, timestamp);
   return (
-    <Box
+    <Card
+      raised={true}
       sx={{
-        width: 'inherit',
+        marginBottom: 5,
+        maxWidth: "lg",
+        width: {
+          xs: 1.0,
+          sm: 0.9,
+        },
       }}
     >
-      <ImageItem
-        key={`${uid}-${username}`}
-        src={imageUrl}
-        margin={margin}
-        padding={padding}
+      <CardHeader
+        avatar={<Avatar sx={{ bgcolor: "primary.main" }}>?</Avatar>}
+        title={username}
       />
-      <MetaDataBar
-        uid={uid}
-        pid={pid}
-        numberLikes={numberLikes}
-        numberComments={numberComments}
-        username={username}
-        postText={postText}
-        imageUrl={imageUrl}
-        classification={classification}
-        timestamp={timestamp}
-        comments={comments}
-        margin={margin}
-        padding={padding}
-        screenWidth={width}
-        screenHeight={height}
-      />
-    </Box>
+      <CardMedia component="img" image={imageUrl} />
+      <CardContent>
+        <Typography>{postText}</Typography>
+      </CardContent>
+      <CardActions>
+        <IconButton aria-label="like">
+          <FavoriteIcon />
+        </IconButton>
+        <Typography>{numberLikes}</Typography>
+        <IconButton aria-label="comment">
+          <CommentIcon />
+        </IconButton>
+        <Typography>{numberComments}</Typography>
+      </CardActions>
+    </Card>
   );
-}
+};
 
-export {
-  FeedTile,
-  ImageItem
-}
+export { FeedTile, ImageItem };

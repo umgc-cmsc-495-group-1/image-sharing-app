@@ -22,7 +22,7 @@ const Navigation: React.FC = () => {
 
   return (
     <div className="class.navigation">
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static">
           <Toolbar>
             <IconButton

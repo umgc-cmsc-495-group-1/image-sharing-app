@@ -37,7 +37,7 @@ export default function App() {
         },
         {
           path: "/candy-mountain",
-          element: <ProtectedRoute component={EasterEgg} />
+          element: <ProtectedRoute component={EasterEgg} />,
         },
         {
           path: "/feed",
