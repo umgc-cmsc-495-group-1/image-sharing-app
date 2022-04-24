@@ -11,10 +11,9 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 //import { useNavigate } from 'react-router-dom';
-import { signup } from "../data/authFunctions";
-import { UserInterface } from "../types/authentication";
-import { UserSignupValidationError } from "../utils/Error";
-import Cookies from "js-cookie";
+import { signup } from '../data/authFunctions';
+import { UserInterface } from '../types/authentication';
+import { UserSignupValidationError } from '../utils/Error';
 
 export default function HootSignup() {
   const [displayName, setDisplayName] = useState("");
@@ -43,9 +42,6 @@ export default function HootSignup() {
               // TODO: redirect to the profile page after adding stepper fro creating account
               // navigate('/profile');
               console.log(res.user);
-              Cookies.set("user", JSON.stringify(res.user?.uid), {
-                expires: 1,
-              });
             }
           }
         })

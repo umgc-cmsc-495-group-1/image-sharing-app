@@ -15,7 +15,7 @@ export const useCurrentUser = (userId: string) => {
   const [currentUser, setCurrentUser] =
     useState<AppUserInterface>({
       username: '', displayName: '', email: '', uid: '', first: '',
-      last: '', friends: [], likes: [], bio: ''
+      last: '', friends: [], likes: [], bio: '', interests: []
     })
 
   // Load current user from Firestore db
