@@ -49,7 +49,7 @@ import { User } from "@firebase/auth";
  * Gets reference to the User collection
  */
 const usersRef = collection(firestore, 'users');
-const displayNameRef = collection(firestore, 'displaynames');
+const usernameRef = collection(firestore, 'usernames');
 
 
 /**
@@ -167,8 +167,8 @@ const getAllUsers = async () => {
  * @param name : string
  * @returns boolean
  */
-const displayNameExists = async (name: string) => {
-  const nameRef = doc(displayNameRef, name);
+const usernameExists = async (name: string) => {
+  const nameRef = doc(usernameRef, name);
   const docSnap = await getDoc(nameRef);
   return docSnap.exists();
 }
@@ -178,8 +178,8 @@ const displayNameExists = async (name: string) => {
  * @param name : string user's displayName
  * @param uid : string
  */
-const saveDisplayName = async (name: string, uid: string) => {
-  await setDoc(doc(displayNameRef, name), {
+const saveUsername = async (name: string, uid: string) => {
+  await setDoc(doc(usernameRef, name), {
     uid: uid,
   });
 }
@@ -192,6 +192,6 @@ export {
   updateUser,
   deleteUserDoc,
   getAllUsers,
-  displayNameExists,
-  saveDisplayName
+  usernameExists,
+  saveUsername
 }
