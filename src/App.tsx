@@ -13,6 +13,7 @@ import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Signup } from "./components/Signup";
 import { EasterEgg } from "./components/EasterEgg";
+import { LoadingBackdrop } from "./components/UploadFab/LoadingBackdrop";
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -27,6 +28,12 @@ export default function App() {
         {
           path: "/login",
           element: <HootLogin />,
+        },
+        {
+          path: "/auth-loading",
+          element: (
+            <ProtectedRoute component={Feed} fallback={LoadingBackdrop} />
+          ),
         },
         {
           path: "/home",
