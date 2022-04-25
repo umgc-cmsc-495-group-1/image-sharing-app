@@ -1,5 +1,5 @@
 import { User } from '@firebase/auth';
-//@firebase/auth/dist/auth-public
+import { UserInterestsType } from './interests';
 
 export interface BaseUserInterface {
   first?: string | undefined;
@@ -22,10 +22,11 @@ export interface ReturnUserInterface {
 }
 
 export interface AppUserInterface extends BaseUserInterface {
-  uid: string,
-  bio?: string,
-  friends: string[],
-  likes: string[]
+  uid: string;
+  bio?: string;
+  friends: string[];
+  likes: string[];
+  interests: UserInterestsType | UserInterestsType[] | [];
 }
 
 export interface UserCheckInterface {
