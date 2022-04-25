@@ -1,5 +1,5 @@
 import { auth } from '../firebaseSetup'
-import { createUser, deleteUserDoc } from './userData'
+import { createUser, deleteUserDoc, displayNameExists, saveDisplayName } from './userData'
 import {
   GoogleAuthProvider, signInWithPopup,
   getRedirectResult, signInWithEmailAndPassword,
@@ -56,6 +56,13 @@ const signup = async (user: UserInterface) => {
       message: 'Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #'
     }
     return Promise.reject(result);
+  } else if (await displayNameExists(user.displayName)) {
+    result = {
+      status: 400,
+      user: null,
+      message: 'This displayName is taken. Please choose a new displayName.'
+    }
+    return Promise.reject(result);
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
     res = await createUserWithEmailAndPassword(
@@ -69,6 +76,8 @@ const signup = async (user: UserInterface) => {
       user: res.user,
       message: 'User successfully created'
     }
+    // saves to displayName collection so uniqueness can be enforced
+    await saveDisplayName(user.displayName, res.user.uid)
     return Promise.resolve(result);
   } else {
     result = {
