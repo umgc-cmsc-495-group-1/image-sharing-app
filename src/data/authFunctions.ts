@@ -76,6 +76,7 @@ const signup = async (user: UserInterface) => {
       user: res.user,
       message: 'User successfully created'
     }
+    // saves to displayName collection so uniqueness can be enforced
     await saveDisplayName(user.displayName, res.user.uid)
     return Promise.resolve(result);
   } else {
