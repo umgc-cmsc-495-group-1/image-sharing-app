@@ -396,6 +396,10 @@ const getAllFeedData = async (user: AppUserInterface) => {
   // const path = `/posts/${photoId}`;
   const collectionRef = collection(firestore, "posts");
 
+  if (!user.friends.length) {
+    return [];
+  }
+
   const q = query(
     collectionRef,
     where("uid", "in", user.friends),
