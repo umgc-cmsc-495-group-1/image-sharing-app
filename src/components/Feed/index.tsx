@@ -1,23 +1,25 @@
-import React from 'react'
-import { Box } from '@mui/material';
-import { FeedTile } from './FeedTile';
-import { generateRandomFeedProps } from '../../tests/test_data';
-import { FeedPostType } from '../../types/appTypes';
+import React from "react";
+import { Box } from "@mui/material";
+import { FeedTile } from "./FeedTile";
+import { FeedPostType } from "../../types/appTypes";
+import { UploadFab } from "../UploadFab";
+import { useFeed } from "../../hooks/useFeed";
 
 const Feed: React.FC = (): JSX.Element => {
-  const totalFeedPosts = generateRandomFeedProps()
+  const feed = useFeed();
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
       }}
     >
-      {totalFeedPosts.map((item: FeedPostType) => (
+      {feed.map((item: FeedPostType) => (
         <FeedTile
-          key={`${item.username}-${item.uid}`}
+          key={item.pid}
+          path={item.path}
           imageUrl={item.imageUrl}
           uid={item.uid}
           username={item.username}
@@ -25,11 +27,16 @@ const Feed: React.FC = (): JSX.Element => {
           postText={item.postText}
           numberLikes={item.numberLikes}
           numberComments={item.numberComments}
+          classification={item.classification}
+          timestamp={item.timestamp}
           comments={item.comments}
         />
       ))}
+      <Box>
+        <UploadFab />
+      </Box>
     </Box>
   );
-}
+};
 
 export default Feed;

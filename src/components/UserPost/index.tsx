@@ -10,6 +10,7 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { ImageItem } from '../Feed/FeedTile';
 import { determineMarginAndPadding } from '../../utils/marginPadding'
 import CommentItem from './CommentItem';
+import { UploadFab } from "../UploadFab";
 
 const UserPost: React.FC = () => {
   const { uid, pid } = useParams();
@@ -74,6 +75,9 @@ const UserPost: React.FC = () => {
             comment={item.comment}
           />
         ))}
+      </Box>
+      <Box>
+        <UploadFab />
       </Box>
     </Box>
   );

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
-import { getUserByUserId } from '../data/userData'
-import { AppUserInterface } from '../types/authentication'
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { getUserByUserId } from "../data/userData";
+import { AppUserInterface } from "../types/authentication";
 
 /******************************************************
  *
@@ -11,26 +12,32 @@ import { AppUserInterface } from '../types/authentication'
  ******************************************************/
 
 // get current user by id, if there is a logged in user
-export const useCurrentUser = (userId: string) => {
-  const [currentUser, setCurrentUser] =
-    useState<AppUserInterface>({
-      username: '', displayName: '', email: '', uid: '', first: '',
-      last: '', friends: [], likes: [], bio: ''
-    })
+export const useCurrentUser = () => {
+  const userId = useContext(AuthContext)?.uid || "";
+  const [currentUser, setCurrentUser] = useState<AppUserInterface>({
+    username: "",
+    displayName: "",
+    email: "",
+    uid: "",
+    first: "",
+    last: "",
+    friends: [],
+    likes: [],
+    bio: "",
+    interests: [],
+  });
 
   // Load current user from Firestore db
   useEffect(() => {
     let user;
     (async () => {
-
       user = await getUserByUserId(userId);
 
       if (user) {
         // set current user info
-        console.log(`current user is: ${JSON.stringify(user)}`);
         setCurrentUser(user);
       }
-    })()
-  }, [userId])
+    })();
+  }, [userId]);
   return currentUser;
-}
+};

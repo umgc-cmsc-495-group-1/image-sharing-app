@@ -1,11 +1,23 @@
-import 'firebase/storage'
-import { collection, doc, setDoc, deleteDoc, getDoc, getDocs, getDocsFromServer } from 'firebase/firestore'
-import { query, where } from 'firebase/firestore'
-import { firestore } from '../firebaseSetup'
-import { GoogleUserType, UserInterface, AppUserInterface } from '../types/authentication'
-import { ProfileInterface } from '../types/appTypes'
+import "firebase/storage";
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDoc,
+  getDocs,
+  getDocsFromServer,
+} from "firebase/firestore";
+import { query, where } from "firebase/firestore";
+import { firestore } from "../firebaseSetup";
+import {
+  GoogleUserType,
+  UserInterface,
+  AppUserInterface,
+} from "../types/authentication";
+import { ProfileInterface } from "../types/appTypes";
 // import { googleUser, newUser } from './authFunctions'
-import { User } from '@firebase/auth';
+import { User } from "@firebase/auth";
 
 /***********************************************************
  *
@@ -36,31 +48,34 @@ import { User } from '@firebase/auth';
 /**
  * Gets reference to the User collection
  */
-const usersRef = collection(firestore, 'users')
+const usersRef = collection(firestore, "users");
 
 /**
  * Createa a new user document in Firestore 'users' collection
  * @param user
  * @param userInfo
  */
-const createUser = async (user: User, userInfo: UserInterface | GoogleUserType) => {
+const createUser = async (
+  user: User,
+  userInfo: UserInterface | GoogleUserType
+) => {
   // Write to firestore db
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
-      first: userInfo.first || '',
-      last: userInfo.last || '',
+      first: userInfo.first || "",
+      last: userInfo.last || "",
       displayName: userInfo.displayName,
       username: userInfo.username,
       email: userInfo.email,
-      bio: '',
+      bio: "",
       friends: [],
-      likes: []
-    })
+      likes: [],
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 /**
  * Get single user with field value
@@ -69,12 +84,12 @@ const createUser = async (user: User, userInfo: UserInterface | GoogleUserType) 
  * @returns
  */
 const getUserByUserId = async (userId: string) => {
-  const userRef = doc(firestore, 'users', userId)
-  const docSnap = await getDoc(userRef)
+  const userRef = doc(firestore, "users", userId);
+  const docSnap = await getDoc(userRef);
 
   if (!docSnap.exists()) {
-    console.log('No user document found')
-    return
+    console.log("No user document found");
+    return;
   }
   const data = docSnap.data();
   const user: AppUserInterface = {
@@ -86,12 +101,12 @@ const getUserByUserId = async (userId: string) => {
     email: data.email,
     bio: data.bio,
     likes: data.likes,
-    friends: data.friends
-  }
-  console.log('user data: ', user.username)
+    friends: data.friends,
+    interests: data.interests,
+  };
 
-  return user
-}
+  return user;
+};
 
 /**
  * Get single user with Email value
@@ -107,7 +122,7 @@ const emailInDb = async (email: string) => {
     console.log(doc.data.length);
     return doc.data.length > 0;
   });
-}
+};
 
 // break profile updates out into their own folder?
 // update functions must incorporate db and auth functions
@@ -117,11 +132,11 @@ const emailInDb = async (email: string) => {
  */
 const updateUser = async (userId: string, profileData: ProfileInterface) => {
   // const docSnap = await getDoc(docRef);
-  const docRef = doc(firestore, 'users', `${userId}`)
-  await setDoc(docRef, { profileData }, { merge: true })
+  const docRef = doc(firestore, "users", `${userId}`);
+  await setDoc(docRef, { profileData }, { merge: true });
 
   // return docRef.update(user);
-}
+};
 
 /**
  * Delete user document from Firestore
@@ -129,20 +144,20 @@ const updateUser = async (userId: string, profileData: ProfileInterface) => {
  * @param userId
  */
 const deleteUserDoc = async (userId: string) => {
-  await deleteDoc(doc(firestore, 'users', `${userId}`))
+  await deleteDoc(doc(firestore, "users", `${userId}`));
 };
 
 /**
  * Gets all users in Firestore 'users' collection
  */
 const getAllUsers = async () => {
-  const querySnapshot = await getDocs(collection(firestore, 'users'))
+  const querySnapshot = await getDocs(collection(firestore, "users"));
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, ' => ', doc.data());
     return doc.data();
-  })
-}
+  });
+};
 
 export {
   createUser,
@@ -150,5 +165,5 @@ export {
   emailInDb,
   updateUser,
   deleteUserDoc,
-  getAllUsers
-}
+  getAllUsers,
+};
