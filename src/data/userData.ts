@@ -159,6 +159,27 @@ const getAllUsers = async () => {
   });
 };
 
+/**
+ * @description Returns an array of the user's friends
+ * @param friends : string[]
+ * @returns : UserInterface[]
+ */
+ const getFriends = async (friends: string[]) => {
+  const friendList: AppUserInterface[] = [];
+  friends.forEach(item => {
+    try {
+      getUserByUserId(item).then((value) => {
+        console.log("friend", JSON.stringify(value));
+        if (value)
+          friendList.push(value);
+      });
+    } catch(e) {
+      console.log("Could not load friends", e);
+    }
+  });
+ return friendList;
+}
+
 export {
   createUser,
   getUserByUserId,
@@ -166,4 +187,5 @@ export {
   updateUser,
   deleteUserDoc,
   getAllUsers,
+  getFriends
 };
