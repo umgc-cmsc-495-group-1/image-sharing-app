@@ -7,6 +7,9 @@ import {
   getDoc,
   getDocs,
   getDocsFromServer,
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
 } from "firebase/firestore";
 import { query, where } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
@@ -159,6 +162,24 @@ const getAllUsers = async () => {
   });
 };
 
+const addFriend = async (newFriend: string, userAdding: string) => {
+
+  const friendsRef = doc(firestore, "users", userAdding);
+
+  await updateDoc(friendsRef, {
+    friends: arrayUnion(newFriend)
+  });
+  
+}
+
+const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
+  const friendsRef = doc(firestore, "users", userRemoving);
+
+  await updateDoc(friendsRef, {
+    friends: arrayRemove(toBeRemoved)
+  });
+}
+
 export {
   createUser,
   getUserByUserId,
@@ -166,4 +187,6 @@ export {
   updateUser,
   deleteUserDoc,
   getAllUsers,
+  addFriend,
+  removeFriend,
 };
