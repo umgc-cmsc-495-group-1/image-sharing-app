@@ -1,5 +1,9 @@
-import React from "react";
-import { FeedPostInterface, ImageItemProps } from "../../types/appTypes";
+import React, { useState } from "react";
+import {
+  CommentType,
+  FeedPostInterface,
+  ImageItemProps,
+} from "../../types/appTypes";
 import {
   Avatar,
   Box,
@@ -8,11 +12,19 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Collapse,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
   Typography,
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import SendIcon from "@mui/icons-material/Send";
+import { getOnePost, postComment } from "../../data/photoData";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const ImageItem: React.FC<ImageItemProps> = ({
   src,
@@ -50,7 +62,41 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   classification,
   timestamp,
 }): JSX.Element => {
-  console.log(uid, pid, comments, classification, timestamp);
+  const user = useCurrentUser();
+  const [post, setPost] = useState<FeedPostInterface>({
+    imageUrl: imageUrl,
+    uid: uid,
+    username: username,
+    pid: pid,
+    postText: postText,
+    numberLikes: numberLikes,
+    numberComments: numberComments,
+    comments: comments,
+    classification: classification,
+    timestamp: timestamp,
+  });
+  const [expanded, setExpanded] = useState(false);
+  const [userComment, setUserComment] = useState("");
+
+  const handleComment = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const comment: CommentType = {
+      uid: user.uid,
+      username: user.email,
+      comment: userComment,
+    };
+    postComment(pid, comment);
+    const updatedPost = await getOnePost(post.pid);
+    updatedPost
+      ? setPost(updatedPost)
+      : console.log(JSON.stringify(updatedPost));
+    setUserComment("");
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
   return (
     <Card
       raised={true}
@@ -65,22 +111,66 @@ const FeedTile: React.FC<FeedPostInterface> = ({
     >
       <CardHeader
         avatar={<Avatar sx={{ bgcolor: "primary.main" }}>?</Avatar>}
-        title={username}
+        title={post.username}
       />
-      <CardMedia component="img" image={imageUrl} />
+      <CardMedia component="img" image={post.imageUrl} />
       <CardContent>
-        <Typography>{postText}</Typography>
+        <Typography>{post.postText}</Typography>
       </CardContent>
       <CardActions>
         <IconButton aria-label="like">
           <FavoriteIcon />
         </IconButton>
-        <Typography>{numberLikes}</Typography>
-        <IconButton aria-label="comment">
+        <Typography>{post.numberLikes}</Typography>
+        <IconButton
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show comments"
+        >
           <CommentIcon />
         </IconButton>
-        <Typography>{numberComments}</Typography>
+        <Typography>{post.comments.length}</Typography>
       </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography paragraph>Comments:</Typography>
+          <List>
+            {post.comments.map((item) => (
+              <ListItem key={item.comment + item.username}>
+                <ListItemText
+                  primary={item.comment}
+                  secondary={item.username}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <Box
+            component="form"
+            display="flex"
+            noValidate
+            onSubmit={handleComment}
+            role="comment-form"
+          >
+            <TextField
+              onChange={(event) => {
+                setUserComment(event.target.value);
+              }}
+              value={userComment}
+              variant="standard"
+              multiline
+              flex-grow="true"
+              required
+              name="comment"
+              label="Comment"
+              id="comment"
+              sx={{ width: "1" }}
+            />
+            <IconButton type="submit">
+              <SendIcon color="primary" />
+            </IconButton>
+          </Box>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 };
