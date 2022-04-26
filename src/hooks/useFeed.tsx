@@ -1,9 +1,8 @@
-
-import { useState, useEffect } from 'react'
-import { FeedPostType } from '../types/appTypes'
-import { getAllFeedData, getPhotoUrl } from '../data/photoData';
-import { AppUserInterface } from '../types/authentication'
-import { useCurrentUser } from './useCurrentUser';
+import { useState, useEffect } from "react";
+import { FeedPostType } from "../types/appTypes";
+import { getAllFeedData, getPhotoUrl } from "../data/photoData";
+import { AppUserInterface } from "../types/authentication";
+import { useCurrentUser } from "./useCurrentUser";
 
 /**
  * React Hook to get all photos in a collection
@@ -13,20 +12,21 @@ import { useCurrentUser } from './useCurrentUser';
 
 // Sets as photoData
 export const useFeed = () => {
-
   const [posts, setPosts] = useState<FeedPostType[] | []>([]);
-  const user : AppUserInterface = useCurrentUser();
+  const user: AppUserInterface = useCurrentUser();
   // Load user's photo collection from Firestore db
   useEffect(() => {
     async function getPhotos() {
       let usersPhotos: FeedPostType[] = await getAllFeedData(user);
       try {
         usersPhotos.map((photo) => {
-          getPhotoUrl(photo.path || "").then((url) => url && (photo.imageUrl = url));
-        })
+          getPhotoUrl(photo.path || "").then(
+            (url: string | undefined) => url && (photo.imageUrl = url)
+          );
+        });
       } catch (e) {
         usersPhotos = [];
-         console.log(e);
+        console.log(e);
       }
       setPosts(usersPhotos);
     }
@@ -34,4 +34,4 @@ export const useFeed = () => {
   }, [user]);
 
   return posts;
-}
+};

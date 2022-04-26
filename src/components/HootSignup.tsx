@@ -11,9 +11,10 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 //import { useNavigate } from 'react-router-dom';
-import { signup } from '../data/authFunctions';
-import { UserInterface } from '../types/authentication';
-import { UserSignupValidationError } from '../utils/Error';
+import { signInGooglePopup, signup } from "../data/authFunctions";
+import { UserInterface } from "../types/authentication";
+import { UserSignupValidationError } from "../utils/Error";
+import { useNavigate } from "react-router-dom";
 
 export default function HootSignup() {
   const [displayName, setDisplayName] = useState("");
@@ -21,6 +22,7 @@ export default function HootSignup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
+  const navigate = useNavigate();
 
   // TODO: write error handler
 
@@ -57,6 +59,17 @@ export default function HootSignup() {
       console.log(error);
     }
   };
+
+  const handleGoogleSignin = async () => {
+    await signInGooglePopup()
+      .then(() => {
+        navigate("/auth-loading");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -159,6 +172,15 @@ export default function HootSignup() {
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
+          </Button>
+          <Typography textAlign="center"> - or -</Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleGoogleSignin}
+          >
+            Sign In with Google!
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
