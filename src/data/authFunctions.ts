@@ -165,9 +165,9 @@ const signInGoogleRedirect = async () => {
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-const signInGooglePopup = async () => {
+ export const signInGooglePopup = async () => {
 
-  let user: GoogleUserType
+  let user: googleUser
   let addedUser: UserCredential['user']
 
   const provider = new GoogleAuthProvider()
@@ -189,7 +189,14 @@ const signInGooglePopup = async () => {
         email: addedUser.email || ''
       }
       if (!displayNameExists) {
+        saveDisplayName(user.displayName, addedUser.uid)
         createUser(addedUser, user);
+        return Promise.resolve(credential);
+      }
+      else {
+        saveDisplayName(user.email, addedUser.uid)
+        createUser(addedUser, user);
+        alert ("The displayName you chose is already taken")
         return Promise.resolve(credential);
       }
     }).catch((error) => {
