@@ -11,8 +11,9 @@ import Hoot404 from "./components/Hoot404";
 import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import HomeRoute from "./components/HomeRoute";
-import UploadImage from "./components/UploadImage";
+import { Signup } from "./components/Signup";
+import { EasterEgg } from "./components/EasterEgg";
+import { LoadingBackdrop } from "./components/UploadFab/LoadingBackdrop";
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -22,15 +23,17 @@ export default function App() {
       children: [
         {
           index: true,
-          element: (
-            <HomeRoute>
-              <Feed />
-            </HomeRoute>
-          ),
+          element: <ProtectedRoute component={Feed} fallback={HootHome} />,
         },
         {
           path: "/login",
           element: <HootLogin />,
+        },
+        {
+          path: "/auth-loading",
+          element: (
+            <ProtectedRoute component={Feed} fallback={LoadingBackdrop} />
+          ),
         },
         {
           path: "/home",
@@ -41,12 +44,16 @@ export default function App() {
           element: <HootSignup />,
         },
         {
-          path: "/feed",
-          element: <ProtectedRoute component={Feed} />,
+          path: "/test-signup",
+          element: <Signup />,
         },
         {
-          path: "/upload",
-          element: <ProtectedRoute component={UploadImage} />,
+          path: "/candy-mountain",
+          element: <ProtectedRoute component={EasterEgg} />,
+        },
+        {
+          path: "/feed",
+          element: <ProtectedRoute component={Feed} />,
         },
         {
           path: "/user",

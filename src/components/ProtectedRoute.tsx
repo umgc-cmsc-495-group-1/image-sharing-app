@@ -1,20 +1,45 @@
 import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { FirebaseAuthContext } from "../context/AuthContext";
-import Spinner from "./Spinner";
+import { AuthContext } from "../context/AuthContext";
+// import { Backdrop, CircularProgress } from "@mui/material";
+import HootLogin from "./HootLogin";
 
 interface Props {
   component: React.ComponentType;
+  fallback?: React.ComponentType;
   path?: string;
 }
 
+// const LoadingBackdrop = () => {
+//   const [open, setOpen] = useState(true);
+//   const handleClose = () => {
+//     setOpen(!open)
+//   }
+//   return (
+//     <>
+//       <Backdrop
+//         sx={{
+//           color: '#fff',
+//           zIndex: (theme) => theme.zIndex.drawer + 1
+//         }}
+//         open={open}
+//         onClick={handleClose}
+//       >
+//         <CircularProgress color="inherit" />
+//       </Backdrop>
+//     </>
+
+//   )
+// }
+
 export const ProtectedRoute: React.FC<Props> = ({
-  component: RouteCompoonent,
+  component: RouteComponent,
+  fallback: FallbackComponent,
 }) => {
-  const authValue = useContext(FirebaseAuthContext);
+  const authValue = useContext(AuthContext);
 
-  if (!authValue?.userDataPresent) return <Spinner />;
-  if (authValue?.user) return <RouteCompoonent />;
+  if (!FallbackComponent) FallbackComponent = HootLogin;
 
-  return <Navigate to="/signup" />;
+  if (authValue) return <RouteComponent />;
+
+  return <FallbackComponent />;
 };

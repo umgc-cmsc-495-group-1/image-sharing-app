@@ -1,18 +1,26 @@
-import { auth } from '../firebaseSetup'
-import { createUser, deleteUserDoc } from './userData'
+import { auth } from "../firebaseSetup";
+import { createUser, deleteUserDoc } from "./userData";
 import {
-  GoogleAuthProvider, signInWithPopup,
-  getRedirectResult, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, UserCredential,
-  updatePassword, updateEmail, deleteUser, updateProfile
-} from 'firebase/auth'
+  GoogleAuthProvider,
+  signInWithPopup,
+  getRedirectResult,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  UserCredential,
+  updatePassword,
+  updateEmail,
+  deleteUser,
+  updateProfile,
+} from "firebase/auth";
 import {
   UserInterface,
   GoogleUserType,
-  UserCheckInterface
-} from '../types/authentication'
-import Cookies from 'js-cookie';
-const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
+  UserCheckInterface,
+} from "../types/authentication";
+import { deleteAllPosts, deleteProfileImg } from "../data/photoData";
+// import Cookies from 'js-cookie';
+const PASSWORD_REGEX =
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
  *
@@ -27,66 +35,59 @@ const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!
  ****************************************************************/
 
 const checkEmptyValues = (user: UserInterface): boolean => {
-  if (user.username === '' ||
-    user.email === '' ||
-    user.password === '') {
+  if (user.username === "" || user.email === "" || user.password === "") {
     return true;
   }
   return false;
-}
+};
 
 const signup = async (user: UserInterface) => {
-
-  let res: UserCredential
+  let res: UserCredential;
   let result: UserCheckInterface | undefined;
   // data is empty, do not create user
   if (checkEmptyValues(user)) {
     result = {
       status: 400,
       user: null,
-      message: 'Required items are missing'
-    }
+      message: "Required items are missing",
+    };
     return Promise.reject(result);
     // TODO: write custom error to throw during creation to trigger during Promise
   } else if (!PASSWORD_REGEX.test(user.password)) {
     result = {
       status: 400,
       user: null,
-      message: 'Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #'
-    }
+      message:
+        "Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #",
+    };
     return Promise.reject(result);
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
-    res = await createUserWithEmailAndPassword(
-      auth,
-      user.email,
-      user.password
-    )
-    createUser(res.user, user);
+    res = await createUserWithEmailAndPassword(auth, user.email, user.password);
+    await createUser(res.user, user);
     result = {
       status: 201,
       user: res.user,
-      message: 'User successfully created'
-    }
+      message: "User successfully created",
+    };
     return Promise.resolve(result);
   } else {
     result = {
       status: 400,
       user: null,
-      message: 'Unknown issues, please try again'
-    }
-    return Promise.reject(result)
+      message: "Unknown issues, please try again",
+    };
+    return Promise.reject(result);
   }
-}
+};
 
 /**
  * Logout User
  * @returns
  */
 const logout = async () => {
-  Cookies.remove('user')
   return await auth.signOut();
-}
+};
 
 /**
  * Login user with email and password
@@ -97,10 +98,11 @@ const login = async (email: string, password: string) => {
   return await signInWithEmailAndPassword(auth, email, password)
     .then((result) => {
       return Promise.resolve(result);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       return Promise.reject(error);
     });
-}
+};
 
 /**
  * Google Redirect Sign Up / Sign In (needs work if to be used)
@@ -108,9 +110,8 @@ const login = async (email: string, password: string) => {
  */
 // TODO: Google signup - creates account by redirecting to signup
 const signInGoogleRedirect = async () => {
-
-  let user: GoogleUserType
-  let addedUser: UserCredential['user']
+  let user: GoogleUserType;
+  let addedUser: UserCredential["user"];
 
   getRedirectResult(auth)
     .then((result) => {
@@ -118,17 +119,17 @@ const signInGoogleRedirect = async () => {
       if (result) {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
-        console.log(token)
+        console.log(token);
 
         // The signed-in user info.
-        addedUser = result.user
+        addedUser = result.user;
         if (!addedUser) {
           return addedUser;
         }
         user = {
-          displayName: addedUser.displayName || '',
-          email: addedUser.email || ''
-        }
+          displayName: addedUser.displayName || "",
+          email: addedUser.email || "",
+        };
         createUser(addedUser, user);
         // Start a sign in process for an unauthenticated user.
 
@@ -138,7 +139,8 @@ const signInGoogleRedirect = async () => {
       } else {
         return Promise.reject(addedUser);
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -146,9 +148,9 @@ const signInGoogleRedirect = async () => {
       const email = error.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`)
+      console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`);
     });
-}
+};
 
 /**
  *  Google Popup Sign Up / Sign In
@@ -158,11 +160,10 @@ const signInGoogleRedirect = async () => {
  */
 // TODO: add Google sign up option - this is a popup option
 const signInGooglePopup = async () => {
+  let user: GoogleUserType;
+  let addedUser: UserCredential["user"];
 
-  let user: GoogleUserType
-  let addedUser: UserCredential['user']
-
-  const provider = new GoogleAuthProvider()
+  const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -177,25 +178,26 @@ const signInGooglePopup = async () => {
         return addedUser;
       }
       user = {
-        displayName: addedUser.displayName || '',
-        email: addedUser.email || ''
-      }
+        displayName: addedUser.displayName || "",
+        email: addedUser.email || "",
+      };
 
       createUser(addedUser, user);
       return Promise.resolve(addedUser);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(`${errorCode}, ${errorMessage}`)
+      console.log(`${errorCode}, ${errorMessage}`);
       // The email of the user's account used.
       const email = error.email;
       // The AuthCredential type that was used.
       // const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`email: ${email}`)
+      console.log(`email: ${email}`);
       // ...
     });
-}
+};
 
 /**
  * Reset Email Address For Auth User
@@ -204,18 +206,19 @@ const signInGooglePopup = async () => {
  * @param newEmail
  */
 const changeEmail = (newEmail: string) => {
-  const user = auth.currentUser
+  const user = auth.currentUser;
   if (user)
     updateEmail(user, `${newEmail}`)
       .then(() => {
         // TODO: user settings UI updated here
-        console.log(`Email for ${user.uid} successfully updated`)
-      }).catch((error) => {
+        console.log(`Email for ${user.uid} successfully updated`);
+      })
+      .catch((error) => {
         // An error occurred
-        console.log(error)
-        console.log(`Email update for ${user.uid} failed`)
+        console.log(error);
+        console.log(`Email update for ${user.uid} failed`);
       });
-}
+};
 
 /**
  * Update Profile displayName or profile URL
@@ -228,17 +231,19 @@ const updateNameImgUrl = (displayName: string, imgUrl: string) => {
   const user = auth.currentUser;
   if (user) {
     updateProfile(user, {
-      displayName: displayName, photoURL: imgUrl
-    }).then(() => {
-      // Profile updated!
-      console.log(`${user.displayName} your profile has been updated`)
-    }).catch((error) => {
-      // An error occurred
-      console.log(error);
-    });
+      displayName: displayName,
+      photoURL: imgUrl,
+    })
+      .then(() => {
+        // Profile updated!
+        console.log(`${user.displayName} your profile has been updated`);
+      })
+      .catch((error) => {
+        // An error occurred
+        console.log(error);
+      });
   }
-
-}
+};
 
 /**
  * Update password
@@ -247,25 +252,31 @@ const updateNameImgUrl = (displayName: string, imgUrl: string) => {
 
 // TODO: should make sure user has signed in recently. If not
 // call re-auth function
-const changePassword = async (newPassword: string, verifyNewPassword: string) => {
-  const user = auth.currentUser
+const changePassword = async (
+  newPassword: string,
+  verifyNewPassword: string
+) => {
+  const user = auth.currentUser;
   // const newPass = getASecureRandomPassword()
 
   if (newPassword !== verifyNewPassword) {
-    return Promise.reject(`Passwords do not match`)
-  } else if (newPassword.length < 6) {
-    return Promise.reject(`Password must be at least 6 characters`)
+    return Promise.reject(`Passwords do not match`);
+  } else if (newPassword.length < 8 && !PASSWORD_REGEX.test(newPassword)) {
+    return Promise.reject(`Password must be at least 8 characters`);
   } else {
-    if (user && newPassword.length > 0) {
-      await updatePassword(user, newPassword).then(() => {
-        alert('Password successfully updated.')
-      }).catch((error) => {
-        console.log(error)
-        alert('Password update failed.')
-      })
+    if (user && newPassword.length > 0 && PASSWORD_REGEX.test(newPassword)) {
+      await updatePassword(user, newPassword)
+        .then(() => {
+          alert("Password successfully updated.");
+          Promise.resolve("Password successfully updated");
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("Password update failed.");
+        });
     }
   }
-}
+};
 
 // TODO: Re-authenticate user this should be used for password
 /**
@@ -275,7 +286,7 @@ const changePassword = async (newPassword: string, verifyNewPassword: string) =>
  */
 const reAuth = async () => {
   // const user = auth.currentUser
-  window.location.href = 'http://localhost:3000/login'
+  window.location.href = "http://localhost:3000/login";
   // TODO: need to create a valid pop up window
   // TODO: for now redirecting to login page
   // if (user && credential) {
@@ -287,27 +298,32 @@ const reAuth = async () => {
   //     console.log(error)
   //   })
   // }
-
-}
+};
 
 /**
- * Delete user's auth and data from databases
- * TODO: add to userData deleteUserDoc function
+ * @description Deletes user's auth and data from databases
+ * including profile photo and all posts
  * so any photos will be removed
  */
 const deleteAccount = async () => {
   const user = auth.currentUser;
   if (user) {
-    deleteUserDoc(user.uid);
-    deleteUser(user).then(() => {
-      console.log(`The account number ${user.uid} has been deleted`)
-    }).catch((error) => {
-      // An error ocurred
-      console.log(error)
-      console.log(`An error occured while deleted the account number ${user.uid}`)
-    });
+    await deleteAllPosts(user.uid);
+    await deleteProfileImg(user.uid);
+    await deleteUserDoc(user.uid);
+    await deleteUser(user)
+      .then(() => {
+        console.log(`The account number ${user.uid} has been deleted`);
+      })
+      .catch((error) => {
+        // An error ocurred
+        console.log(error);
+        console.log(
+          `An error occured while deleted the account number ${user.uid}`
+        );
+      });
   }
-}
+};
 
 export {
   signup,
@@ -319,8 +335,8 @@ export {
   updateNameImgUrl,
   changePassword,
   reAuth,
-  deleteAccount
-}
+  deleteAccount,
+};
 
 /*
 // Returns true if a user is signed-in.
@@ -382,5 +398,3 @@ function isUserSignedIn() {
 ---------------------
 
 */
-
-

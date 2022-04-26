@@ -12,17 +12,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Outlet } from "react-router-dom";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
-import { FirebaseAuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { User } from "firebase/auth";
 
 const Navigation: React.FC = () => {
-  const user: User | null | undefined = useContext(FirebaseAuthContext)?.user;
+  const user: User | null = useContext(AuthContext);
 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="class.navigation">
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static">
           <Toolbar>
             <IconButton

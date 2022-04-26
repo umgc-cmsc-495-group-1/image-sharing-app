@@ -4,9 +4,9 @@ import {
   FeedPostType,
   ProfileInterface
 } from '../types/appTypes'
-import { UserInterface } from '../types/authentication'
-import { signup } from '../data/authFunctions'
-import { postNewImage, updateProfileImg } from '../data/photoData'
+// import { UserInterface } from '../types/authentication'
+// import { signup } from '../data/authFunctions'
+// import { createNewPost, updateProfileImg } from '../data/photoData'
 import profileImage1 from '../assets/static/profile/aiony-haust-3TLl_97HNJo-unsplash.jpg'
 import profileImage2 from '../assets/static/profile/ali-morshedlou-WMD64tMfc4k-unsplash.jpg'
 import profileImage3 from '../assets/static/profile/almos-bechtold-3402kvtHhOo-unsplash.jpg'
@@ -40,6 +40,7 @@ import feedImage16 from '../assets/static/images/svitlana-w7dlfv2BWvs-unsplash.j
 import feedImage17 from '../assets/static/images/theaminahmadi-T0WB-E2hcYU-unsplash.jpg'
 import feedImage18 from '../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg'
 import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg'
+import {serverTimestamp} from "firebase/firestore";
 
 /**
  * Array of test user names to be used in the feed and profile
@@ -104,7 +105,7 @@ const demoContent = {
 
 /**
  * @description - Generate a random test user to be used in the feed and profile
- * @returns {ProfileInterface[]} 
+ * @returns {ProfileInterface[]}
  */
 function generateRandomUsers(): ProfileInterface[] {
   const users: ProfileInterface[] = []
@@ -127,36 +128,36 @@ function generateRandomUsers(): ProfileInterface[] {
   return users
 }
 
-export async function registerRandomUsers(profilePhotos: File[], feedPhotos: File[]) {
-  const totalUsers = generateRandomUsers();
-  for (let i = 0; i < totalUsers.length; i++) {
-    const currentUser: UserInterface = {
-      displayName: totalUsers[i].displayName,
-      username: totalUsers[i].username,
-      email: totalUsers[i].email,
-      password: 'Password18!',
-      verifyPassword: 'Password18!'
-    }
-    // add user info to db
-    await signup(currentUser)
-      .then(res => {
-        if (res.status == 201) {
-          console.log(res.user)
-        }
-      })
-      .catch(err => {
-        if (err.status === 400) {
-          console.log(err.message)
-        }
-      })
-    // add user image info to db
-    // let currentFile: File = createFileFromPath(totalUsers[i].imageUrl)
-    await updateProfileImg(totalUsers[i].uid, profilePhotos[i])
-    await postNewImage(totalUsers[i].uid,
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      feedPhotos[i])
-  }
-}
+// export async function registerRandomUsers(profilePhotos: File[], feedPhotos: File[]) {
+//   const totalUsers = generateRandomUsers();
+//   for (let i = 0; i < totalUsers.length; i++) {
+//     const currentUser: UserInterface = {
+//       displayName: totalUsers[i].displayName,
+//       username: totalUsers[i].username,
+//       email: totalUsers[i].email,
+//       password: 'Password18!',
+//       verifyPassword: 'Password18!'
+//     }
+//     // add user info to db
+//     await signup(currentUser)
+//       .then(res => {
+//         if (res.status == 201) {
+//           console.log(res.user)
+//         }
+//       })
+//       .catch(err => {
+//         if (err.status === 400) {
+//           console.log(err.message)
+//         }
+//       })
+//     // add user image info to db
+//     // let currentFile: File = createFileFromPath(totalUsers[i].imageUrl)
+//     await updateProfileImg(totalUsers[i].uid, profilePhotos[i])
+//     await createNewPost(totalUsers[i].uid,
+//       'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+//       feedPhotos[i])
+//   }
+// }
 
 /**
  * @description - Generate random comments for the feed
@@ -191,6 +192,18 @@ function generateRandomFeedProps(): FeedPostType[] {
       numberLikes: Math.floor(Math.random() * 100),
       numberComments: Math.floor(Math.random() * 10),
       comments: generateRandomComments(),
+      classification: {
+        classifications: [
+          {
+            className: "asdadsas, adsasdasd, asdasdasd",
+            probability: 0.32,
+          }
+        ],
+        viewCount: 0,
+        isLiked: true,
+        isCommentedOn: true
+      },
+      timestamp: serverTimestamp(),
       imageUrl: demoContent.images[Math.floor(Math.random() * demoContent.profile.length)]
     }
     posts.push(post)

@@ -1,7 +1,12 @@
 {
     "name": "image-sharing-app",
     "version": "0.1.0",
+    "description": "Image sharing application which utlizes React and Firebase, allowing users create personal accounts and share content with one another",
     "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/umgc-cmsc-495-group-1/image-sharing-app.git"
+    },
     "jest": {
         "collectCoverageFrom": [
             "src/**/*.{js,jsx,ts,tsx}",
@@ -30,6 +35,7 @@
         "@mui/types": "^7.1.3",
         "@tensorflow-models/mobilenet": "^2.1.0",
         "@tensorflow/tfjs": "^3.15.0",
+        "@tensorflow/tfjs-backend-webgl": "^3.15.0",
         "@tensorflow/tfjs-converter": "^3.15.0",
         "@tensorflow/tfjs-core": "^3.15.0",
         "@tensorflow/tfjs-node": "^3.15.0",
@@ -37,9 +43,9 @@
         "@types/react": "^17.0.41",
         "@types/react-dom": "^17.0.14",
         "firebase": "^9.6.10",
-        "js-cookie": "^3.0.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "react-image-file-resizer": "^0.4.7",
         "react-router-dom": "^6.2.2",
         "react-scripts": "5.0.0",
         "uuid": "^8.3.2",
