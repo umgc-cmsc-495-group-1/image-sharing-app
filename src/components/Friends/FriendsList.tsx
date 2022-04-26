@@ -11,10 +11,10 @@ export default function FriendsList() {
   console.log(userEvent)
   const friendArray: string[] = []
 
-  if (auth.currentUser != null) {
+  if (auth.currentUser !== null) {
     getUserByUserId(auth.currentUser.uid).then(user => {
       const friends = user?.friends
-      if (friends != undefined) {
+      if (friends !== undefined) {
         for (const frd of friends) {
           friendArray.push(frd)
         }
