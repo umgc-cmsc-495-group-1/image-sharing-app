@@ -60,13 +60,13 @@ const createUser = async (
   userInfo: UserInterface | GoogleUserType
 ) => {
   // Write to firestore db
+  console.log("adding user:" + user + " " + userInfo);
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
       first: userInfo.first || "",
       last: userInfo.last || "",
       displayName: userInfo.displayName,
-      username: userInfo.username,
       email: userInfo.email,
       bio: "",
       friends: [],
