@@ -283,7 +283,8 @@ const getPhotoUrl = async (path: string) => {
 
 /**
  * @description Get Post data from firestore
- * @param postId
+ * @param postId - postId
+ * @param comment - CommentType
  * @returns : post data doc: Promise<FeedPostType | undefined>
  */
 
