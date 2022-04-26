@@ -1,5 +1,5 @@
 import { auth } from '../firebaseSetup'
-import { createUser, deleteUserDoc, usernameExists, saveUsername } from './userData'
+import { createUser, deleteUserDoc, displayNameExists, saveDisplayName } from './userData'
 import {
   GoogleAuthProvider, signInWithPopup,
   getRedirectResult, signInWithEmailAndPassword,
@@ -56,7 +56,7 @@ const signup = async (user: UserInterface) => {
       message: 'Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #'
     }
     return Promise.reject(result);
-  } else if (await usernameExists(user.displayName)) {
+  } else if (await displayNameExists(user.displayName)) {
     result = {
       status: 400,
       user: null,
@@ -77,7 +77,7 @@ const signup = async (user: UserInterface) => {
       message: 'User successfully created'
     }
     // saves to displayName collection so uniqueness can be enforced
-    await saveUsername(user.displayName, res.user.uid)
+    await saveDisplayName(user.displayName, res.user.uid)
     return Promise.resolve(result);
   } else {
     result = {
@@ -227,17 +227,17 @@ const changeEmail = (newEmail: string) => {
 }
 
 /**
- * Update Profile displayName or profile URL
+ * @description Update Profile displayName or profile URL
  * call with auth.currentUser.displayName or .photoURL
  * if not changing value
  * @param displayName
  * @param imgUrl
  */
-const updateNameImgUrl = (displayName: string, imgUrl: string) => {
+const updateName = (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
     updateProfile(user, {
-      displayName: displayName, photoURL: imgUrl
+      displayName: displayName
     }).then(() => {
       // Profile updated!
       console.log(`${user.displayName} your profile has been updated`)
@@ -328,7 +328,7 @@ export {
   signInGoogleRedirect,
   signInGooglePopup,
   changeEmail,
-  updateNameImgUrl,
+  updateName,
   changePassword,
   reAuth,
   deleteAccount

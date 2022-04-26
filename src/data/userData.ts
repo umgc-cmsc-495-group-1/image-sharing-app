@@ -4,6 +4,7 @@ import {
   doc,
   setDoc,
   deleteDoc,
+  updateDoc,
   getDoc,
   getDocs,
   getDocsFromServer,
@@ -18,6 +19,7 @@ import {
 import { ProfileInterface } from "../types/appTypes";
 // import { googleUser, newUser } from './authFunctions'
 import { User } from "@firebase/auth";
+import { updateName } from './authFunctions'
 
 /***********************************************************
  *
@@ -49,7 +51,7 @@ import { User } from "@firebase/auth";
  * Gets reference to the User collection
  */
 const usersRef = collection(firestore, 'users');
-const usernameRef = collection(firestore, 'usernames');
+const displayNameRef = collection(firestore, 'displayNames');
 
 
 /**
@@ -129,8 +131,9 @@ const emailInDb = async (email: string) => {
 // break profile updates out into their own folder?
 // update functions must incorporate db and auth functions
 /**
- * Update user profile information not in auth.currentUser
- * @param user
+ * @description Update user profile information not in auth.currentUser
+ * @param userId: string
+ * @param profileData: ProfileInterface
  */
 const updateUser = async (userId: string, profileData: ProfileInterface) => {
   // const docSnap = await getDoc(docRef);
@@ -140,8 +143,32 @@ const updateUser = async (userId: string, profileData: ProfileInterface) => {
   // return docRef.update(user);
 };
 
+const updateDisplayName = async (userId: string, oldName: string, newName: string) => {
+  let res;
+
+  // Check if name is already taken, if not do updates
+  if (!displayNameExists(newName)) {
+    try {
+      // Remove old display name doc from collection
+      await deleteDoc(doc(firestore, "displayNames", oldName));
+      // Create a new doc
+      await saveDisplayName(newName, userId);
+      // Update the User object displayName field
+      updateName(newName);
+      // Update the user doc in the users collection
+      const docRef = doc(firestore, "users", userId);
+      res = await updateDoc(docRef, { displayName: newName });
+      return Promise.resolve(res);
+    } catch(e) {
+      console.log("Could not update displayName", e);
+    }
+  }
+  console.log ("This name is already taken");
+  return Promise.reject(res);
+}
+
 /**
- * Delete user document from Firestore
+ * @description Delete user document from Firestore
  * This function is used by deleteAccount in authFunctions
  * @param userId
  */
@@ -150,7 +177,7 @@ const deleteUserDoc = async (userId: string) => {
 };
 
 /**
- * Gets all users in Firestore 'users' collection
+ * @description Gets all users in Firestore 'users' collection
  */
 const getAllUsers = async () => {
   const querySnapshot = await getDocs(collection(firestore, "users"));
@@ -167,8 +194,8 @@ const getAllUsers = async () => {
  * @param name : string
  * @returns boolean
  */
-const usernameExists = async (name: string) => {
-  const nameRef = doc(usernameRef, name);
+const displayNameExists = async (name: string) => {
+  const nameRef = doc(displayNameRef, name);
   const docSnap = await getDoc(nameRef);
   return docSnap.exists();
 }
@@ -178,8 +205,8 @@ const usernameExists = async (name: string) => {
  * @param name : string user's displayName
  * @param uid : string
  */
-const saveUsername = async (name: string, uid: string) => {
-  await setDoc(doc(usernameRef, name), {
+const saveDisplayName = async (name: string, uid: string) => {
+  await setDoc(doc(displayNameRef, name), {
     uid: uid,
   });
 }
@@ -192,6 +219,7 @@ export {
   updateUser,
   deleteUserDoc,
   getAllUsers,
-  usernameExists,
-  saveUsername
+  displayNameExists,
+  saveDisplayName,
+  updateDisplayName
 }
