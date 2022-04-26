@@ -113,7 +113,7 @@ const getUserByUserId = async (userId: string) => {
 };
 
 /**
- * Get single user with Email value
+ * @description Returns true if email is already in db
  * @param email
  */
 const emailInDb = async (email: string) => {
@@ -124,8 +124,10 @@ const emailInDb = async (email: string) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
     console.log(doc.data.length);
-    return doc.data.length > 0;
+    if (doc.data.length > 0)
+      return true;
   });
+  return false;
 };
 
 // break profile updates out into their own folder?

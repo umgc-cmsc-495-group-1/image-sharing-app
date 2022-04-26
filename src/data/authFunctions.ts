@@ -1,5 +1,5 @@
 import { auth } from '../firebaseSetup'
-import { createUser, deleteUserDoc, displayNameExists, saveDisplayName } from './userData'
+import { createUser, deleteUserDoc, displayNameExists, emailInDb, saveDisplayName } from './userData'
 import {
   GoogleAuthProvider, signInWithPopup,
   getRedirectResult, signInWithEmailAndPassword,
@@ -98,7 +98,7 @@ const logout = async () => {
 }
 
 /**
- * Login user with email and password
+ * @description Login user with email and password
  * @param user
  * @returns
  */
@@ -112,7 +112,7 @@ const login = async (email: string, password: string) => {
 }
 
 /**
- * Google Redirect Sign Up / Sign In (needs work if to be used)
+ * @description Google Redirect Sign Up / Sign In (needs work if to be used)
  * requires a new sign in form ?
  */
 // TODO: Google signup - creates account by redirecting to signup
@@ -160,12 +160,11 @@ const signInGoogleRedirect = async () => {
 }
 
 /**
- *  Google Popup Sign Up / Sign In
+ *  @description Google Popup Sign Up / Sign In
  *  Function should check to see if email is entered in
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-// TODO: add Google sign up option - this is a popup option
 const signInGooglePopup = async () => {
 
   let user: GoogleUserType
@@ -181,33 +180,33 @@ const signInGooglePopup = async () => {
       }
       // The signed-in user info.
       addedUser = result.user;
-      //await user.updateUser({ displayName: `${displayName}` });
+      // If sign in successful
       if (!addedUser) {
-        return addedUser;
+        return Promise.reject(credential);
       }
       user = {
         displayName: addedUser.displayName || '',
         email: addedUser.email || ''
       }
-
-      createUser(addedUser, user);
-      return Promise.resolve(addedUser);
+      if (!displayNameExists) {
+        createUser(addedUser, user);
+        return Promise.resolve(credential);
+      }
     }).catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(`${errorCode}, ${errorMessage}`)
       // The email of the user's account used.
-      const email = error.email;
+      // const email = error.email;
       // The AuthCredential type that was used.
       // const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`email: ${email}`)
-      // ...
+      // console.log(`email: ${email}`)
     });
 }
 
 /**
- * Reset Email Address For Auth User
+ *  @description Reset Email Address For Auth User
  *  TODO: add a function to userData to update
  *  that email as well
  * @param newEmail
@@ -246,11 +245,10 @@ const updateName = (displayName: string) => {
       console.log(error);
     });
   }
-
 }
 
 /**
- * Update password
+ * @description Update password
  * @param newPassword
  */
 
@@ -279,7 +277,7 @@ const changePassword = async (newPassword: string, verifyNewPassword: string) =>
 
 // TODO: Re-authenticate user this should be used for password
 /**
- * Re-authorizes user before
+ * @description Re-authorizes user before
  * changes or closing accounts
  * @param credential
  */
