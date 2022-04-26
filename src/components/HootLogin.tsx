@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
-import { login } from "../data/authFunctions";
+import { login, signInGooglePopup } from "../data/authFunctions";
 
 export default function HootLogin() {
   const navigate = useNavigate();
@@ -29,12 +29,18 @@ export default function HootLogin() {
       .catch((err) => {
         console.log(err);
       });
-    console.log({
-      email,
-      password,
-    });
-    // TODO: navigate them to profile
   };
+
+  const handleGoogleSignin = async () => {
+    await signInGooglePopup()
+      .then(() => {
+        navigate("/auth-loading");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -92,6 +98,15 @@ export default function HootLogin() {
             sx={{ mt: 3, mb: 2 }}
           >
             Login
+          </Button>
+          <Typography textAlign="center">- or -</Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleGoogleSignin}
+          >
+            Sign In With Google
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>

@@ -29,21 +29,6 @@ import { User } from "@firebase/auth";
  *
  **********************************************************/
 
-/**
- * appUser - inteface for user
- * Bio, first, last, and username fields are optional
- */
-// export interface AppUserInterface {
-//   uid: string,
-//   first?: string,
-//   last?: string,
-//   username?: string,
-//   displayName: string,
-//   email: string,
-//   bio?: string,
-//   friends: string[],
-//   likes: string[]
-// }
 
 /**
  * Gets reference to the User collection
@@ -60,13 +45,13 @@ const createUser = async (
   userInfo: UserInterface | GoogleUserType
 ) => {
   // Write to firestore db
+  console.log("adding user:" + user + " " + userInfo);
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
       first: userInfo.first || "",
       last: userInfo.last || "",
       displayName: userInfo.displayName,
-      username: userInfo.username,
       email: userInfo.email,
       bio: "",
       friends: [],

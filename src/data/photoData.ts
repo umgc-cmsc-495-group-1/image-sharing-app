@@ -8,6 +8,7 @@ import {
 import { storage, auth, firestore } from "../firebaseSetup";
 import { v4 as uuidv4 } from "uuid";
 import {
+  arrayUnion,
   setDoc,
   doc,
   getDoc,
@@ -20,7 +21,7 @@ import {
   serverTimestamp,
   deleteDoc,
 } from "firebase/firestore";
-import { FeedPostType } from "../types/appTypes";
+import { CommentType, FeedPostType } from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
@@ -282,9 +283,19 @@ const getPhotoUrl = async (path: string) => {
 
 /**
  * @description Get Post data from firestore
- * @param postId
+ * @param postId - postId
+ * @param comment - CommentType
  * @returns : post data doc: Promise<FeedPostType | undefined>
  */
+
+const postComment = async (postId: string, comment: CommentType) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    comments: arrayUnion(comment),
+  });
+};
+
 const getOnePost = async (postId: string) => {
   // may have to rethink having userID in path?
 
@@ -297,10 +308,10 @@ const getOnePost = async (postId: string) => {
   }
   const data = docSnap.data();
   const postData: FeedPostType = {
-    pid: postId, // make both ids user id for profile?
-    uid: data.userId,
+    pid: data.pid, // make both ids user id for profile?
+    uid: data.uid,
     username: data.username,
-    postText: data.caption || "",
+    postText: data.postText || "",
     numberLikes: data.numberLikes,
     comments: data.comments,
     numberComments: data.numberComments,
@@ -308,10 +319,10 @@ const getOnePost = async (postId: string) => {
     path: data.path,
     timestamp: data.timestamp,
     // tags: data.tags,
-    imageUrl: data.url,
+    imageUrl: data.imageUrl,
   };
+  console.log(JSON.stringify(postData));
   // const url = await getPhotoUrl(imgData.path);
-  console.log("post data: ", JSON.stringify(postData));
 
   return Promise.resolve(postData);
 };
@@ -342,10 +353,10 @@ const getAllPostData = async (userId: string) => {
       numberLikes: data.numberLikes,
       comments: data.comments,
       classification: data.classification,
-      numberComments: data.numberComments,
+      numberComments: data.comments,
       path: data.path,
       timestamp: data.timestamp,
-      // imageUrl: data.imageUrl
+      imageUrl: data.imageUrl,
     };
     userPosts.push(imgData);
   });
@@ -511,6 +522,7 @@ export {
   createNewPost,
   getAllPostData,
   getAllFeedData,
+  postComment,
   getOnePost,
   getProfileUrl,
   getPhotoUrl,

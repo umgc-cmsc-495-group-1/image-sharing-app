@@ -1,7 +1,7 @@
 {
     "name": "image-sharing-app",
     "version": "0.1.0",
-    "description": "Image sharing application which utlizes React and Firebase, allowing users create personal accounts and share content with one another",
+    "description": "Image sharing application which utilizes React and Firebase, allowing users create personal accounts and share content with one another",
     "private": true,
     "repository": {
         "type": "git",
