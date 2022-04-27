@@ -12,6 +12,7 @@ import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { EasterEgg } from "./components/EasterEgg";
+import { Friends } from "./components/Friends";
 
 export default function App() {
   const routes: RouteObject[] = [
@@ -67,6 +68,10 @@ export default function App() {
                   path: "settings",
                   element: <ProtectedRoute component={HootUserSettings} />,
                 },
+                {
+                  path: "friends",
+                  element: <ProtectedRoute component={Friends} />,
+                }
               ],
             },
           ],
