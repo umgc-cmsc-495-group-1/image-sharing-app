@@ -166,3 +166,9 @@ export type ImageItemProps = {
 export interface ProfileImageInterface extends ImageItemProps {
   username: string;
 }
+
+export interface ProfileUpdateInterface {
+  displayName: string,
+  email: string,
+  bio: string
+}
