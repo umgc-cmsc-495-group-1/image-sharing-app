@@ -1,30 +1,38 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
   CommentType,
-  FeedPostInterface,
+  FeedPostInterface, FeedPostWithUserInterface,
   ImageItemProps,
+  LikeIconProps
 } from "../../types/appTypes";
 import {
-  Avatar,
-  Box,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  Collapse,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  TextField,
-  Typography,
+  Avatar, Box, Card, CardActions,
+  CardContent, CardHeader, CardMedia,
+  IconButton, SvgIcon, Collapse,
+  List, ListItem, ListItemText,
+  TextField, Typography,
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+// import {useNavigate} from "react-router-dom";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import SendIcon from "@mui/icons-material/Send";
-import { getOnePost, postComment } from "../../data/photoData";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import {
+  getOnePost, postComment,
+  addUserLikes, removeUserLikes,
+  addPostLikes, removePostLikes
+} from "../../data/photoData";
+
+const LikeIcon: React.FC<LikeIconProps> = ({
+  isLiked
+}): JSX.Element => {
+  let Icon: JSX.Element = <SvgIcon component={FavoriteBorderIcon} color='info' />;
+  if (isLiked) {
+    Icon = <SvgIcon component={FavoriteIcon} color='warning' />;
+  }
+  return Icon
+};
+
 
 const ImageItem: React.FC<ImageItemProps> = ({
   src,
@@ -50,33 +58,71 @@ const ImageItem: React.FC<ImageItemProps> = ({
   );
 };
 
-const FeedTile: React.FC<FeedPostInterface> = ({
+const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   imageUrl,
   uid,
   username,
   pid,
   postText,
-  numberLikes,
-  numberComments,
   comments,
+  likes,
   classification,
   timestamp,
+  user,
+  isPrivate
 }): JSX.Element => {
-  const user = useCurrentUser();
+  // todo: issue with user being empty strings upon loading, need to fix this for comparison with
+  //  with the likes for the post in order to determine if the user has liked the post
   const [post, setPost] = useState<FeedPostInterface>({
     imageUrl: imageUrl,
     uid: uid,
     username: username,
     pid: pid,
     postText: postText,
-    numberLikes: numberLikes,
-    numberComments: numberComments,
     comments: comments,
+    isPrivate: isPrivate,
+    likes: likes,
     classification: classification,
     timestamp: timestamp,
   });
+  const [numberOfLikes, setNumberOfLikes] = useState(likes.length > 0 ? likes.length : 0);
+  const [currentLikes, setCurrentLikes] = useState<string[]>(likes);
   const [expanded, setExpanded] = useState(false);
   const [userComment, setUserComment] = useState("");
+  const [isLiked, setIsLiked] = useState<boolean>(currentLikes.includes(user.uid));
+
+  async function determineIfLiked() {
+    // check if the user has liked anything
+    if (user.likes.length === 0) {
+      setIsLiked(false);
+    }
+    // check if the user has liked the post
+    if (isLiked) {
+      setIsLiked(false);
+      setNumberOfLikes(numberOfLikes - 1)
+      const result = currentLikes.filter((likePID) => likePID !== pid);
+      if (currentLikes.length === 1) {
+        setCurrentLikes([]);
+      } else {
+        setCurrentLikes([...currentLikes, ...result]);
+      }
+      await removeUserLikes(user.uid, pid);
+      await removePostLikes(pid, user.uid);
+    } else {
+      setIsLiked(true);
+      setNumberOfLikes(numberOfLikes + 1)
+      setCurrentLikes([...currentLikes, pid]);
+      await addUserLikes(user.uid, pid);
+      await addPostLikes(pid, user.uid);
+    }
+  }
+
+  // todo: implement logic for adding user that liked post
+  async function handleLike() {
+    await determineIfLiked()
+    const updatedPost = await getOnePost(post.pid);
+    updatedPost ? setPost(updatedPost) : console.error("error updating post");
+  }
 
   const handleComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -85,11 +131,17 @@ const FeedTile: React.FC<FeedPostInterface> = ({
       username: user.email,
       comment: userComment,
     };
-    postComment(pid, comment);
+    await postComment(pid, comment);
     const updatedPost = await getOnePost(post.pid);
-    updatedPost
-      ? setPost(updatedPost)
-      : console.log(JSON.stringify(updatedPost));
+    if (updatedPost) {
+      setPost(updatedPost);
+      setUserComment("");
+    } else {
+      console.error("error updating post");
+    }
+    // updatedPost
+    //   ? setPost(updatedPost)
+    //   : console.log(JSON.stringify(updatedPost));
     setUserComment("");
   };
 
@@ -118,10 +170,10 @@ const FeedTile: React.FC<FeedPostInterface> = ({
         <Typography>{post.postText}</Typography>
       </CardContent>
       <CardActions>
-        <IconButton aria-label="like">
-          <FavoriteIcon />
+        <IconButton aria-label="like" onClick={handleLike}>
+          <LikeIcon isLiked={isLiked} />
         </IconButton>
-        <Typography>{post.numberLikes}</Typography>
+        <Typography>{numberOfLikes}</Typography>
         <IconButton
           onClick={handleExpandClick}
           aria-expanded={expanded}

@@ -3,6 +3,7 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import HootHero from "./HootHero";
 
 export default function HootHome() {
+
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <HootHero />

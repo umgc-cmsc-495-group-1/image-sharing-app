@@ -55,7 +55,7 @@
         "start": "react-scripts start",
         "start:debug": "BROWSER='google chrome' BROWSER_ARGS='--remote-debugging-port=9222' react-scripts start",
         "emulators:start": "firebase emulators:start --import=./src/data/emulatorData --export-on-exit=./src/data/emulatorData",
-        "emulators": "firebase emulators:start",
+        "emulators": "firebase emulators:start --import=./src/data/emulatorData",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
