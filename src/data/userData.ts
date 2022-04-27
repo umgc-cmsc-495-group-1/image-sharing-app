@@ -116,12 +116,26 @@ const emailInDb = async (email: string) => {
   const q = query(collection(firestore, "users"), where("email", "==", email));
 
   const querySnapshot = await getDocsFromServer(q);
+  let data = null;
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
-    console.log(doc.data.length);
-    return doc.data.length > 0;
+    data = doc.data();
   });
+  if (data != undefined) {
+    const profile: ProfileInterface = {
+      uid: data["uid"],
+      username: data["username"],
+      imageUrl: data["imageUrl"],
+      displayName: data["displayName"],
+      email: data["email"],
+      friends: data["friends"],
+      likes: data["likes"],
+      posts: data["posts"],
+      bio: data["bio"],
+    };
+    return profile;
+  }
 };
 
 // break profile updates out into their own folder?
