@@ -12,6 +12,9 @@ const LoggedIn = ({ uid }: { uid: string | undefined }) => {
       <ListItem button component={Link} to={`/user/${uid}/profile`} role="navigation-user-profile">
         <ListItemText primary="Profile" />
       </ListItem>
+      <ListItem button component={Link} to={`/user/${uid}/friends`} role="navigation-user-friends">
+        <ListItemText primary="Friends" />
+      </ListItem>
       <ListItem button component={Link} to={`/user/${uid}/settings`} role="navigation-user-settings">
         <ListItemText primary="Settings" />
       </ListItem>
