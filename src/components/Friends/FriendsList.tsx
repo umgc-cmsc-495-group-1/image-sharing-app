@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { auth } from '../../firebaseSetup';
 import { Box, Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
-import { getUserProfileByUserID, updateUser } from '../../data/userData';
+import { getUserProfileByUserID, removeFriend, updateUser } from '../../data/userData';
 import { ProfileInterface } from '../../types/appTypes';
 
 export default function FriendsList() {
@@ -27,7 +27,7 @@ export default function FriendsList() {
   }
 
   type FriendState = {
-    currentUser: string | null
+    currentUser: string
     friends: FriendProps[] | null
   }
 
@@ -62,7 +62,7 @@ export default function FriendsList() {
         })
       } else {
         this.setState({
-          currentUser: null,
+          currentUser: "",
           friends: null,
         })
       }
@@ -70,13 +70,10 @@ export default function FriendsList() {
 
     async remove(index: number) {
       if (this.state.friends !== null) {
-        const uid = await this.state.friends[index].uid
-        if (uid !== undefined) {
-          const profile = await this.state.friends[index].profile
-          if (profile !== undefined) {
-            updateUser(uid, profile)
-            return true
-          }
+        const friendUid = await this.state.friends[index].uid
+        const currentUid = this.state.currentUser
+        if (friendUid !== undefined && currentUid !== "") {
+          removeFriend(friendUid, currentUid)
         }
       }
       return false
