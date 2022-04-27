@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
   CommentType,
   FeedPostInterface,
@@ -19,6 +19,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import SendIcon from "@mui/icons-material/Send";
 import { getOnePost, postComment } from "../../data/photoData";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+// import {AuthContext} from "../../context/AuthContext";
+// import {LoadingBackdrop} from "../UploadFab/LoadingBackdrop";
 
 const LikeIcon: React.FC<LikeIconProps> = ({
   isLiked
@@ -68,6 +70,7 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   timestamp
 }): JSX.Element => {
   const user = useCurrentUser();
+  // const { isLoading} = useContext(AuthContext);
   const [post, setPost] = useState<FeedPostInterface>({
     imageUrl: imageUrl,
     uid: uid,
@@ -94,7 +97,6 @@ const FeedTile: React.FC<FeedPostInterface> = ({
       ...post,
       numberLikes: numberLikes + (isLiked ? 0 : 1),
     });
-    // setNumberOfLikes(numberOfLikes + (isLiked ? -1 : 1));
   }
 
   const handleComment = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -115,6 +117,10 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  // if (isLoading) {
+  //   return <LoadingBackdrop />;
+  // }
 
   return (
     <Card

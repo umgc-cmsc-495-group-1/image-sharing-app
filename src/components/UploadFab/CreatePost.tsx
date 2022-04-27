@@ -22,7 +22,7 @@ import {
   ImageClassificationType,
   UserInterestsType,
 } from "../../types/interests";
-import { User } from "firebase/auth";
+// import { User } from "firebase/auth";
 import { AuthContext } from "../../context/AuthContext";
 import { fabPostCallback } from "../../data/photoData";
 
@@ -34,7 +34,8 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
-  const user: User | null = useContext(AuthContext);
+  // const user: User | null = useContext(AuthContext);
+  const { user} = useContext(AuthContext);
   const imageRef = useRef<any>();
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     setDescription(event.target.value);

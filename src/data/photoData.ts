@@ -81,6 +81,7 @@ const fabPostCallback = async (
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
     const firestoreRef = doc(firestore, firestorePath);
+    // http://127.0.0.1:9199/v0/b/hoot-umgc.appspot.com/o/photos%2F0bvvh2bbVjIuqmUpMFiQoDAebHHA%2F469ea46c-549f-487f-8587-59eb5a1f97a7?alt=media&token=676f8ed8-cdbd-4164-86e9-523c612857d3
     const currentPost: FeedPostType = {
       uid: uid,
       username: user.displayName,
@@ -90,6 +91,7 @@ const fabPostCallback = async (
       numberComments: 0,
       comments: [],
       classification: classification,
+      imageUrl: "",
       path: cloudPath,
       timestamp: serverTimestamp(),
     };
@@ -98,8 +100,11 @@ const fabPostCallback = async (
       // set document data
       await uploadImageFile(currentFile, cloudPath);
       await setDoc(firestoreRef, currentPost);
+      setTimeout(async () => {
+        await updatePublicUrl(firestorePath, cloudPath);
+      }, 500);
       // Add public URL to post data document
-      await updatePublicUrl(firestorePath, cloudPath);
+
     } catch (error) {
       console.log(error);
     }
@@ -373,8 +378,10 @@ const updatePublicUrl = async (docPath: string, filePath: string) => {
     const fileRef = ref(storage, filePath);
     const docRef = doc(firestore, docPath);
     await getDownloadURL(fileRef).then((url) => {
-      const res = updateDoc(docRef, { imageUrl: url });
-      return Promise.resolve(res);
+      // const res = updateDoc(docRef, { imageUrl: url });
+      // return Promise.resolve(res);
+      Promise.resolve(updateDoc(docRef, { imageUrl: url }))
+      // return Promise.resolve(res);
     });
   } catch (error) {
     console.error(

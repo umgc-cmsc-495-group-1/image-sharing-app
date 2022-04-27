@@ -17,7 +17,7 @@ import {
   GoogleUserType,
   UserCheckInterface,
 } from "../types/authentication";
-import { deleteAllPosts, deleteProfileImg } from "../data/photoData";
+import { deleteAllPosts, deleteProfileImg } from "./photoData";
 // import Cookies from 'js-cookie';
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
@@ -25,7 +25,7 @@ const PASSWORD_REGEX =
 /****************************************************************
  *
  * Sign Up, Log In, and Log Out Functions, Delete user account
- * Google popup signin, Google redirect signin
+ * Google popup sign in, Google redirect sign in
  * auth.currentUser updating: update password, email, displayName,
  * and photoURL
  * Request Re-authentication for password update
@@ -35,12 +35,12 @@ const PASSWORD_REGEX =
  ****************************************************************/
 
 const checkEmptyValues = (user: UserInterface): boolean => {
-  if (user.username === "" || user.email === "" || user.password === "") {
-    return true;
-  }
-  return false;
+  return user.username === "" || user.email === "" || user.password === "";
 };
-
+/**
+ * CREATE USER
+ * @param user
+ */
 const signup = async (user: UserInterface) => {
   let res: UserCredential;
   let result: UserCheckInterface | undefined;
@@ -91,8 +91,9 @@ const logout = async () => {
 
 /**
  * Login user with email and password
- * @param user
- * @returns
+ * @param email - user email
+ * @param password - user password
+ * @returns {Promise<UserCredential>}
  */
 const login = async (email: string, password: string) => {
   return await signInWithEmailAndPassword(auth, email, password)
@@ -106,7 +107,7 @@ const login = async (email: string, password: string) => {
 
 /**
  * Google Redirect Sign Up / Sign In (needs work if to be used)
- * requires a new sign in form ?
+ * requires a new sign-in form ?
  */
 // TODO: Google signup - creates account by redirecting to signup
 const signInGoogleRedirect = async () => {
@@ -131,9 +132,9 @@ const signInGoogleRedirect = async () => {
           email: addedUser.email || "",
         };
         createUser(addedUser, user);
-        // Start a sign in process for an unauthenticated user.
+        // Start a sign-in process for an unauthenticated user.
 
-        // third possible parameter is popup redirect resovler
+        // third possible parameter is popup redirect resolver
         // signInWithRedirect(auth, credential);
         return Promise.resolve(addedUser);
       } else {
@@ -222,7 +223,7 @@ const changeEmail = (newEmail: string) => {
 
 /**
  * Update Profile displayName or profile URL
- * call with auth.currentUser.displayName or .photoURL
+ * calls with auth.currentUser.displayName or .photoURL
  * if not changing value
  * @param displayName
  * @param imgUrl
@@ -248,6 +249,7 @@ const updateNameImgUrl = (displayName: string, imgUrl: string) => {
 /**
  * Update password
  * @param newPassword
+ * @param verifyNewPassword
  */
 
 // TODO: should make sure user has signed in recently. If not
@@ -282,7 +284,6 @@ const changePassword = async (
 /**
  * Re-authorizes user before
  * changes or closing accounts
- * @param credential
  */
 const reAuth = async () => {
   // const user = auth.currentUser
@@ -294,7 +295,7 @@ const reAuth = async () => {
   //   reauthenticateWithCredential(user, credential).then(() => {
   //     // User re-authenticated.
   //   }).catch((error) => {
-  //     // An error ocurred
+  //     // An error occurred
   //     console.log(error)
   //   })
   // }
@@ -316,10 +317,10 @@ const deleteAccount = async () => {
         console.log(`The account number ${user.uid} has been deleted`);
       })
       .catch((error) => {
-        // An error ocurred
+        // An error occurred
         console.log(error);
         console.log(
-          `An error occured while deleted the account number ${user.uid}`
+          `An error occurred while deleted the account number ${user.uid}`
         );
       });
   }
@@ -377,7 +378,7 @@ const saveDisplayName = async (userName: string) => {
     }).catch((error) => {
       // An error occurred
       console.log(`${error}`)
-      console.log(`An error occured while update display name for account number ${user.uid}`)
+      console.log(`An error occurred while update display name for account number ${user.uid}`)
     })
   }
 //  ////////////////////////
