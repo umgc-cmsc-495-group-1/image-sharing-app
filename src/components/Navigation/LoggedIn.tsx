@@ -9,6 +9,9 @@ const LoggedIn = ({ uid }: { uid: string | undefined }) => {
       <ListItem button component={Link} to="/feed" role="navigation-feed">
         <ListItemText primary="Feed" />
       </ListItem>
+      <ListItem button component={Link} to="/explore" role="navigation-explore">
+        <ListItemText primary="Explore" />
+      </ListItem>
       <ListItem button component={Link} to={`/user/${uid}/profile`} role="navigation-user-profile">
         <ListItemText primary="Profile" />
       </ListItem>
@@ -17,9 +20,6 @@ const LoggedIn = ({ uid }: { uid: string | undefined }) => {
       </ListItem>
       <ListItem button component={Link} to={`/user/${uid}/settings`} role="navigation-user-settings">
         <ListItemText primary="Settings" />
-      </ListItem>
-      <ListItem button component={Link} to={`/user/${uid}/upload-image`} role="navigation-user-upload-image">
-        <ListItemText primary="Upload Image" />
       </ListItem>
       <ListItem button component={Link} to="/" role="navigation-logout"
         onClick={() => {

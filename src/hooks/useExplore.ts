@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FeedPostType } from "../types/appTypes";
-import { getFriendsFeedData } from "../data/photoData";
+import { getPublicFeedData } from "../data/photoData";
 import { AppUserInterface } from "../types/authentication";
 import { useCurrentUser } from "./useCurrentUser";
 import { mapUserPhotos } from "../utils/middleware";
@@ -12,13 +12,13 @@ import { mapUserPhotos } from "../utils/middleware";
  */
 
 // Sets as photoData
-export const useFeed = () => {
+export const useExplore = () => {
   const [posts, setPosts] = useState<FeedPostType[] | []>([]);
   const user: AppUserInterface = useCurrentUser();
   // Load user's photo collection from Firestore db
   useEffect(() => {
     async function getPhotos() {
-      let usersPhotos: FeedPostType[] = await getFriendsFeedData(user);
+      let usersPhotos: FeedPostType[] = await getPublicFeedData();
       try {
         mapUserPhotos(usersPhotos);
         // usersPhotos.map((photo) => {

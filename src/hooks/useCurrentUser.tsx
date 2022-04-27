@@ -13,7 +13,8 @@ import { AppUserInterface } from "../types/authentication";
 
 // get current user by id, if there is a logged in user
 export const useCurrentUser = () => {
-  const userId = useContext(AuthContext)?.uid || "";
+  // const userId = useContext(AuthContext)?.uid || "";
+  const {user} = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState<AppUserInterface>({
     username: "",
     displayName: "",
@@ -29,15 +30,14 @@ export const useCurrentUser = () => {
 
   // Load current user from Firestore db
   useEffect(() => {
-    let user;
     (async () => {
-      user = await getUserByUserId(userId);
-
-      if (user) {
-        // set current user info
-        setCurrentUser(user);
+      if (user !== null) {
+        const userByID = await getUserByUserId(user.uid);
+        if (userByID !== undefined) {
+          setCurrentUser(userByID);
+        }
       }
     })();
-  }, [userId]);
+  }, [user]);
   return currentUser;
 };

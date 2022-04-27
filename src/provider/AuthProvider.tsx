@@ -5,16 +5,19 @@ import { auth } from "../firebaseSetup";
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
+        setIsLoading(false);
       } else {
-        setUser(null)
+        setIsLoading(true);
+        setUser(null);
       }
     });
-  }, [user]);
+  }, [isLoading, user]);
 
   // useEffect(() => {
   //   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
@@ -24,5 +27,5 @@ export const AuthProvider: React.FC = ({ children }) => {
   //   return unsubscribe;
   // }, []);
 
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{isLoading, user}}>{children}</AuthContext.Provider>;
 };
