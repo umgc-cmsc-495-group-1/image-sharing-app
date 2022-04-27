@@ -17,7 +17,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 // import {useNavigate} from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import SendIcon from "@mui/icons-material/Send";
-import { getOnePost, postComment } from "../../data/photoData";
+import {
+  getOnePost, postComment,
+  addUserLikes, removeUserLikes,
+  addPostLikes, removePostLikes
+} from "../../data/photoData";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 // import {AuthContext} from "../../context/AuthContext";
 // import {LoadingBackdrop} from "../UploadFab/LoadingBackdrop";
@@ -63,12 +67,13 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   username,
   pid,
   postText,
-  numberLikes,
-  numberComments,
   comments,
+  likes,
   classification,
   timestamp
 }): JSX.Element => {
+  // todo: issue with user being empty strings upon loading, need to fix this for comparison with
+  //  with the likes for the post in order to determine if the user has liked the post
   const user = useCurrentUser();
   // const { isLoading} = useContext(AuthContext);
   const [post, setPost] = useState<FeedPostInterface>({
@@ -77,26 +82,58 @@ const FeedTile: React.FC<FeedPostInterface> = ({
     username: username,
     pid: pid,
     postText: postText,
-    numberLikes: numberLikes,
-    numberComments: numberComments,
     comments: comments,
+    likes: likes,
     classification: classification,
     timestamp: timestamp,
   });
-  const [isLiked, setIsLiked] = useState(false);
-  // const [numberOfLikes, setNumberOfLikes] = useState(numberLikes);
+  console.log(likes)
+  console.log(user)
+  // console.log(likes.includes(user.uid))
+  const [numberOfLikes, setNumberOfLikes] = useState(likes.length > 0 ? likes.length : 0);
+  const [currentLikes, setCurrentLikes] = useState<string[]>(likes);
   const [expanded, setExpanded] = useState(false);
   const [userComment, setUserComment] = useState("");
-  // const navigate = useNavigate();
-  // function handleNavigate() {
-  //   navigate(`/user/${uid}/profile/${pid}`)
-  // }
-  function handleLike() {
-    setIsLiked(!isLiked);
-    setPost({
-      ...post,
-      numberLikes: numberLikes + (isLiked ? 0 : 1),
-    });
+  const [isLiked, setIsLiked] = useState<boolean>(currentLikes.includes(user.uid));
+
+  if (user.uid === '') {
+    setTimeout(() => {
+      setIsLiked(currentLikes.includes(user.uid));
+    }, 1000);
+  }
+
+  async function determineIfLiked() {
+    // check if the user has liked anything
+    if (user.likes.length === 0) {
+      setIsLiked(false);
+    }
+    // check if the user has liked the post
+    // currentLikes.includes(pid)
+    if (isLiked) {
+      setIsLiked(false);
+      setNumberOfLikes(numberOfLikes - 1)
+      const result = currentLikes.filter((likePID) => likePID !== pid);
+      if (currentLikes.length === 1) {
+        setCurrentLikes([]);
+      } else {
+        setCurrentLikes([...currentLikes, ...result]);
+      }
+      await removeUserLikes(user.uid, pid);
+      await removePostLikes(pid, user.uid);
+    } else {
+      setIsLiked(true);
+      setNumberOfLikes(numberOfLikes + 1)
+      setCurrentLikes([...currentLikes, pid]);
+      await addUserLikes(user.uid, pid);
+      await addPostLikes(pid, user.uid);
+    }
+  }
+
+  // todo: implement logic for adding user that liked post
+  async function handleLike() {
+    await determineIfLiked()
+    const updatedPost = await getOnePost(post.pid);
+    updatedPost ? setPost(updatedPost) : console.error("error updating post");
   }
 
   const handleComment = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -117,10 +154,6 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
-  // if (isLoading) {
-  //   return <LoadingBackdrop />;
-  // }
 
   return (
     <Card
@@ -146,7 +179,7 @@ const FeedTile: React.FC<FeedPostInterface> = ({
         <IconButton aria-label="like" onClick={handleLike}>
           <LikeIcon isLiked={isLiked} />
         </IconButton>
-        <Typography>{post.numberLikes}</Typography>
+        <Typography>{numberOfLikes}</Typography>
         <IconButton
           onClick={handleExpandClick}
           aria-expanded={expanded}

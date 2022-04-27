@@ -23,6 +23,8 @@ export interface UserInterface {
   username: string;
 }
 
+export type UserType = UserInterface;
+
 /**
  * @description - Alternative Comment Interface
  * @export interface AltCommentInterface
@@ -77,8 +79,9 @@ export interface FeedPostInterface {
   username: string | null;
   pid: string;
   postText: string;
-  numberLikes: number;
-  numberComments: number;
+  likes: string[];
+  // numberLikes: number;
+  // numberComments: number;
   imageUrl?: string | undefined;
   comments: CommentInterface[];
   classification: UserInterestsType;

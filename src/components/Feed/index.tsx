@@ -26,11 +26,10 @@ const Feed: React.FC = (): JSX.Element => {
           username={item.username}
           pid={item.pid}
           postText={item.postText}
-          numberLikes={item.numberLikes}
-          numberComments={item.numberComments}
           classification={item.classification}
           timestamp={item.timestamp}
           comments={item.comments}
+          likes={item.likes}
         />
       ))}
       <Box>

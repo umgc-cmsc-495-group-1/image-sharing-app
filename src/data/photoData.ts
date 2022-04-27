@@ -19,9 +19,9 @@ import {
   orderBy,
   where,
   serverTimestamp,
-  deleteDoc,
+  deleteDoc, arrayRemove,
 } from "firebase/firestore";
-import { CommentType, FeedPostType } from "../types/appTypes";
+import {CommentType, FeedPostType} from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
@@ -43,7 +43,7 @@ import { User } from "firebase/auth";
 
 /*
 // Firebase cannot get photo urls or display post photos without a path
-// may try to use this function to fix issue as sort of an constant variable
+// may try to use this function to fix issue as sort of constant variable
 // firebase also needs the path to delete the posts
 const postCloudPath = (uid: string, pid: string, name: string) => {
   return `photos/${uid}/${pid}/${name}`;
@@ -87,8 +87,9 @@ const fabPostCallback = async (
       username: user.displayName,
       pid: pid,
       postText: description,
-      numberLikes: 0,
-      numberComments: 0,
+      // numberLikes: 0,
+      // numberComments: 0,
+      likes: [],
       comments: [],
       classification: classification,
       imageUrl: "",
@@ -138,7 +139,7 @@ const createNewPost = async (
     auth.currentUser !== null
       ? auth.currentUser.displayName
       : "Chicken Sandwich";
-  // Get reference to subcollection path
+  // Get reference to sub-collection path
   // (photos collection->doc w/userId key->posts collection->post data doc)
   const firestorePath = `posts/${imgUid}`;
   const firestoreRef = doc(firestore, firestorePath);
@@ -149,8 +150,9 @@ const createNewPost = async (
       username: username,
       pid: imgUid,
       postText: caption || "",
-      numberLikes: 0,
-      numberComments: 0,
+      // numberLikes: 0,
+      // numberComments: 0,
+      likes: [],
       imageUrl: "",
       comments: [],
       classification: classification,
@@ -301,6 +303,38 @@ const postComment = async (postId: string, comment: CommentType) => {
   });
 };
 
+const addUserLikes = async (userId: string, postId: string) => {
+  const postRef = doc(firestore, "users", userId);
+
+  await updateDoc(postRef, {
+    likes: arrayUnion(postId)
+  })
+}
+
+const addPostLikes = async (postId: string, userId: string) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    likes: arrayUnion(userId)
+  })
+}
+
+const removeUserLikes = async (userId: string, postId: string) => {
+  const postRef = doc(firestore, "users", userId);
+
+  await updateDoc(postRef, {
+    likes: arrayRemove(postId)
+  })
+}
+
+const removePostLikes = async (postId: string, userId: string) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    likes: arrayRemove(userId)
+  })
+}
+
 const getOnePost = async (postId: string) => {
   // may have to rethink having userID in path?
 
@@ -317,9 +351,10 @@ const getOnePost = async (postId: string) => {
     uid: data.uid,
     username: data.username,
     postText: data.postText || "",
-    numberLikes: data.numberLikes,
+    // numberLikes: data.numberLikes,
     comments: data.comments,
-    numberComments: data.numberComments,
+    likes: data.likes,
+    // numberComments: data.numberComments,
     classification: data.classification,
     path: data.path,
     timestamp: data.timestamp,
@@ -355,10 +390,11 @@ const getAllPostData = async (userId: string) => {
       uid: data.userId,
       username: data.userId,
       postText: data.caption || "",
-      numberLikes: data.numberLikes,
+      // numberLikes: data.numberLikes,
       comments: data.comments,
+      likes: data.likes,
       classification: data.classification,
-      numberComments: data.comments,
+      // numberComments: data.comments,
       path: data.path,
       timestamp: data.timestamp,
       imageUrl: data.imageUrl,
@@ -431,9 +467,10 @@ const getAllFeedData = async (user: AppUserInterface) => {
       uid: data.uid,
       username: data.username,
       postText: data.postText || "",
-      numberLikes: data.numberLikes,
+      // numberLikes: data.numberLikes,
       comments: data.comments,
-      numberComments: data.numberComments,
+      // numberComments: data.numberComments,
+      likes: data.likes,
       classification: data.classification,
       path: data.path,
       timestamp: data.timestamp,
@@ -538,4 +575,8 @@ export {
   deletePostByPid,
   deleteProfileImg,
   fabPostCallback,
+  addUserLikes,
+  removeUserLikes,
+  addPostLikes,
+  removePostLikes
 };
