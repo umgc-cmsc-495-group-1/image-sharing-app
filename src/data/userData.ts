@@ -109,6 +109,37 @@ const getUserByUserId = async (userId: string) => {
 };
 
 /**
+ * Get single user's profile data with field value
+ * choices: UID, first, last, username, email
+ * @param userId
+ * @returns user's profile data
+ */
+const getUserProfileByUserID = async (userId: string) => {
+  const userRef = doc(firestore, "users", userId);
+  const docSnap = await getDoc(userRef);
+
+  if (!docSnap.exists()) {
+    console.log("No user document found");
+    return;
+  }
+
+  const data = docSnap.data();
+  const profile: ProfileInterface = {
+    uid: data.uid,
+    username: data.username,
+    imageUrl: data.imageUrl,
+    displayName: data.displayName,
+    email: data.email,
+    friends: data.friends,
+    likes: data.likes,
+    posts: data.posts,
+    bio: data.bio,
+  };
+
+  return profile;
+};
+
+/**
  * Get single user with Email value
  * @param email
  */
@@ -162,6 +193,7 @@ const getAllUsers = async () => {
 export {
   createUser,
   getUserByUserId,
+  getUserProfileByUserID,
   emailInDb,
   updateUser,
   deleteUserDoc,
