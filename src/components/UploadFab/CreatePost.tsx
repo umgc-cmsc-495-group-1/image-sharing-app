@@ -112,7 +112,9 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   };
 
   useEffect(() => {
-    loadModel();
+    (async () => {
+      await loadModel();
+    })();
   }, []);
 
   if (isModelLoading) {

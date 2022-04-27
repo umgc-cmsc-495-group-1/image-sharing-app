@@ -26,6 +26,11 @@ import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
 import { User } from "firebase/auth";
+import {
+  WhereFilterOp,
+  FieldPath,
+  OrderByDirection
+} from "@firebase/firestore-types";
 
 /************************************************************
  *
@@ -81,16 +86,14 @@ const fabPostCallback = async (
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
     const firestoreRef = doc(firestore, firestorePath);
-    // http://127.0.0.1:9199/v0/b/hoot-umgc.appspot.com/o/photos%2F0bvvh2bbVjIuqmUpMFiQoDAebHHA%2F469ea46c-549f-487f-8587-59eb5a1f97a7?alt=media&token=676f8ed8-cdbd-4164-86e9-523c612857d3
     const currentPost: FeedPostType = {
       uid: uid,
       username: user.displayName,
       pid: pid,
       postText: description,
-      // numberLikes: 0,
-      // numberComments: 0,
       likes: [],
       comments: [],
+      isPrivate: isPrivate,
       classification: classification,
       imageUrl: "",
       path: cloudPath,
@@ -124,7 +127,8 @@ const createNewPost = async (
   userId: string,
   caption: string,
   photoFile: File,
-  classification: UserInterestsType
+  classification: UserInterestsType,
+  isPrivate: boolean
 ) => {
   // Create a new UID for the photo
   const imgUid = uuidv4();
@@ -154,6 +158,7 @@ const createNewPost = async (
       // numberComments: 0,
       likes: [],
       imageUrl: "",
+      isPrivate: isPrivate,
       comments: [],
       classification: classification,
       path: cloudPath,
@@ -354,6 +359,7 @@ const getOnePost = async (postId: string) => {
     // numberLikes: data.numberLikes,
     comments: data.comments,
     likes: data.likes,
+    isPrivate: data.isPrivate,
     // numberComments: data.numberComments,
     classification: data.classification,
     path: data.path,
@@ -361,8 +367,6 @@ const getOnePost = async (postId: string) => {
     // tags: data.tags,
     imageUrl: data.imageUrl,
   };
-  console.log(JSON.stringify(postData));
-  // const url = await getPhotoUrl(imgData.path);
 
   return Promise.resolve(postData);
 };
@@ -393,6 +397,7 @@ const getAllPostData = async (userId: string) => {
       // numberLikes: data.numberLikes,
       comments: data.comments,
       likes: data.likes,
+      isPrivate: data.isPrivate,
       classification: data.classification,
       // numberComments: data.comments,
       path: data.path,
@@ -444,20 +449,59 @@ const incrementLikes = async (likeNum: number, pid: string) => {
  * @param user
  * @returns
  */
-const getAllFeedData = async (user: AppUserInterface) => {
+const getFriendsFeedData = async (user: AppUserInterface) => {
   const userPosts: FeedPostType[] = [];
-  // const path = `/posts/${photoId}`;
-  const collectionRef = collection(firestore, "posts");
 
   if (!user.friends.length) {
     return [];
   }
 
-  const q = query(
-    collectionRef,
-    where("uid", "in", user.friends),
-    orderBy("timestamp", "desc")
-  );
+  await populateFeedPosts(userPosts, "uid", "in", user.friends,
+    true, "timestamp", "desc");
+  return Promise.resolve(userPosts);
+};
+
+const getPublicFeedData = async () => {
+  const userPosts: FeedPostType[] = [];
+  await populateFeedPosts(userPosts, "isPrivate", "==",
+    false, true, "timestamp", "desc");
+  return Promise.resolve(userPosts);
+};
+
+/**
+ * Get all the photos depending on the query parameters
+ * @param userPosts {FeedPostType[]} Array of photos
+ * @param fieldPath {string} Field to sort by
+ * @param opString {string} Operator to sort by
+ * @param value {any} Value to sort by
+ * @param isOrderBy {boolean} Whether to sort by orderBy or orderByKey
+ * @param fieldPathOrderBy {string} Field to sort by
+ * @param directionStr {string} Direction to sort by
+ */
+async function populateFeedPosts(
+      userPosts: FeedPostType[],
+      fieldPath: string,
+      opString: WhereFilterOp,
+      value: string[] | boolean,
+      isOrderBy: boolean,
+      fieldPathOrderBy: string | FieldPath,
+      directionStr: OrderByDirection
+)  {
+  const collectionRef = collection(firestore, "posts");
+  let q;
+  if (isOrderBy) {
+    q = query(
+      collectionRef,
+      where(`${fieldPath}`, `${opString}`, value),
+      orderBy(`${fieldPathOrderBy}`, `${directionStr}`)
+    );
+  } else {
+    q = query(
+      collectionRef,
+      where(`${fieldPath}`, `${opString}`, value),
+    );
+  }
+
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
@@ -467,9 +511,8 @@ const getAllFeedData = async (user: AppUserInterface) => {
       uid: data.uid,
       username: data.username,
       postText: data.postText || "",
-      // numberLikes: data.numberLikes,
       comments: data.comments,
-      // numberComments: data.numberComments,
+      isPrivate: data.isPrivate,
       likes: data.likes,
       classification: data.classification,
       path: data.path,
@@ -478,8 +521,7 @@ const getAllFeedData = async (user: AppUserInterface) => {
     };
     userPosts.push(imgData);
   });
-  return Promise.resolve(userPosts);
-};
+}
 
 /**
  * @description Delete all of user's photo data docs from firebase
@@ -565,7 +607,8 @@ export {
   updateProfileImg,
   createNewPost,
   getAllPostData,
-  getAllFeedData,
+  getFriendsFeedData,
+  getPublicFeedData,
   postComment,
   getOnePost,
   getProfileUrl,

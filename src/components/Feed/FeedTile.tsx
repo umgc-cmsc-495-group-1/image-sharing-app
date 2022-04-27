@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {
   CommentType,
-  FeedPostInterface,
+  FeedPostInterface, FeedPostWithUserInterface,
   ImageItemProps,
   LikeIconProps
 } from "../../types/appTypes";
@@ -22,9 +22,6 @@ import {
   addUserLikes, removeUserLikes,
   addPostLikes, removePostLikes
 } from "../../data/photoData";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-// import {AuthContext} from "../../context/AuthContext";
-// import {LoadingBackdrop} from "../UploadFab/LoadingBackdrop";
 
 const LikeIcon: React.FC<LikeIconProps> = ({
   isLiked
@@ -61,7 +58,7 @@ const ImageItem: React.FC<ImageItemProps> = ({
   );
 };
 
-const FeedTile: React.FC<FeedPostInterface> = ({
+const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   imageUrl,
   uid,
   username,
@@ -70,12 +67,12 @@ const FeedTile: React.FC<FeedPostInterface> = ({
   comments,
   likes,
   classification,
-  timestamp
+  timestamp,
+  user,
+  isPrivate
 }): JSX.Element => {
   // todo: issue with user being empty strings upon loading, need to fix this for comparison with
   //  with the likes for the post in order to determine if the user has liked the post
-  const user = useCurrentUser();
-  // const { isLoading} = useContext(AuthContext);
   const [post, setPost] = useState<FeedPostInterface>({
     imageUrl: imageUrl,
     uid: uid,
@@ -83,24 +80,16 @@ const FeedTile: React.FC<FeedPostInterface> = ({
     pid: pid,
     postText: postText,
     comments: comments,
+    isPrivate: isPrivate,
     likes: likes,
     classification: classification,
     timestamp: timestamp,
   });
-  console.log(likes)
-  console.log(user)
-  // console.log(likes.includes(user.uid))
   const [numberOfLikes, setNumberOfLikes] = useState(likes.length > 0 ? likes.length : 0);
   const [currentLikes, setCurrentLikes] = useState<string[]>(likes);
   const [expanded, setExpanded] = useState(false);
   const [userComment, setUserComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean>(currentLikes.includes(user.uid));
-
-  if (user.uid === '') {
-    setTimeout(() => {
-      setIsLiked(currentLikes.includes(user.uid));
-    }, 1000);
-  }
 
   async function determineIfLiked() {
     // check if the user has liked anything
@@ -108,7 +97,6 @@ const FeedTile: React.FC<FeedPostInterface> = ({
       setIsLiked(false);
     }
     // check if the user has liked the post
-    // currentLikes.includes(pid)
     if (isLiked) {
       setIsLiked(false);
       setNumberOfLikes(numberOfLikes - 1)
@@ -145,9 +133,15 @@ const FeedTile: React.FC<FeedPostInterface> = ({
     };
     await postComment(pid, comment);
     const updatedPost = await getOnePost(post.pid);
-    updatedPost
-      ? setPost(updatedPost)
-      : console.log(JSON.stringify(updatedPost));
+    if (updatedPost) {
+      setPost(updatedPost);
+      setUserComment("");
+    } else {
+      console.error("error updating post");
+    }
+    // updatedPost
+    //   ? setPost(updatedPost)
+    //   : console.log(JSON.stringify(updatedPost));
     setUserComment("");
   };
 

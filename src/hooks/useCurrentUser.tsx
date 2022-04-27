@@ -31,7 +31,7 @@ export const useCurrentUser = () => {
   // Load current user from Firestore db
   useEffect(() => {
     (async () => {
-      if (user) {
+      if (user !== null) {
         const userByID = await getUserByUserId(user.uid);
         if (userByID !== undefined) {
           setCurrentUser(userByID);

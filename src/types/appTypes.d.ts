@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase/firestore";
 import {UserInterestsType} from "./interests";
+import {AppUserInterface} from "./authentication"
 
 /**
  * @description - User Images Base Interface
@@ -25,17 +26,6 @@ export interface UserInterface {
 
 export type UserType = UserInterface;
 
-/**
- * @description - Alternative Comment Interface
- * @export interface AltCommentInterface
- * @interface AltCommentInterface
- * @property {string} comment - comment of the user
- * @property {UserInterface} user - user of the comment
- */
-export interface AltCommentInterface {
-  user: UserInterface;
-  comment: string | string[];
-}
 
 /**
  * @description - Comment Interface with extended user information
@@ -80,14 +70,32 @@ export interface FeedPostInterface {
   pid: string;
   postText: string;
   likes: string[];
-  // numberLikes: number;
-  // numberComments: number;
+  isPrivate: boolean;
   imageUrl?: string | undefined;
   comments: CommentInterface[];
   classification: UserInterestsType;
   path?: string | undefined;
   timestamp: FieldValue;
 }
+
+/**
+ * @description - Specific Feed Post Interface
+ * @export interface FeedPostInterface
+ * @interface FeedPostInterface
+ * @property {string} uid - user id of the user
+ * @property {string} username - username of the user
+ * @property {string} pid - post id of the post
+ * @property {string} postText - caption of the post
+ * @property {number} numberLikes - number of likes on the post
+ * @property {number} numberComments - number of comments on the post
+ * @property {string} imageUrl - location of the image
+ * @property {CommentInterface[]} comments - comments on the post
+ */
+export interface FeedPostWithUserInterface extends FeedPostInterface {
+  user: AppUserInterface;
+}
+
+
 
 /**
  * @description - Feed Post Type based on the FeedPostInterface
