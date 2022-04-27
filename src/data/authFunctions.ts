@@ -37,9 +37,17 @@ const PASSWORD_REGEX =
 const checkEmptyValues = (user: UserInterface): boolean => {
   return user.username === "" || user.email === "" || user.password === "";
 };
+<<<<<<< HEAD
 /**
  * CREATE USER
  * @param user
+=======
+
+/**
+ * @description Registers user and creates a new user in firestore
+ * @param user : UserInterface
+ * @returns
+>>>>>>> tmg_signupFix
  */
 const signup = async (user: UserInterface) => {
   let res: UserCredential;
@@ -65,6 +73,7 @@ const signup = async (user: UserInterface) => {
     // empty data checks have passed, create the user
     res = await createUserWithEmailAndPassword(auth, user.email, user.password);
     await createUser(res.user, user);
+    updateName(user.displayName);
     result = {
       status: 201,
       user: res.user,
@@ -82,7 +91,7 @@ const signup = async (user: UserInterface) => {
 };
 
 /**
- * Logout User
+ * @description Logout User
  * @returns
  */
 const logout = async () => {
@@ -154,7 +163,7 @@ const signInGoogleRedirect = async () => {
 };
 
 /**
- *  Google Popup Sign Up / Sign In
+ *  @description Google Popup Sign Up / Sign In
  *  Function should check to see if email is entered in
  *  Firestore, if it isn't a new user document should
  *  be created
@@ -184,6 +193,7 @@ const signInGooglePopup = async () => {
       };
 
       createUser(addedUser, user);
+      updateName(user.displayName);
       return Promise.resolve(addedUser);
     })
     .catch((error) => {
@@ -201,7 +211,7 @@ const signInGooglePopup = async () => {
 };
 
 /**
- * Reset Email Address For Auth User
+ *  @descriptionReset Email Address For Auth User
  *  TODO: add a function to userData to update
  *  that email as well
  * @param newEmail
@@ -222,18 +232,22 @@ const changeEmail = (newEmail: string) => {
 };
 
 /**
+<<<<<<< HEAD
  * Update Profile displayName or profile URL
  * calls with auth.currentUser.displayName or .photoURL
  * if not changing value
+=======
+ * @description Update Profile displayName
+ * called with auth.currentUser.displayName
+>>>>>>> tmg_signupFix
  * @param displayName
  * @param imgUrl
  */
-const updateNameImgUrl = (displayName: string, imgUrl: string) => {
+const updateName = (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
     updateProfile(user, {
-      displayName: displayName,
-      photoURL: imgUrl,
+      displayName: displayName
     })
       .then(() => {
         // Profile updated!
@@ -247,7 +261,7 @@ const updateNameImgUrl = (displayName: string, imgUrl: string) => {
 };
 
 /**
- * Update password
+ * @description Update password
  * @param newPassword
  * @param verifyNewPassword
  */
@@ -282,7 +296,7 @@ const changePassword = async (
 
 // TODO: Re-authenticate user this should be used for password
 /**
- * Re-authorizes user before
+ * @description Re-authorizes user before
  * changes or closing accounts
  */
 const reAuth = async () => {
@@ -333,7 +347,7 @@ export {
   signInGoogleRedirect,
   signInGooglePopup,
   changeEmail,
-  updateNameImgUrl,
+  updateName,
   changePassword,
   reAuth,
   deleteAccount,
