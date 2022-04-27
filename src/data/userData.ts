@@ -7,6 +7,9 @@ import {
   getDoc,
   getDocs,
   getDocsFromServer,
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
 } from "firebase/firestore";
 import { query, where } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
@@ -29,21 +32,6 @@ import { User } from "@firebase/auth";
  *
  **********************************************************/
 
-/**
- * appUser - inteface for user
- * Bio, first, last, and username fields are optional
- */
-// export interface AppUserInterface {
-//   uid: string,
-//   first?: string,
-//   last?: string,
-//   username?: string,
-//   displayName: string,
-//   email: string,
-//   bio?: string,
-//   friends: string[],
-//   likes: string[]
-// }
 
 /**
  * Gets reference to the User collection
@@ -173,6 +161,45 @@ const getAllUsers = async () => {
   });
 };
 
+const addFriend = async (newFriend: string, userAdding: string) => {
+
+  const friendsRef = doc(firestore, "users", userAdding);
+
+  await updateDoc(friendsRef, {
+    friends: arrayUnion(newFriend)
+  });
+  
+}
+
+const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
+  const friendsRef = doc(firestore, "users", userRemoving);
+
+  await updateDoc(friendsRef, {
+    friends: arrayRemove(toBeRemoved)
+  });
+}
+
+/**
+ * @description Returns an array of the user's friends
+ * @param friends : string[]
+ * @returns : UserInterface[]
+ */
+ const getFriends = async (friends: string[]) => {
+  const friendList: AppUserInterface[] = [];
+  friends.forEach(item => {
+    try {
+      getUserByUserId(item).then((value) => {
+        console.log("friend", JSON.stringify(value));
+        if (value)
+          friendList.push(value);
+      });
+    } catch(e) {
+      console.log("Could not load friends", e);
+    }
+  });
+ return friendList;
+}
+
 export {
   createUser,
   getUserByUserId,
@@ -180,4 +207,7 @@ export {
   updateUser,
   deleteUserDoc,
   getAllUsers,
+  addFriend,
+  removeFriend,
+  getFriends
 };

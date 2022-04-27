@@ -189,8 +189,10 @@ function generateRandomFeedProps(): FeedPostType[] {
       username: `${demoUsernames[i]}`,
       pid: `${i + 1}`,
       postText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      numberLikes: Math.floor(Math.random() * 100),
-      numberComments: Math.floor(Math.random() * 10),
+      likes: [`${i + 1}`],
+      isPrivate: false,
+      // numberLikes: Math.floor(Math.random() * 100),
+      // numberComments: Math.floor(Math.random() * 10),
       comments: generateRandomComments(),
       classification: {
         classifications: [

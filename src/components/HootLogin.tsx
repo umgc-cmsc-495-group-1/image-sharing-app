@@ -24,7 +24,7 @@ export default function HootLogin() {
     await login(email, password)
       .then((res) => {
         console.log(res);
-        navigate("/");
+        navigate("/feed");
       })
       .catch((err) => {
         console.log(err);
