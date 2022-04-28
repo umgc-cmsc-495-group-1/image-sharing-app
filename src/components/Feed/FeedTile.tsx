@@ -1,17 +1,43 @@
-import React from 'react'
-import { FeedPostInterface, ImageItemProps } from '../../types/appTypes';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { Box } from '@mui/material';
-import { MetaDataBar } from './MetaDataBar';
-import { determineMarginAndPadding } from '../../utils/marginPadding';
+import React, { useState } from "react";
+import {
+  CommentType,
+  FeedPostInterface,
+  ImageItemProps,
+} from "../../types/appTypes";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Collapse,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Typography,
+} from "@mui/material";
+import CommentIcon from "@mui/icons-material/Comment";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import SendIcon from "@mui/icons-material/Send";
+import { getOnePost, postComment } from "../../data/photoData";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
-const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX.Element => {
-  const isAlt = (alt !== "") ? alt : 'image';
+const ImageItem: React.FC<ImageItemProps> = ({
+  src,
+  alt,
+  margin,
+  padding,
+}): JSX.Element => {
+  const isAlt = alt !== "" ? alt : "image";
   const details: React.CSSProperties = {
     height: "100%",
     width: "100%",
     objectFit: "contain",
-  }
+  };
   return (
     <Box
       sx={{
@@ -19,52 +45,134 @@ const ImageItem: React.FC<ImageItemProps> = ({ src, alt, margin, padding }): JSX
         mx: margin,
       }}
     >
-      <img
-        src={src}
-        alt={isAlt}
-        style={details}
-        loading="lazy"
-      />
+      <img src={src} alt={isAlt} style={details} loading="lazy" />
     </Box>
   );
-}
+};
 
 const FeedTile: React.FC<FeedPostInterface> = ({
-  imageUrl, uid, username, pid, postText, numberLikes, numberComments, comments
+  imageUrl,
+  uid,
+  username,
+  pid,
+  postText,
+  numberLikes,
+  numberComments,
+  comments,
+  classification,
+  timestamp,
 }): JSX.Element => {
-  const { width, height } = useWindowDimensions();
-  const { margin, padding } = determineMarginAndPadding(width);
+  const user = useCurrentUser();
+  const [post, setPost] = useState<FeedPostInterface>({
+    imageUrl: imageUrl,
+    uid: uid,
+    username: username,
+    pid: pid,
+    postText: postText,
+    numberLikes: numberLikes,
+    numberComments: numberComments,
+    comments: comments,
+    classification: classification,
+    timestamp: timestamp,
+  });
+  const [expanded, setExpanded] = useState(false);
+  const [userComment, setUserComment] = useState("");
+
+  const handleComment = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const comment: CommentType = {
+      uid: user.uid,
+      username: user.email,
+      comment: userComment,
+    };
+    postComment(pid, comment);
+    const updatedPost = await getOnePost(post.pid);
+    updatedPost
+      ? setPost(updatedPost)
+      : console.log(JSON.stringify(updatedPost));
+    setUserComment("");
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
   return (
-    <Box
+    <Card
+      raised={true}
       sx={{
-        width: 'inherit',
+        marginBottom: 5,
+        maxWidth: "lg",
+        width: {
+          xs: 1.0,
+          sm: 0.9,
+        },
       }}
     >
-      <ImageItem
-        key={`${uid}-${username}`}
-        src={imageUrl}
-        margin={margin}
-        padding={padding}
+      <CardHeader
+        avatar={<Avatar sx={{ bgcolor: "primary.main" }}>?</Avatar>}
+        title={post.username}
       />
-      <MetaDataBar
-        uid={uid}
-        pid={pid}
-        numberLikes={numberLikes}
-        numberComments={numberComments}
-        username={username}
-        postText={postText}
-        imageUrl={imageUrl}
-        comments={comments}
-        margin={margin}
-        padding={padding}
-        screenWidth={width}
-        screenHeight={height}
-      />
-    </Box>
+      <CardMedia component="img" image={post.imageUrl} />
+      <CardContent>
+        <Typography>{post.postText}</Typography>
+      </CardContent>
+      <CardActions>
+        <IconButton aria-label="like">
+          <FavoriteIcon />
+        </IconButton>
+        <Typography>{post.numberLikes}</Typography>
+        <IconButton
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show comments"
+        >
+          <CommentIcon />
+        </IconButton>
+        <Typography>{post.comments.length}</Typography>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography paragraph>Comments:</Typography>
+          <List>
+            {post.comments.map((item) => (
+              <ListItem key={item.comment + item.username}>
+                <ListItemText
+                  primary={item.comment}
+                  secondary={item.username}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <Box
+            component="form"
+            display="flex"
+            noValidate
+            onSubmit={handleComment}
+            role="comment-form"
+          >
+            <TextField
+              onChange={(event) => {
+                setUserComment(event.target.value);
+              }}
+              value={userComment}
+              variant="standard"
+              multiline
+              flex-grow="true"
+              required
+              name="comment"
+              label="Comment"
+              id="comment"
+              sx={{ width: "1" }}
+            />
+            <IconButton type="submit">
+              <SendIcon color="primary" />
+            </IconButton>
+          </Box>
+        </CardContent>
+      </Collapse>
+    </Card>
   );
-}
+};
 
-export {
-  FeedTile,
-  ImageItem
-}
+export { FeedTile, ImageItem };

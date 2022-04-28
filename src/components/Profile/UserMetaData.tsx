@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { ProfileImageInterface, TestProfileInterface } from '../../types/appTypes';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { determineMarginAndPadding } from '../../utils/marginPadding';
-import { ProfileImageList } from './ImageList';
+import { ProfileImageList } from './ProfileImageList';
 
 const BioInfo = (
   { friends, posts, bio }: { friends: [], posts: number, bio: string }
@@ -87,16 +87,7 @@ const UserMetaData: React.FC<TestProfileInterface> = ({
 }) => {
   const { width } = useWindowDimensions();
   const { margin, padding } = determineMarginAndPadding(width);
-  // console.log(uid)
-  // console.log(username)
-  // console.log(posts)
-  // console.log(displayName)
-  // console.log(friends)
-  // console.log(likes)
-  // console.log(email)
-  // console.log(bio)
-  // console.log(imageUrl)
-  // console.log(testImages)
+
   return (
     <Box
       sx={{
