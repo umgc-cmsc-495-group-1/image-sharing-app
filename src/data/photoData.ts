@@ -19,9 +19,11 @@ import {
   orderBy,
   where,
   serverTimestamp,
-  deleteDoc, arrayRemove,
+  deleteDoc,
+  arrayRemove,
+  onSnapshot,
 } from "firebase/firestore";
-import {CommentType, FeedPostType} from "../types/appTypes";
+import { CommentType, FeedPostType } from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
@@ -29,7 +31,7 @@ import { User } from "firebase/auth";
 import {
   WhereFilterOp,
   FieldPath,
-  OrderByDirection
+  OrderByDirection,
 } from "@firebase/firestore-types";
 
 /************************************************************
@@ -108,7 +110,6 @@ const fabPostCallback = async (
         await updatePublicUrl(firestorePath, cloudPath);
       }, 500);
       // Add public URL to post data document
-
     } catch (error) {
       console.log(error);
     }
@@ -312,33 +313,33 @@ const addUserLikes = async (userId: string, postId: string) => {
   const postRef = doc(firestore, "users", userId);
 
   await updateDoc(postRef, {
-    likes: arrayUnion(postId)
-  })
-}
+    likes: arrayUnion(postId),
+  });
+};
 
 const addPostLikes = async (postId: string, userId: string) => {
   const postRef = doc(firestore, "posts", postId);
 
   await updateDoc(postRef, {
-    likes: arrayUnion(userId)
-  })
-}
+    likes: arrayUnion(userId),
+  });
+};
 
 const removeUserLikes = async (userId: string, postId: string) => {
   const postRef = doc(firestore, "users", userId);
 
   await updateDoc(postRef, {
-    likes: arrayRemove(postId)
-  })
-}
+    likes: arrayRemove(postId),
+  });
+};
 
 const removePostLikes = async (postId: string, userId: string) => {
   const postRef = doc(firestore, "posts", postId);
 
   await updateDoc(postRef, {
-    likes: arrayRemove(userId)
-  })
-}
+    likes: arrayRemove(userId),
+  });
+};
 
 const getOnePost = async (postId: string) => {
   // may have to rethink having userID in path?
@@ -369,6 +370,47 @@ const getOnePost = async (postId: string) => {
   };
 
   return Promise.resolve(postData);
+};
+
+/**
+ * @description Get live userposts by id
+ * @param userId : string
+ * @param callback : function
+ * @returns unsubcribe function
+ */
+const getLiveUserPostData = async (
+  userId: string,
+  // eslint-disable-next-line no-unused-vars
+  callback: (_feedPosts: FeedPostType[]) => void
+) => {
+  const collectionRef = collection(firestore, "posts");
+  const q = query(
+    collectionRef,
+    where("uid", "==", userId),
+    orderBy("timestamp", "desc")
+  );
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const feedPosts: FeedPostType[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const imgData: FeedPostType = {
+        pid: data.pid,
+        uid: data.uid,
+        username: data.username,
+        postText: data.postText || "",
+        comments: data.comments,
+        likes: data.likes,
+        isPrivate: data.isPrivate,
+        classification: data.classification,
+        path: data.path,
+        timestamp: data.timestamp,
+        imageUrl: data.imageUrl,
+      };
+      feedPosts.push(imgData);
+    });
+    callback(feedPosts);
+  });
+  return unsubscribe;
 };
 
 /**
@@ -421,7 +463,7 @@ const updatePublicUrl = async (docPath: string, filePath: string) => {
     await getDownloadURL(fileRef).then((url) => {
       // const res = updateDoc(docRef, { imageUrl: url });
       // return Promise.resolve(res);
-      Promise.resolve(updateDoc(docRef, { imageUrl: url }))
+      Promise.resolve(updateDoc(docRef, { imageUrl: url }));
       // return Promise.resolve(res);
     });
   } catch (error) {
@@ -456,15 +498,29 @@ const getFriendsFeedData = async (user: AppUserInterface) => {
     return [];
   }
 
-  await populateFeedPosts(userPosts, "uid", "in", user.friends,
-    true, "timestamp", "desc");
+  await populateFeedPosts(
+    userPosts,
+    "uid",
+    "in",
+    user.friends,
+    true,
+    "timestamp",
+    "desc"
+  );
   return Promise.resolve(userPosts);
 };
 
 const getPublicFeedData = async () => {
   const userPosts: FeedPostType[] = [];
-  await populateFeedPosts(userPosts, "isPrivate", "==",
-    false, true, "timestamp", "desc");
+  await populateFeedPosts(
+    userPosts,
+    "isPrivate",
+    "==",
+    false,
+    true,
+    "timestamp",
+    "desc"
+  );
   return Promise.resolve(userPosts);
 };
 
@@ -479,14 +535,14 @@ const getPublicFeedData = async () => {
  * @param directionStr {string} Direction to sort by
  */
 async function populateFeedPosts(
-      userPosts: FeedPostType[],
-      fieldPath: string,
-      opString: WhereFilterOp,
-      value: string[] | boolean,
-      isOrderBy: boolean,
-      fieldPathOrderBy: string | FieldPath,
-      directionStr: OrderByDirection
-)  {
+  userPosts: FeedPostType[],
+  fieldPath: string,
+  opString: WhereFilterOp,
+  value: string[] | boolean,
+  isOrderBy: boolean,
+  fieldPathOrderBy: string | FieldPath,
+  directionStr: OrderByDirection
+) {
   const collectionRef = collection(firestore, "posts");
   let q;
   if (isOrderBy) {
@@ -496,10 +552,7 @@ async function populateFeedPosts(
       orderBy(`${fieldPathOrderBy}`, `${directionStr}`)
     );
   } else {
-    q = query(
-      collectionRef,
-      where(`${fieldPath}`, `${opString}`, value),
-    );
+    q = query(collectionRef, where(`${fieldPath}`, `${opString}`, value));
   }
 
   const querySnapshot = await getDocs(q);
@@ -604,6 +657,7 @@ const deletePostByPid = async (pid: string, path: string) => {
 };
 
 export {
+  getLiveUserPostData,
   updateProfileImg,
   createNewPost,
   getAllPostData,
@@ -621,5 +675,5 @@ export {
   addUserLikes,
   removeUserLikes,
   addPostLikes,
-  removePostLikes
+  removePostLikes,
 };
