@@ -180,20 +180,25 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
  * @returns : UserInterface[]
  */
  const getFriends = async (friends: string[]) => {
+
   const friendList: AppUserInterface[] = [];
-  friends.forEach(item => {
-    try {
-      getUserByUserId(item).then((value) => {
-        console.log("friend", JSON.stringify(value));
-        if (value)
-          friendList.push(value);
-      });
-    } catch(e) {
-      console.log("Could not load friends", e);
-    }
+  const q = query(usersRef, where('uid', 'in', friends));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    const data = doc.data();
+    const friend: AppUserInterface = {
+      uid: data.uid,
+      displayName: data.displayName,
+      email: data.email,
+      bio: data.bio,
+      friends: data.friends,
+      likes: data.likes,
+      interests: data.interests
+    };
+    friendList.push(friend);
   });
- return friendList;
-}
+  return friendList;
 
 export {
   createUser,
