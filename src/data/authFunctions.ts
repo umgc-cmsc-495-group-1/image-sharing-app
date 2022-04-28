@@ -7,7 +7,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   UserCredential,
-  updatePassword,
+  sendPasswordResetEmail,
   updateEmail,
   deleteUser,
   updateProfile,
@@ -248,39 +248,23 @@ const updateName = (displayName: string) => {
 };
 
 /**
- * @description Update password
- * @param newPassword
- * @param verifyNewPassword
+ * @description Sends email when password is reset
  */
-
-// TODO: should make sure user has signed in recently. If not
-// call re-auth function
-const changePassword = async (
-  newPassword: string,
-  verifyNewPassword: string
-) => {
-  const user = auth.currentUser;
-  // const newPass = getASecureRandomPassword()
-
-  if (newPassword !== verifyNewPassword) {
-    return Promise.reject(`Passwords do not match`);
-  } else if (newPassword.length < 8 && !PASSWORD_REGEX.test(newPassword)) {
-    return Promise.reject(`Password must be at least 8 characters`);
-  } else {
-    if (user && newPassword.length > 0 && PASSWORD_REGEX.test(newPassword)) {
-      await updatePassword(user, newPassword)
-        .then(() => {
-          alert("Password successfully updated.");
-          Promise.resolve("Password successfully updated");
-        })
-        .catch((error) => {
-          console.log(error);
-          alert("Password update failed.");
-        });
-    }
-  }
-};
-
+ const passwordResetEmail = async () => {
+  const email = "tmgemailtester@gmail.com"
+  if (email)
+  await sendPasswordResetEmail(auth, email)
+  .then(() => {
+    // Password reset email sent!
+    console.log("password reset email sent");
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(`${errorCode}: ${errorMessage}`)
+    console.log("email not sent");
+  });
+}
 // TODO: Re-authenticate user this should be used for password
 /**
  * @description Re-authorizes user before
@@ -335,7 +319,7 @@ export {
   signInGooglePopup,
   changeEmail,
   updateName,
-  changePassword,
+  passwordResetEmail,
   reAuth,
   deleteAccount,
 };
