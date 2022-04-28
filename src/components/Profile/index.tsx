@@ -60,6 +60,7 @@ const Profile: React.FC = () => {
         flexDirection: "column",
         alignItems: "center",
         width: "100%",
+        paddingBottom: 10,
       }}
     >
       <Grid container spacing={2}>
