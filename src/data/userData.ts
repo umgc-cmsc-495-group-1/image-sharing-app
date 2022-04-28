@@ -199,6 +199,7 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
     friendList.push(friend);
   });
   return friendList;
+ }
 
 export {
   createUser,
