@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase/firestore";
 import {UserInterestsType} from "./interests";
+import {AppUserInterface} from "./authentication"
 
 /**
  * @description - User Images Base Interface
@@ -23,17 +24,8 @@ export interface UserInterface {
   username: string;
 }
 
-/**
- * @description - Alternative Comment Interface
- * @export interface AltCommentInterface
- * @interface AltCommentInterface
- * @property {string} comment - comment of the user
- * @property {UserInterface} user - user of the comment
- */
-export interface AltCommentInterface {
-  user: UserInterface;
-  comment: string | string[];
-}
+export type UserType = UserInterface;
+
 
 /**
  * @description - Comment Interface with extended user information
@@ -77,14 +69,33 @@ export interface FeedPostInterface {
   username: string | null;
   pid: string;
   postText: string;
-  numberLikes: number;
-  numberComments: number;
+  likes: string[];
+  isPrivate: boolean;
   imageUrl?: string | undefined;
   comments: CommentInterface[];
   classification: UserInterestsType;
   path?: string | undefined;
   timestamp: FieldValue;
 }
+
+/**
+ * @description - Specific Feed Post Interface
+ * @export interface FeedPostInterface
+ * @interface FeedPostInterface
+ * @property {string} uid - user id of the user
+ * @property {string} username - username of the user
+ * @property {string} pid - post id of the post
+ * @property {string} postText - caption of the post
+ * @property {number} numberLikes - number of likes on the post
+ * @property {number} numberComments - number of comments on the post
+ * @property {string} imageUrl - location of the image
+ * @property {CommentInterface[]} comments - comments on the post
+ */
+export interface FeedPostWithUserInterface extends FeedPostInterface {
+  user: AppUserInterface;
+}
+
+
 
 /**
  * @description - Feed Post Type based on the FeedPostInterface
@@ -133,9 +144,9 @@ export interface MarginPadding {
   padding: number;
 }
 
-export interface LikeIconProps extends MarginPadding {
+export interface LikeIconProps {
   isLiked: boolean;
-  numberOfLikes: number;
+  numberOfLikes?: number;
   favoriteIcon?: IconType | null;
   favoriteBorderIcon?: IconType | null;
 }
@@ -165,4 +176,10 @@ export type ImageItemProps = {
 
 export interface ProfileImageInterface extends ImageItemProps {
   username: string;
+}
+
+export interface ProfileUpdateInterface {
+  displayName: string,
+  email: string,
+  bio: string
 }

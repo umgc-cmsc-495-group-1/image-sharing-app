@@ -17,15 +17,14 @@ import {
   GoogleUserType,
   UserCheckInterface,
 } from "../types/authentication";
-import { deleteAllPosts, deleteProfileImg } from "../data/photoData";
-// import Cookies from 'js-cookie';
+import { deleteAllPosts, deleteProfileImg } from "./photoData";
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
  *
  * Sign Up, Log In, and Log Out Functions, Delete user account
- * Google popup signin, Google redirect signin
+ * Google popup sign in, Google redirect sign in
  * auth.currentUser updating: update password, email, displayName,
  * and photoURL
  * Request Re-authentication for password update
@@ -35,12 +34,14 @@ const PASSWORD_REGEX =
  ****************************************************************/
 
 const checkEmptyValues = (user: UserInterface): boolean => {
-  if (user.username === "" || user.email === "" || user.password === "") {
-    return true;
-  }
-  return false;
+  return user.username === "" || user.email === "" || user.password === "";
 };
 
+/**
+ * @description Registers user and creates a new user in firestore
+ * @param user : UserInterface
+ * @returns
+ */
 const signup = async (user: UserInterface) => {
   let res: UserCredential;
   let result: UserCheckInterface | undefined;
@@ -65,6 +66,7 @@ const signup = async (user: UserInterface) => {
     // empty data checks have passed, create the user
     res = await createUserWithEmailAndPassword(auth, user.email, user.password);
     await createUser(res.user, user);
+    updateName(user.displayName);
     result = {
       status: 201,
       user: res.user,
@@ -82,7 +84,7 @@ const signup = async (user: UserInterface) => {
 };
 
 /**
- * Logout User
+ * @description Logout User
  * @returns
  */
 const logout = async () => {
@@ -91,8 +93,9 @@ const logout = async () => {
 
 /**
  * Login user with email and password
- * @param user
- * @returns
+ * @param email - user email
+ * @param password - user password
+ * @returns {Promise<UserCredential>}
  */
 const login = async (email: string, password: string) => {
   return await signInWithEmailAndPassword(auth, email, password)
@@ -106,7 +109,7 @@ const login = async (email: string, password: string) => {
 
 /**
  * Google Redirect Sign Up / Sign In (needs work if to be used)
- * requires a new sign in form ?
+ * requires a new sign-in form ?
  */
 // TODO: Google signup - creates account by redirecting to signup
 const signInGoogleRedirect = async () => {
@@ -131,9 +134,9 @@ const signInGoogleRedirect = async () => {
           email: addedUser.email || "",
         };
         createUser(addedUser, user);
-        // Start a sign in process for an unauthenticated user.
+        // Start a sign-in process for an unauthenticated user.
 
-        // third possible parameter is popup redirect resovler
+        // third possible parameter is popup redirect resolver
         // signInWithRedirect(auth, credential);
         return Promise.resolve(addedUser);
       } else {
@@ -153,7 +156,7 @@ const signInGoogleRedirect = async () => {
 };
 
 /**
- *  Google Popup Sign Up / Sign In
+ *  @description Google Popup Sign Up / Sign In
  *  Function should check to see if email is entered in
  *  Firestore, if it isn't a new user document should
  *  be created
@@ -183,6 +186,7 @@ const signInGooglePopup = async () => {
       };
 
       createUser(addedUser, user);
+      updateName(user.displayName);
       return Promise.resolve(addedUser);
     })
     .catch((error) => {
@@ -200,7 +204,7 @@ const signInGooglePopup = async () => {
 };
 
 /**
- * Reset Email Address For Auth User
+ *  @descriptionReset Email Address For Auth User
  *  TODO: add a function to userData to update
  *  that email as well
  * @param newEmail
@@ -221,18 +225,16 @@ const changeEmail = (newEmail: string) => {
 };
 
 /**
- * Update Profile displayName or profile URL
- * call with auth.currentUser.displayName or .photoURL
- * if not changing value
+ * @description Update Profile displayName
+ * called with auth.currentUser.displayName
  * @param displayName
  * @param imgUrl
  */
-const updateNameImgUrl = (displayName: string, imgUrl: string) => {
+const updateName = (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
     updateProfile(user, {
-      displayName: displayName,
-      photoURL: imgUrl,
+      displayName: displayName
     })
       .then(() => {
         // Profile updated!
@@ -246,8 +248,9 @@ const updateNameImgUrl = (displayName: string, imgUrl: string) => {
 };
 
 /**
- * Update password
+ * @description Update password
  * @param newPassword
+ * @param verifyNewPassword
  */
 
 // TODO: should make sure user has signed in recently. If not
@@ -280,9 +283,8 @@ const changePassword = async (
 
 // TODO: Re-authenticate user this should be used for password
 /**
- * Re-authorizes user before
+ * @description Re-authorizes user before
  * changes or closing accounts
- * @param credential
  */
 const reAuth = async () => {
   // const user = auth.currentUser
@@ -294,7 +296,7 @@ const reAuth = async () => {
   //   reauthenticateWithCredential(user, credential).then(() => {
   //     // User re-authenticated.
   //   }).catch((error) => {
-  //     // An error ocurred
+  //     // An error occurred
   //     console.log(error)
   //   })
   // }
@@ -316,10 +318,10 @@ const deleteAccount = async () => {
         console.log(`The account number ${user.uid} has been deleted`);
       })
       .catch((error) => {
-        // An error ocurred
+        // An error occurred
         console.log(error);
         console.log(
-          `An error occured while deleted the account number ${user.uid}`
+          `An error occurred while deleted the account number ${user.uid}`
         );
       });
   }
@@ -332,69 +334,9 @@ export {
   signInGoogleRedirect,
   signInGooglePopup,
   changeEmail,
-  updateNameImgUrl,
+  updateName,
   changePassword,
   reAuth,
   deleteAccount,
 };
 
-/*
-// Returns true if a user is signed-in.
-function isUserSignedIn() {
-  return !!auth.currentUser;
-}
-*/
-
-/*
-
-// Bits of boilerplate that may be useful
-
-// Code to send email for password reset
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-
-const auth = getAuth();
-sendPasswordResetEmail(auth, email)
-  .then(() => {
-    // Password reset email sent!
-    // ..
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(`${errorCode}: ${errorMessage}`)
-    // ..
-  });
-
-// saves displayName to profile (changes auth key value?)
-const saveDisplayName = async (userName: string) => {
-  const user = auth.currentUser
-  if (user) {
-    updateProfile(user, {
-      displayName: userName
-    }).then(() => {
-      // Profile updated!
-      console.log('new userName set')
-    }).catch((error) => {
-      // An error occurred
-      console.log(`${error}`)
-      console.log(`An error occured while update display name for account number ${user.uid}`)
-    })
-  }
-//  ////////////////////////
-// Returns the signed-in user's profile Pic URL if it exists.
-function getProfilePicUrl() {
-  return getAuth().currentUser.photoURL || '/images/profile_placeholder.png';
-}
-
-// Returns the signed-in user's display name.
-function getUserName() {
-  return getAuth().currentUser.displayName;
-}
------------------
-// Returns true if a user is signed-in.
-function isUserSignedIn() {
-  return !!getAuth().currentUser;
-}
----------------------
-
-*/
