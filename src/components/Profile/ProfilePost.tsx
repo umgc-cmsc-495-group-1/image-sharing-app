@@ -7,7 +7,6 @@ interface Props {
 }
 export default function ProfilePost(props: Props) {
   const { item } = props;
-  console.log(item);
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card

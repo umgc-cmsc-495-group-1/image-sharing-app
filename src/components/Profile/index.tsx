@@ -40,7 +40,6 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     async function fetchProfile() {
-      console.log(email);
       const inProfile = await emailInDb(email ? email : "");
       inProfile && setProfile(inProfile);
     }
@@ -53,12 +52,20 @@ const Profile: React.FC = () => {
   }, [profile.uid]);
 
   return (
-    <Container component="main" maxWidth="lg">
+    <Container
+      component="main"
+      maxWidth="lg"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>
           <Card raised={true} sx={{ width: "100%", aspectRatio: "1" }} />
         </Grid>
-
         <Grid item xs={12} md={8}>
           <Box display="flex">
             <Typography variant="h4">{profile.email}</Typography>
@@ -87,40 +94,3 @@ const Profile: React.FC = () => {
 };
 
 export { Profile };
-
-/*
-const Profile: React.FC = () => {
-  const { uid } = useParams();
-  const profileData = getProfileData(uid);
-  return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          my: 10
-        }}
-      >
-        <UserMetaData
-          uid={profileData.uid}
-          username={profileData.username}
-          posts={profileData.posts}
-          displayName={profileData.displayName}
-          friends={profileData.friends}
-          likes={profileData.likes}
-          email={profileData.email}
-          bio={profileData.bio}
-          imageUrl={profileData.imageUrl}
-          testImages={demoFeedImages}
-        />
-      </Box>
-      <Box>
-        <UploadFab />
-      </Box>
-      <Outlet />
-    </Container>
-  )
-}
-
-export {
-  Profile
-}
-*/
