@@ -248,22 +248,27 @@ const updateName = (displayName: string) => {
 };
 
 /**
- * @description Sends email when password is reset
+ * @description Sends email with link to
+ * reset password
+ *
+ * WARNING: WILL NOT WORK WITH EMULATORS
+ * WILL LOCK ACCOUNT
  */
- const passwordResetEmail = async () => {
-  const email = "tmgemailtester@gmail.com"
+const passwordResetEmail = async () => {
+  const user = auth.currentUser;
+  const email = user?.email;
   if (email)
-  await sendPasswordResetEmail(auth, email)
-  .then(() => {
-    // Password reset email sent!
-    console.log("password reset email sent");
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(`${errorCode}: ${errorMessage}`)
-    console.log("email not sent");
-  });
+    await sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+        console.log("password reset email sent");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`${errorCode}: ${errorMessage}`)
+        console.log("email not sent");
+      });
 }
 // TODO: Re-authenticate user this should be used for password
 /**
