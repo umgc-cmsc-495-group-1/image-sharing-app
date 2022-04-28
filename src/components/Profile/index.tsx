@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UploadFab } from "../UploadFab";
 import { emailInDb } from "../../data/userData";
-import { ProfileInterface } from "../../types/appTypes";
+import {
+  FeedPostInterface,
+  FeedPostType,
+  ProfileInterface,
+} from "../../types/appTypes";
 import {
   Box,
   Card,
@@ -12,6 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { getLiveUserPostData } from "../../data/photoData";
+import ProfilePost from "./ProfilePost";
 
 const Profile: React.FC = () => {
   type Params = {
@@ -30,6 +36,8 @@ const Profile: React.FC = () => {
     bio: "",
   });
 
+  const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
+
   useEffect(() => {
     async function fetchProfile() {
       console.log(email);
@@ -40,10 +48,14 @@ const Profile: React.FC = () => {
     fetchProfile();
   }, [email]);
 
+  useEffect(() => {
+    getLiveUserPostData(profile.uid, setPosts);
+  }, [profile.uid]);
+
   return (
     <Container component="main" maxWidth="lg">
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} sm={4}>
           <Card raised={true} sx={{ width: "100%", aspectRatio: "1" }} />
         </Grid>
 
@@ -60,7 +72,11 @@ const Profile: React.FC = () => {
           <Typography>{profile.bio}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2}></Grid>
+          <Grid container spacing={2}>
+            {posts.map((item: FeedPostType) => (
+              <ProfilePost key={item.pid} item={item} />
+            ))}
+          </Grid>
         </Grid>
       </Grid>
       <Box>
