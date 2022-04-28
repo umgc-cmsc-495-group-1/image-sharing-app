@@ -11,6 +11,7 @@ import {
   updateEmail,
   deleteUser,
   updateProfile,
+  sendEmailVerification
 } from "firebase/auth";
 import {
   UserInterface,
@@ -248,17 +249,41 @@ const updateName = (displayName: string) => {
 };
 
 /**
+ * @description Sends email upon signup
+ * with link to web page with confirm link
+ * when link clicked can navigate to app page
+ */
+//example
+const actionCodeSettings = {
+    url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
+};
+const verifyEmail = async () => {
+  const user = auth.currentUser;
+  if(user)
+  await sendEmailVerification(user, actionCodeSettings)
+    .then(() => {
+      // Email verification sent!
+      // ...
+      alert("email sent");
+    });
+  }
+
+/**
  * @description Sends email with link to
  * reset password
  *
  * WARNING: WILL NOT WORK WITH EMULATORS
  * WILL LOCK ACCOUNT
  */
+//example
+const resetActionCodeSettings = {
+  url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
+};
 const passwordResetEmail = async () => {
   const user = auth.currentUser;
   const email = user?.email;
   if (email)
-    await sendPasswordResetEmail(auth, email)
+    await sendPasswordResetEmail(auth, email, resetActionCodeSettings)
       .then(() => {
         // Password reset email sent!
         console.log("password reset email sent");
@@ -318,6 +343,7 @@ const deleteAccount = async () => {
 
 export {
   signup,
+  verifyEmail,
   logout,
   login,
   signInGoogleRedirect,
@@ -326,6 +352,6 @@ export {
   updateName,
   passwordResetEmail,
   reAuth,
-  deleteAccount,
+  deleteAccount
 };
 
