@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
             </IconButton>
           </Box>
           <Typography variant="h6">
-            {profile.posts || 0} Posts | {profile.friends.length} Friends{" "}
+            {posts.length} Posts | {profile.friends.length} Friends{" "}
           </Typography>
           <Typography>{profile.bio}</Typography>
         </Grid>
