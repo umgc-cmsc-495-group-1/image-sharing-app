@@ -63,7 +63,7 @@ const Navigation: React.FC = () => {
           role="presentation"
           onClick={() => setIsOpen(false)}
         >
-          <List>{user ? <LoggedIn uid={user.uid} /> : <NotLoggedIn />}</List>
+          <List>{user ? <LoggedIn email={user.email} /> : <NotLoggedIn />}</List>
         </Box>
       </Drawer>
       <Outlet />

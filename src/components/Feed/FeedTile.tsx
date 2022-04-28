@@ -139,9 +139,6 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
     } else {
       console.error("error updating post");
     }
-    // updatedPost
-    //   ? setPost(updatedPost)
-    //   : console.log(JSON.stringify(updatedPost));
     setUserComment("");
   };
 
