@@ -18,7 +18,6 @@ import {
   UserCheckInterface,
 } from "../types/authentication";
 import { deleteAllPosts, deleteProfileImg } from "./photoData";
-// import Cookies from 'js-cookie';
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
@@ -63,7 +62,24 @@ const signup = async (user: UserInterface) => {
     return Promise.reject(result);
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
-    res = await createUserWithEmailAndPassword(auth, user.email, user.password);
+    res = await createUserWithEmailAndPassword(auth, user.email, user.password)
+      .then(userCredential => {
+        const currentUser = userCredential.user;
+        updateProfile(currentUser,
+          {
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          });
+        return Promise.resolve(userCredential);
+      })
+      .catch(error => {
+        result = {
+          status: 400,
+          user: null,
+          message: error.message,
+        };
+        return Promise.reject(result);
+      });
     await createUser(res.user, user);
     result = {
       status: 201,
@@ -129,6 +145,7 @@ const signInGoogleRedirect = async () => {
         }
         user = {
           displayName: addedUser.displayName || "",
+          username: addedUser.displayName || "",
           email: addedUser.email || "",
         };
         createUser(addedUser, user);
@@ -180,6 +197,7 @@ const signInGooglePopup = async () => {
       }
       user = {
         displayName: addedUser.displayName || "",
+        username: addedUser.displayName || "",
         email: addedUser.email || "",
       };
 

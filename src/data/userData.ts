@@ -52,8 +52,6 @@ const createUser = async (
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
-      first: userInfo.first || "",
-      last: userInfo.last || "",
       displayName: userInfo.displayName,
       email: userInfo.email,
       bio: "",
@@ -84,8 +82,6 @@ const getUserByUserId = async (userId: string) => {
     uid: data.uid,
     username: data.username,
     displayName: data.displayName,
-    first: data.first,
-    last: data.last,
     email: data.email,
     bio: data.bio,
     likes: data.likes,

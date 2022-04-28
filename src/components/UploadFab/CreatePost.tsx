@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, {useEffect, useState, useRef, useContext} from "react";
 import "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-converter";
 import "@tensorflow/tfjs-backend-webgl";
@@ -22,7 +22,6 @@ import {
   ImageClassificationType,
   UserInterestsType,
 } from "../../types/interests";
-// import { User } from "firebase/auth";
 import { AuthContext } from "../../context/AuthContext";
 import { fabPostCallback } from "../../data/photoData";
 

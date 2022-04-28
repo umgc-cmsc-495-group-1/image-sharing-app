@@ -78,6 +78,18 @@ export interface FeedPostInterface {
   timestamp: FieldValue;
 }
 
+export interface AvatarImageInterface {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  pid: string;
+  imageUrl: string;
+  path: string;
+  timestamp: FieldValue;
+}
+
+export type AvatarImageType = AvatarImageInterface;
+
 /**
  * @description - Specific Feed Post Interface
  * @export interface FeedPostInterface

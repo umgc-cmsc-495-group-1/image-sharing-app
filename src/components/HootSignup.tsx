@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
   Avatar,
   Box,
@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-//import { useNavigate } from 'react-router-dom';
 import { signInGooglePopup, signup } from "../data/authFunctions";
 import { UserInterface } from "../types/authentication";
 import { UserSignupValidationError } from "../utils/Error";
@@ -31,19 +30,20 @@ export default function HootSignup() {
     const user: UserInterface = {
       displayName: displayName,
       username: username,
+      photoURL: "",
       email: email,
       password: password,
       verifyPassword: verifyPassword,
     };
 
     try {
+      // sign up the user
       await signup(user)
         .then((res) => {
           if (res !== undefined) {
             if (res.status === 201) {
-              // TODO: redirect to the profile page after adding stepper fro creating account
-              // navigate('/profile');
               console.log(res.user);
+              return Promise.resolve(res)
             }
           }
         })
@@ -55,9 +55,13 @@ export default function HootSignup() {
             );
           }
         });
+
     } catch (error) {
       console.log(error);
     }
+
+
+
   };
 
   const handleGoogleSignin = async () => {
@@ -69,7 +73,8 @@ export default function HootSignup() {
         console.log(err);
       });
   };
-
+  // todo: need to create an image ref for the avatar, this will be used in photoURL state
+  //  will implement similar logic from the createPost component.
   return (
     <Container component="main" maxWidth="xs">
       <Box

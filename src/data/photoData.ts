@@ -21,7 +21,7 @@ import {
   serverTimestamp,
   deleteDoc, arrayRemove,
 } from "firebase/firestore";
-import {CommentType, FeedPostType} from "../types/appTypes";
+import {AvatarImageType, CommentType, FeedPostType} from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
@@ -108,6 +108,40 @@ const fabPostCallback = async (
         await updatePublicUrl(firestorePath, cloudPath);
       }, 500);
       // Add public URL to post data document
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+// todo: need to implement this in the user settings to have a clean reference to the User object
+const uploadProfileImg = async (user: User | null, currentFile: File | undefined) => {
+  if (user !== null && currentFile !== undefined) {
+    const uid = user.uid;
+    const pid = uuidv4();
+    const cloudPath = `photos/${uid}/${pid}`;
+    const firestorePath = `posts/${pid}`;
+    const firestoreRef = doc(firestore, firestorePath);
+    const profileImage: AvatarImageType = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      imageUrl: "",
+      pid: pid,
+      path: cloudPath,
+      timestamp: serverTimestamp(),
+    };
+    // Write to firestore db
+    try {
+      // set document data
+      await uploadImageFile(currentFile, cloudPath);
+      setTimeout('', 500)
+      await setDoc(firestoreRef, profileImage);
+      setTimeout('', 500)
+      setTimeout(async () => {
+        await updatePublicUrl(firestorePath, cloudPath);
+      }, 500);
 
     } catch (error) {
       console.log(error);
@@ -244,8 +278,8 @@ const uploadImageFile = async (file: File, path: string) => {
  */
 const resizeImage = async (source: File) =>
   new Promise<File>((resolve) => {
-    const resolution = 100;
-    if (source.size > 8000000) {
+    const resolution = 70;
+    if (source.size > 5242880) {
       Resizer.imageFileResizer(
         source,
         1280,
@@ -610,6 +644,7 @@ export {
   getFriendsFeedData,
   getPublicFeedData,
   postComment,
+  uploadProfileImg,
   getOnePost,
   getProfileUrl,
   getPhotoUrl,

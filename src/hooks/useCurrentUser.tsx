@@ -20,8 +20,6 @@ export const useCurrentUser = () => {
     displayName: "",
     email: "",
     uid: "",
-    first: "",
-    last: "",
     friends: [],
     likes: [],
     bio: "",

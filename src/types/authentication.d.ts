@@ -2,14 +2,13 @@ import { User } from '@firebase/auth';
 import { UserInterestsType } from './interests';
 
 export interface BaseUserInterface {
-  first?: string | undefined;
-  last?: string | undefined;
   displayName: string;
-  username?: string | undefined;
+  username: string;
   email: string;
 }
 
 export interface UserInterface extends BaseUserInterface {
+  photoURL: string;
   password: string;
   verifyPassword?: string | undefined;
 }
