@@ -17,7 +17,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 const Navigation: React.FC = () => {
   // const user: User | null = useContext(AuthContext);
-  const { user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -63,7 +63,9 @@ const Navigation: React.FC = () => {
           role="presentation"
           onClick={() => setIsOpen(false)}
         >
-          <List>{user ? <LoggedIn uid={user.uid} /> : <NotLoggedIn />}</List>
+          <List>
+            {user ? <LoggedIn email={user.email} /> : <NotLoggedIn />}
+          </List>
         </Box>
       </Drawer>
       <Outlet />

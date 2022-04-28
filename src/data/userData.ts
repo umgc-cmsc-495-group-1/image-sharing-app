@@ -18,8 +18,8 @@ import {
   UserInterface,
   AppUserInterface,
 } from "../types/authentication";
-import { ProfileUpdateInterface } from "../types/appTypes";
-import { changeEmail, updateName } from './authFunctions'
+import { ProfileInterface, ProfileUpdateInterface } from "../types/appTypes";
+import { changeEmail, updateName } from "./authFunctions";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -103,12 +103,26 @@ const emailInDb = async (email: string) => {
   const q = query(collection(firestore, "users"), where("email", "==", email));
 
   const querySnapshot = await getDocsFromServer(q);
+  let data = null;
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
-    console.log(doc.data.length);
-    return doc.data.length > 0;
+    data = doc.data();
   });
+  if (data != undefined) {
+    const profile: ProfileInterface = {
+      uid: data["uid"],
+      username: data["username"],
+      imageUrl: data["imageUrl"],
+      displayName: data["displayName"],
+      email: data["email"],
+      friends: data["friends"],
+      likes: data["likes"],
+      posts: data["posts"],
+      bio: data["bio"],
+    };
+    return profile;
+  }
 };
 
 // update functions must incorporate db and auth functions
@@ -117,23 +131,25 @@ const emailInDb = async (email: string) => {
  * @param userId: string
  * @param profileData: ProfileInterface
  */
- const updateProfile = async (userId: string, profileData: ProfileUpdateInterface) => {
+const updateProfile = async (
+  userId: string,
+  profileData: ProfileUpdateInterface
+) => {
   // const docSnap = await getDoc(docRef);
-  console.log(`updating profile ${profileData.displayName}`)
+  console.log(`updating profile ${profileData.displayName}`);
   const docRef = doc(firestore, "users", `${userId}`);
   const name = profileData.displayName;
   const email = profileData.email;
   const bio = profileData.bio;
-  if (name !== '') {
+  if (name !== "") {
     updateName(name);
   }
-  if (email !== '') {
+  if (email !== "") {
     changeEmail(email);
   }
-  await updateDoc(docRef, {displayName: name, email: email, bio: bio});
+  await updateDoc(docRef, { displayName: name, email: email, bio: bio });
   // return docRef.update(user);
 };
-
 
 /**
  * Delete user document from Firestore
@@ -157,43 +173,40 @@ const getAllUsers = async () => {
 };
 
 const addFriend = async (newFriend: string, userAdding: string) => {
-
   const friendsRef = doc(firestore, "users", userAdding);
 
   await updateDoc(friendsRef, {
-    friends: arrayUnion(newFriend)
+    friends: arrayUnion(newFriend),
   });
-
-}
+};
 
 const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
   const friendsRef = doc(firestore, "users", userRemoving);
 
   await updateDoc(friendsRef, {
-    friends: arrayRemove(toBeRemoved)
+    friends: arrayRemove(toBeRemoved),
   });
-}
+};
 
 /**
  * @description Returns an array of the user's friends
  * @param friends : string[]
  * @returns : UserInterface[]
  */
- const getFriends = async (friends: string[]) => {
+const getFriends = async (friends: string[]) => {
   const friendList: AppUserInterface[] = [];
-  friends.forEach(item => {
+  friends.forEach((item) => {
     try {
       getUserByUserId(item).then((value) => {
         console.log("friend", JSON.stringify(value));
-        if (value)
-          friendList.push(value);
+        if (value) friendList.push(value);
       });
-    } catch(e) {
+    } catch (e) {
       console.log("Could not load friends", e);
     }
   });
- return friendList;
-}
+  return friendList;
+};
 
 export {
   createUser,
@@ -204,5 +217,5 @@ export {
   getAllUsers,
   addFriend,
   removeFriend,
-  getFriends
+  getFriends,
 };
