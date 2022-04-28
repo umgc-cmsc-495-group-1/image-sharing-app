@@ -1,7 +1,7 @@
-import React from 'react';
-import { ListItem, ListItemText } from '@mui/material';
-import { logout } from '../../data/authFunctions';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { ListItem, ListItemText } from "@mui/material";
+import { logout } from "../../data/authFunctions";
+import { Link } from "react-router-dom";
 
 const LoggedIn = ({ email }: { email: string | null }) => {
   return (
@@ -29,9 +29,7 @@ const LoggedIn = ({ email }: { email: string | null }) => {
         <ListItemText primary="Sign Out" />
       </ListItem>
     </>
-  )
-}
+  );
+};
 
-export {
-  LoggedIn
-}
+export { LoggedIn };

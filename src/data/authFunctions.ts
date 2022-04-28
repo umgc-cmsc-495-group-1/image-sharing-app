@@ -36,9 +36,11 @@ const PASSWORD_REGEX =
 const checkEmptyValues = (user: UserInterface): boolean => {
   return user.username === "" || user.email === "" || user.password === "";
 };
+
 /**
- * CREATE USER
- * @param user
+ * @description Registers user and creates a new user in firestore
+ * @param user : UserInterface
+ * @returns
  */
 const signup = async (user: UserInterface) => {
   let res: UserCredential;
@@ -81,6 +83,7 @@ const signup = async (user: UserInterface) => {
         return Promise.reject(result);
       });
     await createUser(res.user, user);
+    updateName(user.displayName);
     result = {
       status: 201,
       user: res.user,
@@ -98,7 +101,7 @@ const signup = async (user: UserInterface) => {
 };
 
 /**
- * Logout User
+ * @description Logout User
  * @returns
  */
 const logout = async () => {
@@ -171,7 +174,7 @@ const signInGoogleRedirect = async () => {
 };
 
 /**
- *  Google Popup Sign Up / Sign In
+ *  @description Google Popup Sign Up / Sign In
  *  Function should check to see if email is entered in
  *  Firestore, if it isn't a new user document should
  *  be created
@@ -202,6 +205,7 @@ const signInGooglePopup = async () => {
       };
 
       createUser(addedUser, user);
+      updateName(user.displayName);
       return Promise.resolve(addedUser);
     })
     .catch((error) => {
@@ -219,7 +223,7 @@ const signInGooglePopup = async () => {
 };
 
 /**
- * Reset Email Address For Auth User
+ *  @descriptionReset Email Address For Auth User
  *  TODO: add a function to userData to update
  *  that email as well
  * @param newEmail
@@ -240,18 +244,16 @@ const changeEmail = (newEmail: string) => {
 };
 
 /**
- * Update Profile displayName or profile URL
- * calls with auth.currentUser.displayName or .photoURL
- * if not changing value
+ * @description Update Profile displayName
+ * called with auth.currentUser.displayName
  * @param displayName
  * @param imgUrl
  */
-const updateNameImgUrl = (displayName: string, imgUrl: string) => {
+const updateName = (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
     updateProfile(user, {
-      displayName: displayName,
-      photoURL: imgUrl,
+      displayName: displayName
     })
       .then(() => {
         // Profile updated!
@@ -265,7 +267,7 @@ const updateNameImgUrl = (displayName: string, imgUrl: string) => {
 };
 
 /**
- * Update password
+ * @description Update password
  * @param newPassword
  * @param verifyNewPassword
  */
@@ -300,7 +302,7 @@ const changePassword = async (
 
 // TODO: Re-authenticate user this should be used for password
 /**
- * Re-authorizes user before
+ * @description Re-authorizes user before
  * changes or closing accounts
  */
 const reAuth = async () => {
@@ -351,69 +353,9 @@ export {
   signInGoogleRedirect,
   signInGooglePopup,
   changeEmail,
-  updateNameImgUrl,
+  updateName,
   changePassword,
   reAuth,
   deleteAccount,
 };
 
-/*
-// Returns true if a user is signed-in.
-function isUserSignedIn() {
-  return !!auth.currentUser;
-}
-*/
-
-/*
-
-// Bits of boilerplate that may be useful
-
-// Code to send email for password reset
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-
-const auth = getAuth();
-sendPasswordResetEmail(auth, email)
-  .then(() => {
-    // Password reset email sent!
-    // ..
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(`${errorCode}: ${errorMessage}`)
-    // ..
-  });
-
-// saves displayName to profile (changes auth key value?)
-const saveDisplayName = async (userName: string) => {
-  const user = auth.currentUser
-  if (user) {
-    updateProfile(user, {
-      displayName: userName
-    }).then(() => {
-      // Profile updated!
-      console.log('new userName set')
-    }).catch((error) => {
-      // An error occurred
-      console.log(`${error}`)
-      console.log(`An error occurred while update display name for account number ${user.uid}`)
-    })
-  }
-//  ////////////////////////
-// Returns the signed-in user's profile Pic URL if it exists.
-function getProfilePicUrl() {
-  return getAuth().currentUser.photoURL || '/images/profile_placeholder.png';
-}
-
-// Returns the signed-in user's display name.
-function getUserName() {
-  return getAuth().currentUser.displayName;
-}
------------------
-// Returns true if a user is signed-in.
-function isUserSignedIn() {
-  return !!getAuth().currentUser;
-}
----------------------
-
-*/

@@ -13,11 +13,9 @@ import { Outlet } from "react-router-dom";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
 import { AuthContext } from "../../context/AuthContext";
-// import { User } from "firebase/auth";
 
 const Navigation: React.FC = () => {
-  // const user: User | null = useContext(AuthContext);
-  const { user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
