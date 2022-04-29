@@ -10,8 +10,7 @@ import {
   sendPasswordResetEmail,
   updateEmail,
   deleteUser,
-  updateProfile,
-  sendEmailVerification
+  updateProfile
 } from "firebase/auth";
 import {
   UserInterface,
@@ -121,9 +120,8 @@ const signInGoogleRedirect = async () => {
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access Google APIs.
       if (result) {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        console.log(token);
+        // const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential?.accessToken;
 
         // The signed-in user info.
         addedUser = result.user;
@@ -216,12 +214,12 @@ const changeEmail = (newEmail: string) => {
     updateEmail(user, `${newEmail}`)
       .then(() => {
         // TODO: user settings UI updated here
-        console.log(`Email for ${user.uid} successfully updated`);
+        console.log(`Email for ${user.email} successfully updated`);
       })
       .catch((error) => {
         // An error occurred
         console.log(error);
-        console.log(`Email update for ${user.uid} failed`);
+        console.log(`Email update for ${user.email} failed`);
       });
 };
 
@@ -248,25 +246,6 @@ const updateName = (displayName: string) => {
   }
 };
 
-/**
- * @description Sends email upon signup
- * with link to web page with confirm link
- * when link clicked can navigate to app page
- */
-//example
-const actionCodeSettings = {
-    url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
-};
-const verifyEmail = async () => {
-  const user = auth.currentUser;
-  if(user)
-  await sendEmailVerification(user, actionCodeSettings)
-    .then(() => {
-      // Email verification sent!
-      // ...
-      alert("email sent");
-    });
-  }
 
 /**
  * @description Sends email with link to
@@ -275,15 +254,16 @@ const verifyEmail = async () => {
  * WARNING: WILL NOT WORK WITH EMULATORS
  * WILL LOCK ACCOUNT
  */
-//example
-const resetActionCodeSettings = {
-  url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
-};
+// TODO: example - can add as parameter
+// of action settting add url to redirect user
+// const resetActionCodeSettings = {
+//  url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
+// };
 const passwordResetEmail = async () => {
   const user = auth.currentUser;
   const email = user?.email;
   if (email)
-    await sendPasswordResetEmail(auth, email, resetActionCodeSettings)
+    await sendPasswordResetEmail(auth, email)
       .then(() => {
         // Password reset email sent!
         console.log("password reset email sent");
@@ -343,7 +323,6 @@ const deleteAccount = async () => {
 
 export {
   signup,
-  verifyEmail,
   logout,
   login,
   signInGoogleRedirect,
