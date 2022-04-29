@@ -22,7 +22,10 @@ const FriendsList: React.FC<FriendsListInterface> = (
 
   const confirmDelete = (friendUid: string) => {
     if (confirmClicked) {
+      console.log("Removing " + friendUid)
       removeFriend(uid, friendUid)
+      .then(() => console.log("success"))
+      .catch(() => console.log("failure"))
     }
   }
 
@@ -34,9 +37,11 @@ const FriendsList: React.FC<FriendsListInterface> = (
         }); */
         // TODO: set img to user's image
         <ListItem key={frd.uid}>
-          <ListItemAvatar>
-            src={profilePicURL}
-          </ListItemAvatar>
+          <Link href={"/" + frd.uid}>
+            <ListItemAvatar>
+              src={profilePicURL}
+            </ListItemAvatar>
+          </Link>
           <ListItemText primary={frd.displayName} />
           <ListItemButton onClick={() => {
             changeButtonText("Are you sure?")
