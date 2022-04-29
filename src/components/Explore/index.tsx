@@ -1,15 +1,14 @@
 import React from "react";
-import { Box } from "@mui/material";
-import { FeedTile } from "./FeedTile";
-import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
-import { useFeed } from "../../hooks/useFeed";
+import { Box } from "@mui/material";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
-// import { totalFeedPosts } from "../../tests/test_data"
+import { useExplore } from "../../hooks/useExplore";
+import { FeedPostType } from "../../types/appTypes";
+import { FeedTile } from "../Feed/FeedTile";
 
-const Feed: React.FC = (): JSX.Element => {
+const Explore = () => {
   const user = useCurrentUser();
-  const feed = useFeed();
+  const explore = useExplore();
   return (
     <Box
       sx={{
@@ -20,7 +19,7 @@ const Feed: React.FC = (): JSX.Element => {
       }}
     >
       <Box maxWidth="md">
-        {feed.map((item: FeedPostType) => (
+        {explore.map((item: FeedPostType) => (
           <FeedTile
             key={item.pid}
             path={item.path}
@@ -45,4 +44,4 @@ const Feed: React.FC = (): JSX.Element => {
   );
 };
 
-export default Feed;
+export { Explore };
