@@ -96,42 +96,7 @@ const getUserByUserId = async (userId: string) => {
 };
 
 /**
-<<<<<<< HEAD
- * Get single user's profile data with field value
- * choices: UID, first, last, username, email
- * @param userId
- * @returns user's profile data
- */
-const getUserProfileByUserID = async (userId: string) => {
-  const userRef = doc(firestore, "users", userId);
-  const docSnap = await getDoc(userRef);
-
-  if (!docSnap.exists()) {
-    console.log("No user document found");
-    return;
-  }
-
-  const data = docSnap.data();
-  const profile: ProfileInterface = {
-    uid: data.uid,
-    username: data.username,
-    imageUrl: data.imageUrl,
-    displayName: data.displayName,
-    email: data.email,
-    friends: data.friends,
-    likes: data.likes,
-    posts: data.posts,
-    bio: data.bio,
-  };
-
-  return profile;
-};
-
-/**
- * Get single user with Email value
-=======
  * @description Get single user with Email value
->>>>>>> 849cd729bfef70b739d293a98d6f4e720e0368c3
  * @param email
  */
 const emailInDb = async (email: string) => {
@@ -253,7 +218,6 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
 export {
   createUser,
   getUserByUserId,
-  getUserProfileByUserID,
   emailInDb,
   updateProfile,
   deleteUserDoc,

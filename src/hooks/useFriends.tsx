@@ -3,10 +3,8 @@ import { getFriends } from '../data/userData';
 import { AppUserInterface } from '../types/authentication';
 import { useCurrentUser } from './useCurrentUser';
 
-
 /**
- * @description React Hook to get all post related data for a user
- * using the user's ID
+ * @description React Hook to get all friends of the current user
  * @param userId
  * @returns photos: DocumentData
  */
