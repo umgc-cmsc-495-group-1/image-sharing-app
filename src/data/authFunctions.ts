@@ -7,7 +7,6 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   UserCredential,
-  updatePassword,
   updateEmail,
   deleteUser,
   updateProfile,
@@ -176,17 +175,17 @@ const signInGooglePopup = async () => {
       }
       // The signed-in user info.
       addedUser = result.user;
-      //await user.updateUser({ displayName: `${displayName}` });
-      if (!addedUser) {
-        return addedUser;
-      }
-      user = {
-        displayName: addedUser.displayName || "",
-        email: addedUser.email || "",
-      };
 
-      createUser(addedUser, user);
-      updateName(user.displayName);
+     // FirebaseUserMetadata metadata = auth.currentUser.getMetadata();
+      if (addedUser.metadata.creationTime == addedUser.metadata.lastSignInTime) {
+        user = {
+          displayName: addedUser.displayName || "",
+          email: addedUser.email || "",
+        };
+
+        createUser(addedUser, user);
+        updateName(user.displayName);
+      }
       return Promise.resolve(addedUser);
     })
     .catch((error) => {
@@ -199,7 +198,6 @@ const signInGooglePopup = async () => {
       // The AuthCredential type that was used.
       // const credential = GoogleAuthProvider.credentialFromError(error);
       console.log(`email: ${email}`);
-      // ...
     });
 };
 
@@ -247,39 +245,7 @@ const updateName = (displayName: string) => {
   }
 };
 
-/**
- * @description Update password
- * @param newPassword
- * @param verifyNewPassword
- */
 
-// TODO: should make sure user has signed in recently. If not
-// call re-auth function
-const changePassword = async (
-  newPassword: string,
-  verifyNewPassword: string
-) => {
-  const user = auth.currentUser;
-  // const newPass = getASecureRandomPassword()
-
-  if (newPassword !== verifyNewPassword) {
-    return Promise.reject(`Passwords do not match`);
-  } else if (newPassword.length < 8 && !PASSWORD_REGEX.test(newPassword)) {
-    return Promise.reject(`Password must be at least 8 characters`);
-  } else {
-    if (user && newPassword.length > 0 && PASSWORD_REGEX.test(newPassword)) {
-      await updatePassword(user, newPassword)
-        .then(() => {
-          alert("Password successfully updated.");
-          Promise.resolve("Password successfully updated");
-        })
-        .catch((error) => {
-          console.log(error);
-          alert("Password update failed.");
-        });
-    }
-  }
-};
 
 // TODO: Re-authenticate user this should be used for password
 /**
@@ -335,7 +301,6 @@ export {
   signInGooglePopup,
   changeEmail,
   updateName,
-  changePassword,
   reAuth,
   deleteAccount,
 };

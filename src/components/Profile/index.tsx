@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UploadFab } from "../UploadFab";
-import { emailInDb } from "../../data/userData";
+import { getUserByEmail } from "../../data/userData";
 import {
   FeedPostInterface,
   FeedPostType,
@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     async function fetchProfile() {
-      const inProfile = await emailInDb(email ? email : "");
+      const inProfile = await getUserByEmail(email ? email : "");
       inProfile && setProfile(inProfile);
     }
 
