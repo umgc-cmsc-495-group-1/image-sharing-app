@@ -18,3 +18,5 @@ const HootUserSettings: React.FC = () => {
     </List>
   );
 }
+
+export default HootUserSettings;
