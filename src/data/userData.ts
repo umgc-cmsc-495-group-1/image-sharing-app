@@ -117,7 +117,6 @@ const getUserByEmail = async (email: string) => {
   let data = null;
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-    // console.log(doc.id, " => ", doc.data());
     data = doc.data();
   });
   if (data != undefined) {
@@ -173,7 +172,6 @@ const getAllUsers = async () => {
   const querySnapshot = await getDocs(collection(firestore, "users"));
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-    // console.log(doc.id, ' => ', doc.data());
     return doc.data();
   });
 };

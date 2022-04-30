@@ -7,9 +7,10 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   UserCredential,
+  sendPasswordResetEmail,
   updateEmail,
   deleteUser,
-  updateProfile,
+  updateProfile
 } from "firebase/auth";
 import {
   UserInterface,
@@ -119,9 +120,8 @@ const signInGoogleRedirect = async () => {
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access Google APIs.
       if (result) {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        console.log(token);
+        // const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential?.accessToken;
 
         // The signed-in user info.
         addedUser = result.user;
@@ -213,12 +213,12 @@ const changeEmail = (newEmail: string) => {
     updateEmail(user, `${newEmail}`)
       .then(() => {
         // TODO: user settings UI updated here
-        console.log(`Email for ${user.uid} successfully updated`);
+        console.log(`Email for ${user.email} successfully updated`);
       })
       .catch((error) => {
         // An error occurred
         console.log(error);
-        console.log(`Email update for ${user.uid} failed`);
+        console.log(`Email update for ${user.email} failed`);
       });
 };
 
@@ -246,7 +246,34 @@ const updateName = (displayName: string) => {
 };
 
 
-
+/**
+ * @description Sends email with link to
+ * reset password
+ *
+ * WARNING: WILL NOT WORK WITH EMULATORS
+ * WILL LOCK ACCOUNT
+ */
+// TODO: example - can add as parameter
+// of action settting add url to redirect user
+// const resetActionCodeSettings = {
+//  url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
+// };
+const passwordResetEmail = async () => {
+  const user = auth.currentUser;
+  const email = user?.email;
+  if (email)
+    await sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+        console.log("password reset email sent");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`${errorCode}: ${errorMessage}`)
+        console.log("email not sent");
+      });
+}
 // TODO: Re-authenticate user this should be used for password
 /**
  * @description Re-authorizes user before
@@ -301,7 +328,8 @@ export {
   signInGooglePopup,
   changeEmail,
   updateName,
+  passwordResetEmail,
   reAuth,
-  deleteAccount,
+  deleteAccount
 };
 
