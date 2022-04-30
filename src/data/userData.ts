@@ -19,7 +19,7 @@ import {
   AppUserInterface,
 } from "../types/authentication";
 import { ProfileInterface, ProfileUpdateInterface } from "../types/appTypes";
-import { changeEmail, updateName } from "./authFunctions";
+import { updateName } from "./authFunctions";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -65,6 +65,17 @@ const createUser = async (
 };
 
 /**
+ * @description returns true if user in db
+ * @param uid
+ */
+const uidInDb = async (uid: string) => {
+  const userRef = doc(firestore, "users", uid);
+  const docSnap = await getDoc(userRef);
+  const inDb =  docSnap.exists();
+  return await Promise.resolve(inDb);
+}
+
+/**
  * Get single user with field value
  * choices: UID, first, last, username, email
  * @param userId
@@ -99,7 +110,7 @@ const getUserByUserId = async (userId: string) => {
  * @description Get single user with Email value
  * @param email
  */
-const emailInDb = async (email: string) => {
+const getUserByEmail = async (email: string) => {
   const q = query(collection(firestore, "users"), where("email", "==", email));
 
   const querySnapshot = await getDocsFromServer(q);
@@ -138,16 +149,11 @@ const updateProfile = async (
   console.log(`updating profile ${profileData.displayName}`);
   const docRef = doc(firestore, "users", `${userId}`);
   const name = profileData.displayName;
-  const email = profileData.email;
   const bio = profileData.bio;
   if (name !== "") {
     updateName(name);
   }
-  if (email !== "") {
-    changeEmail(email);
-  }
-  await updateDoc(docRef, { displayName: name, email: email, bio: bio });
-  // return docRef.update(user);
+  await updateDoc(docRef, { displayName: name, bio: bio });
 };
 
 /**
@@ -216,7 +222,8 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
 export {
   createUser,
   getUserByUserId,
-  emailInDb,
+  getUserByEmail,
+  uidInDb,
   updateProfile,
   deleteUserDoc,
   getAllUsers,

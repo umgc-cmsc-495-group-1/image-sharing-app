@@ -175,17 +175,17 @@ const signInGooglePopup = async () => {
       }
       // The signed-in user info.
       addedUser = result.user;
-      //await user.updateUser({ displayName: `${displayName}` });
-      if (!addedUser) {
-        return addedUser;
-      }
-      user = {
-        displayName: addedUser.displayName || "",
-        email: addedUser.email || "",
-      };
 
-      createUser(addedUser, user);
-      updateName(user.displayName);
+     // FirebaseUserMetadata metadata = auth.currentUser.getMetadata();
+      if (addedUser.metadata.creationTime == addedUser.metadata.lastSignInTime) {
+        user = {
+          displayName: addedUser.displayName || "",
+          email: addedUser.email || "",
+        };
+
+        createUser(addedUser, user);
+        updateName(user.displayName);
+      }
       return Promise.resolve(addedUser);
     })
     .catch((error) => {
@@ -198,7 +198,6 @@ const signInGooglePopup = async () => {
       // The AuthCredential type that was used.
       // const credential = GoogleAuthProvider.credentialFromError(error);
       console.log(`email: ${email}`);
-      // ...
     });
 };
 
