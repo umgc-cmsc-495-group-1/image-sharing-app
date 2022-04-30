@@ -1,10 +1,22 @@
 import React from "react";
-import { Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
+import {
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import { Link } from "react-router-dom";
 
-function HootUser() {
-  const { userId } = useParams();
-  return <Typography>This is user {userId} settings</Typography>;
+const HootUserSettings: React.FC = () => {
+  return(
+    <List>
+      <ListItem button component={Link} to="/about/terms-of-service" role="terms-of-service">
+        <ListItemText primary="Terms of Service" />
+      </ListItem>
+      <ListItem button component={Link} to="/about/privacy" role="privacy-policy">
+        <ListItemText primary="Privacy Policy" />
+      </ListItem>
+    </List>
+  );
 }
 
-export default HootUser;
+export default HootUserSettings;
