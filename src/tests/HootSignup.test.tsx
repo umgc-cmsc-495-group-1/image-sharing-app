@@ -1,14 +1,14 @@
+import React from 'react';
 import {
   MemoryRouter,
   Routes,
   Route
 } from 'react-router-dom';
-import { fireEvent,render, screen, cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, queryByAttribute,render, screen, cleanup } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom';
 import HootSignup from "../components/HootSignup";
-
+import HootNav from "../components/HootNav";
 
 function renderWithMemoryRouter() {
   return render(
@@ -20,6 +20,30 @@ function renderWithMemoryRouter() {
   );
 }
 
+const location = {
+  pathname: "/",
+  search: "",
+  hash: "",
+  state: {
+    uid: 'max@test.com',
+    pid: '1'
+  },
+  key: "ac3df4",
+}
+ 
+
+function renderMenuWithMemoryRouter() {
+  return render(
+    <MemoryRouter initialEntries={['/']} >
+      <Routes location={location}  >
+      
+        <Route  path="/"  element={<HootNav /> } />
+        
+      </Routes>
+    </MemoryRouter>
+  );
+}
+
 /** 
 * @description - HootSignup Component Test Plan Scope   
 *  Module: Sign Up
@@ -28,6 +52,8 @@ function renderWithMemoryRouter() {
    1. Test to validate all form fields should be blank when the page is first rendered. 
    2. Test to sign up user via sign up form 
 */
+
+
 describe("Module: HootSignup Component Test", () => {
   afterEach(() => cleanup())
   it('1.Test to validate all form fields should be blank when the page is first rendered.', () => {
@@ -57,59 +83,46 @@ describe("Module: HootSignup Component Test", () => {
     expect(verifyPasswordField).toBeInTheDocument();
     expect(verifyPasswordField).not.toHaveTextContent('password');
   });
+
   it('2. Test to sign up user via sign up form ', async () => {
-  
+    
     const {getByTestId} = renderWithMemoryRouter();
-    //const signupForm = screen.getByRole('signup-form');
-    const displayNameField = screen.getByLabelText(/Display Name/i);
-    const userField = screen. getByLabelText(/User Name/i);
-    const emailField = screen.getByLabelText(/Email Address/i);
-    const passwordField = screen.getByRole('password-input').querySelector('input') as HTMLInputElement;
-    const verifyPasswordField = screen.getByRole('verify-password-input').querySelector('input') as HTMLInputElement;
-   
-    await act(async() => {
-      fireEvent.change(displayNameField , { target: { value: 'John Doe' } });
-     });
-     
-    // get the Display Name Field 
-    expect(displayNameField).toBeInTheDocument();
-    expect(displayNameField).toHaveValue('John Doe');
-
-    await act(async() => {
-      fireEvent.change(userField , { target: { value: 'JohnDoe' } });
-     });
-
+    const signupForm = screen.getByRole('signup-form');
+   // const loginForm = screen.getByRole('login-form');
+   const getById = queryByAttribute.bind(null, 'id');
+    const userField = screen.getByLabelText (/Email Address/i);
+    const passwordField = screen.getByTestId('password-input');
+    
     // get the user Name Field 
     expect(userField).toBeInTheDocument();
-    expect(userField).toHaveValue('JohnDoe');
-
-    await act(async() => {
-      fireEvent.change(emailField , { target: { value: 'John.Doe@mail.com' } });
-     });
-    // get the email address Field 
-    expect(emailField).toBeInTheDocument();
-    expect(emailField).toHaveValue('John.Doe@mail.com');
-    await act(async() => {
-   
-     });
-     userEvent.type(passwordField,'Password');
-     setTimeout(() => { console.log('wait half a second') }, 500);
+    expect(userField).not.toHaveTextContent('johndoe');
     
+    await act(async() => {
+      fireEvent.change(userField , { target: { value: 'max@test.com' } });
+     });
+
     // get the password  Field 
     expect(passwordField).toBeInTheDocument();
-    expect(passwordField).toHaveValue('Password');
+    expect(passwordField).not.toHaveTextContent('password');
+    
+    await act(async() => {
+      fireEvent.change(passwordField , { target: { value: 'Password18!' } });
+     });
 
+    expect(passwordField).toHaveValue('Password18!');
 
-    userEvent.type(verifyPasswordField,'Password');
-    // get the verify password  Field 
-    expect(verifyPasswordField).toBeInTheDocument();
-    expect(verifyPasswordField).toHaveValue('Password');
+    const submitBtn = getById(signupForm, 'submit');
+    submitBtn?.focus();
 
-
-    const submitBtn = getByTestId('submit-input');
-      submitBtn?.focus();
-      userEvent.click(submitBtn);
-      setTimeout(() => { console.log('wait half a second') }, 500);
-      expect(submitBtn).not.toBeDisabled();
+    expect(submitBtn).toBeInTheDocument();
+   
+    setTimeout(() => { console.log('wait half a second') }, 1500);
+   
+   // click on the menu icon
+   await  act(async() => {
+    //fireEvent.click(navMenuButton);
+   });
+   
+ 
   });
 }); 
