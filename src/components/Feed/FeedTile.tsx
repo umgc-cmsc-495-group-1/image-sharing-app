@@ -23,6 +23,7 @@ import {
   TextField,
   Typography,
   Link,
+  Chip,
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -180,6 +181,8 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
     setExpanded(!expanded);
   };
 
+  console.log(post.classification);
+
   return (
     <Card
       raised={true}
@@ -204,6 +207,17 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
       />
       <CardMedia component="img" image={post.imageUrl} />
       <CardContent>
+        <div style={{ display: "flex", marginBottom: 20 }}>
+          {post.classification.classifications.map((item) => (
+            <div key={item.className}>
+              <Chip
+                label={item.className}
+                color="secondary"
+                sx={{ marginRight: 1 }}
+              />
+            </div>
+          ))}
+        </div>
         <Typography>{post.postText}</Typography>
       </CardContent>
       <CardActions>
