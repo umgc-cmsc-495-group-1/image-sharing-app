@@ -619,22 +619,19 @@ const deleteProfileImg = async (uid: string) => {
 /**
  * @description Deletes a single post
  * @param pid photo post's unique id
- * @param path location path of file in
- * Cloud Storage
  */
-const deletePostByPid = async (pid: string, path: string) => {
-  await deleteDoc(doc(firestore, "posts", pid));
-
-  const photoRef = ref(storage, path);
-  await deleteObject(photoRef)
-    .then(() => {
-      // File deleted successfully
-      console.log("image file deleted");
-    })
-    .catch((error) => {
-      // Uh-oh, an error occurred!
+const deletePostByPid = async (pid: string) => {
+  const post = await getOnePost(pid).catch((error) => {
+    console.log(error);
+  });
+  if (post) {
+    const path = post.path;
+    await deleteDoc(doc(firestore, "posts", pid));
+    const photoRef = ref(storage, path);
+    await deleteObject(photoRef).catch((error) => {
       console.log(error);
     });
+  }
 };
 
 export {

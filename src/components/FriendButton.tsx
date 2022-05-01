@@ -24,7 +24,10 @@ export default function FriendButton(props: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    getLiveFriends(currentUser.uid, setFriendsList);
+    const unsubscribe = getLiveFriends(currentUser.uid, setFriendsList);
+    return () => {
+      unsubscribe;
+    };
   }, [currentUser]);
 
   useEffect(() => {

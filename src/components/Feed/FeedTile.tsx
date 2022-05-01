@@ -42,6 +42,7 @@ import { getUserByUserId } from "../../data/userData";
 import { AppUserInterface } from "../../types/authentication";
 import FriendButton from "../FriendButton";
 import PrivateButton from "../PrivateButton";
+import DeleteButton from "../DeleteButton";
 
 const LikeIcon: React.FC<LikeIconProps> = ({ isLiked }): JSX.Element => {
   let Icon: JSX.Element = (
@@ -237,6 +238,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
         <Typography>{post.comments.length}</Typography>
         <FriendButton uid={uid} />
         <PrivateButton pid={pid} />
+        <DeleteButton pid={pid} />
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
