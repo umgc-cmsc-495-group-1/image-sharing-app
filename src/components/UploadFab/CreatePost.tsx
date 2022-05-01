@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef, useContext} from "react";
-import "@tensorflow/tfjs-core";
+import "@tensorflow/tfjs";
 import "@tensorflow/tfjs-converter";
 import "@tensorflow/tfjs-backend-webgl";
 import * as mobilenet from "@tensorflow-models/mobilenet";
@@ -33,7 +33,6 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
-  // const user: User | null = useContext(AuthContext);
   const { user} = useContext(AuthContext);
   const imageRef = useRef<any>();
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) =>

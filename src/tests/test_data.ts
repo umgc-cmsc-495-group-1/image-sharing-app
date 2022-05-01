@@ -43,7 +43,7 @@ import feedImage19 from '../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplas
 import {serverTimestamp} from "firebase/firestore";
 
 /**
- * Array of test user names to be used in the feed and profile
+ * Array of test.tsx user names to be used in the feed and profile
  */
 const demoDisplayNames = [
   'abhinav', 'alex', 'axel', 'brian', 'brynn', 'eugene', 'freysteinn', 'giorgio', 'hana',
@@ -53,7 +53,7 @@ const demoDisplayNames = [
 const demoUsernames = ['Angel Egotrip', 'Made Savage', 'Binary Bark', 'The Deal', 'Fiddle Pie', 'Raid Brigade', 'Geez God', 'Mindhack Diva', 'Sugar Lump', 'K For Kun', 'Armor of Odd', 'Loop Hole Mindset', 'Asterism Zeevine', 'Droolbug', 'Starry Divinity', 'Zig Wagon', 'Blu Zoo', 'Lens Patriot', 'Doll Throne', 'Sweetielicious', 'Krazy Encounter', 'Strife Life', 'Ice Minister', 'Twinkle Doll', 'Meat Mojo', 'Evil Rage', 'Apogee Point', 'Cluster of Hope', 'Angel Berry', 'Mind Pixell', 'It Was Me', 'Marker Dee', 'Ahem Girl', 'Emoster Pink', 'Diva Comet', 'Prep Station', 'Whack Stack', 'Cutefest Fizzle', 'Him Again', 'Dread Monster', 'Exit Hound', 'Mind Trick Poodle', 'Prom Doll', 'Rainbow Passion', 'Cislunar Doll', 'Bright Nut', 'Fruit Loop Diva', 'Grimster', 'Cynic Poet', 'Illustrious Doom'
 ]
 /**
- * Array of test profile pictures to be used in the feed and profile
+ * Array of test.tsx profile pictures to be used in the feed and profile
  */
 const demoProfilePictures = [
   profileImage1,
@@ -72,7 +72,7 @@ const demoProfilePictures = [
   profileImage14
 ]
 /**
- * Array of test feed posts to be used in the feed
+ * Array of test.tsx feed posts to be used in the feed
  */
 const demoFeedImages = [
   feedImage1,
@@ -96,7 +96,7 @@ const demoFeedImages = [
   feedImage19
 ]
 /**
- * Object of test users and images to be used in the feed and profile
+ * Object of test.tsx users and images to be used in the feed and profile
  */
 const demoContent = {
   profile: demoProfilePictures,
@@ -104,7 +104,7 @@ const demoContent = {
 }
 
 /**
- * @description - Generate a random test user to be used in the feed and profile
+ * @description - Generate a random test.tsx user to be used in the feed and profile
  * @returns {ProfileInterface[]}
  */
 function generateRandomUsers(): ProfileInterface[] {

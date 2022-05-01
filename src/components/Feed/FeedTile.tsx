@@ -167,7 +167,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
         <Typography>{post.postText}</Typography>
       </CardContent>
       <CardActions>
-        <IconButton aria-label="like" onClick={handleLike}>
+        <IconButton role="like-button" aria-label="like" onClick={handleLike}>
           <LikeIcon isLiked={isLiked} />
         </IconButton>
         <Typography>{numberOfLikes}</Typography>
@@ -175,6 +175,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show comments"
+          role="comment-button"
         >
           <CommentIcon />
         </IconButton>

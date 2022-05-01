@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import HootLogin from "./HootLogin";
 import { LoadingBackdrop } from "../components/UploadFab/LoadingBackdrop";
+import {Navigate} from "react-router-dom";
 
 interface Props {
   component: React.ComponentType;
@@ -23,6 +23,6 @@ export const ProtectedRoute: React.FC<Props> = ({
     }
   }
 
-  return <HootLogin />;
+  return <Navigate to="/login" />;
 
 };

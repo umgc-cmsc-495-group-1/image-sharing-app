@@ -19,13 +19,5 @@ export const AuthProvider: React.FC = ({ children }) => {
     });
   }, [isLoading, user]);
 
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-  //     setUser(firebaseUser);
-  //   });
-
-  //   return unsubscribe;
-  // }, []);
-
   return <AuthContext.Provider value={{isLoading, user}}>{children}</AuthContext.Provider>;
 };

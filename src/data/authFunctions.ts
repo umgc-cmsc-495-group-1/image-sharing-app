@@ -130,35 +130,32 @@ const login = async (email: string, password: string) => {
  */
 // TODO: Google signup - creates account by redirecting to signup
 const signInGoogleRedirect = async () => {
-  let user: GoogleUserType;
-  let addedUser: UserCredential["user"];
+  let googleUserInfo: GoogleUserType;
 
-  getRedirectResult(auth)
+  const provider = new GoogleAuthProvider();
+  provider.addScope('profile');
+  provider.addScope('email');
+  provider.setCustomParameters({
+    prompt: "select_account",
+  });
+
+  await getRedirectResult(auth)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access Google APIs.
-      if (result) {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        console.log(token);
-
-        // The signed-in user info.
-        addedUser = result.user;
-        if (!addedUser) {
-          return addedUser;
-        }
-        user = {
-          displayName: addedUser.displayName || "",
-          username: addedUser.displayName || "",
-          email: addedUser.email || "",
+      if (result !== null) {
+        const user = result.user;
+        googleUserInfo = {
+          displayName: user.displayName || "",
+          username: user.displayName || "",
+          email: user.email || "",
+          photoURL: user.photoURL || "",
+          isVerified: user.emailVerified || false,
         };
-        createUser(addedUser, user);
-        // Start a sign-in process for an unauthenticated user.
+        createUser(user, googleUserInfo);
 
-        // third possible parameter is popup redirect resolver
-        // signInWithRedirect(auth, credential);
-        return Promise.resolve(addedUser);
+        return Promise.resolve(googleUserInfo);
       } else {
-        return Promise.reject(addedUser);
+        return Promise.reject(googleUserInfo);
       }
     })
     .catch((error) => {
@@ -181,32 +178,28 @@ const signInGoogleRedirect = async () => {
  */
 // TODO: add Google sign up option - this is a popup option
 const signInGooglePopup = async () => {
-  let user: GoogleUserType;
-  let addedUser: UserCredential["user"];
+  let googleUserInfo: GoogleUserType;
 
   const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
+  provider.addScope('profile');
+  provider.addScope('email');
+  provider.setCustomParameters({
+    prompt: "select_account",
+  });
+  await signInWithPopup(auth, provider)
     .then((result) => {
+      const user = result.user;
       // This gives you a Google Access Token. You can use it to access the Google API.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      if (credential) {
-        // const token = credential.accessToken;
-      }
-      // The signed-in user info.
-      addedUser = result.user;
-      //await user.updateUser({ displayName: `${displayName}` });
-      if (!addedUser) {
-        return addedUser;
-      }
-      user = {
-        displayName: addedUser.displayName || "",
-        username: addedUser.displayName || "",
-        email: addedUser.email || "",
+      googleUserInfo = {
+        displayName: user.displayName || "",
+        username: user.displayName || "",
+        email: user.email || "",
+        photoURL: user.photoURL || "",
+        isVerified: user.emailVerified || false,
       };
+      createUser(user, googleUserInfo);
 
-      createUser(addedUser, user);
-      updateName(user.displayName);
-      return Promise.resolve(addedUser);
+      return Promise.resolve(googleUserInfo);
     })
     .catch((error) => {
       // Handle Errors here.

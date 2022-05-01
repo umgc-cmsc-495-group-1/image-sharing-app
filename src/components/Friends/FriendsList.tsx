@@ -1,14 +1,27 @@
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { auth } from '../../firebaseSetup';
 import { Box, Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
 import { getUserByUserId } from '../../data/userData';
+import {AppUserInterface} from "../../types/authentication";
 
-export default function FriendsList() {
-  console.log('FriendsList happened')
-  const user = auth.currentUser ? auth.currentUser.uid : 'no user'
-  console.log(user)
-  console.log(userEvent)
+// displayName, username, email, photoURL, isVerified,
+//     uid, friends, likes, bio, interests
+
+const FriendsList: React.FC<AppUserInterface> = (
+  {
+    friends,
+    username,
+    email,
+    photoURL,
+    isVerified,
+    uid,
+    bio,
+    interests,
+    likes,
+    displayName,
+  }
+) => {
+  console.log(friends, username, email, photoURL, isVerified, uid, bio, interests, likes, displayName);
   const friendArray: string[] = []
 
   if (auth.currentUser !== null) {
@@ -54,3 +67,7 @@ export default function FriendsList() {
     </Box>
   );
 }
+
+export {
+  FriendsList
+  }

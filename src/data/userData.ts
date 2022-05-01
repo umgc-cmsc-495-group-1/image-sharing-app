@@ -1,17 +1,11 @@
-import "firebase/storage";
 import {
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  getDoc,
-  getDocs,
-  getDocsFromServer,
-  arrayUnion,
-  arrayRemove,
-  updateDoc,
+  collection, doc,
+  setDoc, deleteDoc,
+  getDoc, getDocs,
+  getDocsFromServer, arrayUnion,
+  arrayRemove, updateDoc,
+  query, where
 } from "firebase/firestore";
-import { query, where } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
 import {
   GoogleUserType,
@@ -82,6 +76,8 @@ const getUserByUserId = async (userId: string) => {
     username: data.username,
     displayName: data.displayName,
     email: data.email,
+    isVerified: data.isVerified,
+    photoURL: data.photoURL,
     bio: data.bio,
     likes: data.likes,
     friends: data.friends,
@@ -203,6 +199,8 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
       displayName: data.displayName,
       username: data.username,
       email: data.email,
+      isVerified: data.isVerified,
+      photoURL: data.photoURL,
       bio: data.bio,
       friends: data.friends,
       likes: data.likes,

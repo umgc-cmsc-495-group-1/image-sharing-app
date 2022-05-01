@@ -13,12 +13,13 @@ import { AppUserInterface } from "../types/authentication";
 
 // get current user by id, if there is a logged in user
 export const useCurrentUser = () => {
-  // const userId = useContext(AuthContext)?.uid || "";
   const {user} = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState<AppUserInterface>({
-    username: "",
     displayName: "",
+    username: "",
     email: "",
+    photoURL: "",
+    isVerified: false,
     uid: "",
     friends: [],
     likes: [],

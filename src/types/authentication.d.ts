@@ -5,10 +5,11 @@ export interface BaseUserInterface {
   displayName: string;
   username: string;
   email: string;
+  photoURL: string;
+  isVerified: boolean;
 }
 
 export interface UserInterface extends BaseUserInterface {
-  photoURL: string;
   password: string;
   verifyPassword?: string | undefined;
 }

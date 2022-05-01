@@ -15,6 +15,7 @@ import { Friends } from "./components/Friends";
 import { Explore } from "./components/Explore";
 
 export default function App() {
+
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -34,15 +35,15 @@ export default function App() {
         },
         {
           path: "/candy-mountain",
-          element: <ProtectedRoute component={EasterEgg} />,
+          element: <ProtectedRoute component={EasterEgg} path="/candy-mountain"/>,
         },
         {
           path: "/feed",
-          element: <ProtectedRoute component={Feed} />,
+          element: <ProtectedRoute component={Feed} path="/feed"/>,
         },
         {
           path: "/explore",
-          element: <ProtectedRoute component={Explore} />,
+          element: <ProtectedRoute component={Explore} path="/explore" />,
         },
         {
           path: "/user",
@@ -52,15 +53,15 @@ export default function App() {
               children: [
                 {
                   index: true,
-                  element: <ProtectedRoute component={Profile}/>,
+                  element: <ProtectedRoute component={Profile} path="/user"/>,
                 },
                 {
                   path: "settings",
-                  element: <ProtectedRoute component={HootUserSettings}/>,
+                  element: <ProtectedRoute component={HootUserSettings} path="/user/settings"/>,
                 },
                 {
                   path: "friends",
-                  element: <ProtectedRoute component={Friends}/>,
+                  element: <ProtectedRoute component={Friends} path="/user/friends"/>,
                 },
               ],
             },
@@ -73,9 +74,7 @@ export default function App() {
       ],
     },
   ];
-
   const element = useRoutes(routes);
-
   const theme = createTheme({
     palette: {
       primary: {
@@ -102,7 +101,26 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">{element}</div>
+      <div className="App">
+        {element}
+      </div>
     </ThemeProvider>
   );
 }
+
+//         <Routes>
+//           <Route path="/" element={<Navigation />} >
+//             <Route element={<HootHome />}>
+//               <Route path="login" element={<HootLogin />} />
+//               <Route path="signup" element={<HootSignup />} />
+//               <Route path="candy-mountain" element={<EasterEgg />} />
+//               <Route path="feed" element={<ProtectedRouteRewrite {...defaultProtectedRouteProps} outlet={<Feed />} />} />
+//                 {/*<Route path="explore" element={<ProtectedRoute component={Explore} path="/explore" />} />*/}
+//                 {/*<Route path="user" element={<ProtectedRoute component={Profile} path="/user" />}>*/}
+//                 {/*  <Route path="settings" element={<ProtectedRoute component={HootUserSettings} path="/user/settings" />} />*/}
+//                 {/*  <Route path="friends" element={<ProtectedRoute component={Friends} path="/user/friends" />} />*/}
+//                 {/*</Route>*/}
+//               <Route path="*" element={<Hoot404 />} />
+//             </Route>
+//           </Route>
+//         </Routes>

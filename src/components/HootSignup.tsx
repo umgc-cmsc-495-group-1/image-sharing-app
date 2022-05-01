@@ -10,55 +10,104 @@ import {
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { signInGooglePopup, signup } from "../data/authFunctions";
+import {signInGooglePopup} from "../data/authFunctions"; // , signup
 import { UserInterface } from "../types/authentication";
-import { UserSignupValidationError } from "../utils/Error";
-import { useNavigate } from "react-router-dom";
+import ErrorsDisplay from "./ErrorsDisplay";
+// import { useNavigate } from "react-router-dom";
+// import {UserSignupValidationError} from "../utils/Error";
 
 export default function HootSignup() {
-  const [displayName, setDisplayName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [verifyPassword, setVerifyPassword] = useState("");
-  const navigate = useNavigate();
+  const [createdUser, setCreatedUser] = useState<UserInterface>({
+    displayName: "",
+    username: "",
+    photoURL: "",
+    email: "",
+    isVerified: false,
+    password: "",
+    verifyPassword: "",
+  });
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+  const [errors, setErrors] = useState<string[]>([]);
+  // const navigate = useNavigate();
 
   // TODO: write error handler
+
+  const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files !== null && files.length > 0) {
+      const url = URL.createObjectURL(files[0]);
+      setFileToUpload(files[0]);
+      setProfileImage(url);
+    } else {
+      setFileToUpload(undefined);
+      setProfileImage("");
+    }
+  };
+
+  const checkEmptyValues = () => {
+    setErrors([]);
+    if (
+      createdUser.displayName === "" ||
+      createdUser.username === "" ||
+      createdUser.email === "" ||
+      createdUser.password === "" ||
+      createdUser.verifyPassword === ""
+    ) {
+      setErrors((errors) => [...errors, "All fields are required!"]);
+      return true;
+    }
+    if (fileToUpload === undefined) {
+      setErrors((errors) => [...errors, "Please upload a profile image!"]);
+      return true;
+    }
+
+    return false;
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const user: UserInterface = {
-      displayName: displayName,
-      username: username,
-      photoURL: "",
-      email: email,
-      password: password,
-      verifyPassword: verifyPassword,
+      displayName: createdUser.displayName,
+      username: createdUser.username,
+      photoURL: profileImage,
+      email: createdUser.email,
+      isVerified: false,
+      password: createdUser.password,
+      verifyPassword: createdUser.verifyPassword,
     };
 
-    try {
-      // sign up the user
-      await signup(user)
-        .then((res) => {
-          if (res !== undefined) {
-            if (res.status === 201) {
-              console.log(res.user);
-              return Promise.resolve(res)
-            }
-          }
-        })
-        .catch((err) => {
-          if (err.status == 400) {
-            throw new UserSignupValidationError(
-              "UserSignupValidation",
-              err.message
-            );
-          }
-        });
-
-    } catch (error) {
-      console.log(error);
+    if (!checkEmptyValues()) {
+      setErrors([]);
+      console.log(fileToUpload)
+      console.log(user)
+      return;
     }
+
+
+    // try {
+    //   // sign up the user
+    //   await signup(user)
+    //     .then((res) => {
+    //       if (res !== undefined) {
+    //         if (res.status === 201) {
+    //           console.log(res.user);
+    //           return Promise.resolve(res)
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       if (err.status == 400) {
+    //         throw new UserSignupValidationError(
+    //           "UserSignupValidation",
+    //           err.message
+    //         );
+    //       }
+    //     });
+    //
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
 
 
@@ -67,7 +116,7 @@ export default function HootSignup() {
   const handleGoogleSignin = async () => {
     await signInGooglePopup()
       .then(() => {
-        navigate("/auth-loading");
+        // todo: redirect to feed
       })
       .catch((err) => {
         console.log(err);
@@ -98,9 +147,44 @@ export default function HootSignup() {
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
+              <Box>
+                <ErrorsDisplay errors={errors} />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    mt: 3, mb: 2
+                }}
+                >
+                  <label htmlFor="profile-image">Please select a profile image</label>
+                </Button>
+                <TextField
+                  sx={{
+                    display: "none",
+                  }}
+                  required
+                  fullWidth
+                  id="profile-image"
+                  type="file"
+                  onChange={uploadProfileImage}
+                  inputProps={{
+                    accept: "image/*",
+                    id: "profile-image",
+                    placeholder: "Select Profile Image",
+                    style: { display: "none" },
+                  }}
+                />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setDisplayName(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    displayName: event.target.value
+                  });
                 }}
                 required
                 fullWidth
@@ -114,7 +198,10 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setUsername(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    username: event.target.value
+                  });
                 }}
                 required
                 fullWidth
@@ -128,7 +215,10 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setEmail(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    email: event.target.value
+                  });
                 }}
                 required
                 fullWidth
@@ -142,7 +232,10 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setPassword(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    password: event.target.value
+                  });
                 }}
                 required
                 fullWidth
@@ -157,7 +250,10 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setVerifyPassword(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    verifyPassword: event.target.value
+                  });
                 }}
                 required
                 fullWidth
