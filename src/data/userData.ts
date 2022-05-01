@@ -5,7 +5,6 @@ import {
   setDoc,
   deleteDoc,
   getDoc,
-  getDocs,
   getDocsFromServer,
   arrayUnion,
   arrayRemove,
@@ -39,8 +38,10 @@ import { User } from "@firebase/auth";
  */
 const usersRef = collection(firestore, "users");
 
+
+/******************************** CREATE *****************************************************/
 /**
- * Createa a new user document in Firestore 'users' collection
+ * Create a a new user document in Firestore 'users' collection
  * @param user
  * @param userInfo
  */
@@ -66,16 +67,7 @@ const createUser = async (
   }
 };
 
-/**
- * @description returns true if user in db
- * @param uid
- */
-const uidInDb = async (uid: string) => {
-  const userRef = doc(firestore, "users", uid);
-  const docSnap = await getDoc(userRef);
-  const inDb = docSnap.exists();
-  return await Promise.resolve(inDb);
-}
+/******************************** RETRIEVE *****************************************************/
 
 /**
  * Get single user with field value
@@ -137,6 +129,66 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
+
+/**
+ * @description Returns an array of the user's friends
+ * @param friends : string[]
+ * @returns : UserInterface[]
+ */
+ const getFriends = async (
+  friends: string[],
+  // eslint-disable-next-line no-unused-vars
+  callback: (_friendList: AppUserInterface[]) => void
+) => {
+  const usersRef = collection(firestore, "users");
+  const q = query(usersRef, where('uid', 'in', friends));
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const friendList: AppUserInterface[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const friend: AppUserInterface = {
+        uid: data.uid,
+        displayName: data.displayName,
+        email: data.email,
+        bio: data.bio,
+        friends: data.friends,
+        likes: data.likes,
+        interests: data.interests
+      };
+      friendList.push(friend);
+    });
+    callback(friendList);
+  });
+  return unsubscribe;
+}
+
+  /*
+  //saving until sure new code works consisitently
+
+  const friendList: AppUserInterface[] = [];
+  const q = query(usersRef, where('uid', 'in', friends));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    const data = doc.data();
+    const friend: AppUserInterface = {
+      uid: data.uid,
+      displayName: data.displayName,
+      email: data.email,
+      bio: data.bio,
+      friends: data.friends,
+      likes: data.likes,
+      interests: data.interests
+    };
+    friendList.push(friend);
+  });
+  return friendList;
+  */
+
+
+/******************************** UPDATE *****************************************************/
+
+
 //update functions must incorporate db and auth functions
 /**
  * @description Update user profile information not in auth.currentUser
@@ -161,6 +213,33 @@ const updateProfile = async (userId: string, profileData: ProfileUpdateInterface
   // return docRef.update(user);
 };
 
+/**
+ * @description adds friend and update user
+ * @param newFriend
+ * @param userAdding
+ */
+const addFriend = async (newFriend: string, userAdding: string) => {
+  const friendsRef = doc(firestore, "users", userAdding);
+
+  await updateDoc(friendsRef, {
+    friends: arrayUnion(newFriend),
+  });
+};
+
+/**
+ * @description removes friend and updates user
+ * @param toBeRemoved
+ * @param userRemoving
+ */
+const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
+  const friendsRef = doc(firestore, "users", userRemoving);
+
+  await updateDoc(friendsRef, {
+    friends: arrayRemove(toBeRemoved),
+  });
+};
+
+/******************************** DELETE *****************************************************/
 
 /**
  * Delete user document from Firestore
@@ -171,89 +250,13 @@ const deleteUserDoc = async (userId: string) => {
   await deleteDoc(doc(firestore, "users", `${userId}`));
 };
 
-/**
- * Gets all users in Firestore 'users' collection
- */
-const getAllUsers = async () => {
-  const querySnapshot = await getDocs(collection(firestore, "users"));
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    return doc.data();
-  });
-};
-
-const addFriend = async (newFriend: string, userAdding: string) => {
-  const friendsRef = doc(firestore, "users", userAdding);
-
-  await updateDoc(friendsRef, {
-    friends: arrayUnion(newFriend),
-  });
-};
-
-const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
-  const friendsRef = doc(firestore, "users", userRemoving);
-
-  await updateDoc(friendsRef, {
-    friends: arrayRemove(toBeRemoved),
-  });
-};
-
-/**
- * @description Returns an array of the user's friends
- * @param friends : string[]
- * @returns : UserInterface[]
- */
-const getFriends = async (friends: string[]) => {
-
-    const friendList: AppUserInterface[] = [];
-
-    const q = query(usersRef, where('uid', 'in', friends));
-    const unsubscribe: any = onSnapshot(q, (querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const friend: AppUserInterface = {
-        uid: data.uid,
-        displayName: data.displayName,
-        email: data.email,
-        bio: data.bio,
-        friends: data.friends,
-        likes: data.likes,
-        interests: data.interests
-      };
-      friendList.push(doc.data().name);
-    });
-    return unsubscribe;
-  });
-  /*
-  const friendList: AppUserInterface[] = [];
-  const q = query(usersRef, where('uid', 'in', friends));
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    const data = doc.data();
-    const friend: AppUserInterface = {
-      uid: data.uid,
-      displayName: data.displayName,
-      email: data.email,
-      bio: data.bio,
-      friends: data.friends,
-      likes: data.likes,
-      interests: data.interests
-    };
-    friendList.push(friend);
-  });
-  return friendList;
-  */
-}
 
 export {
   createUser,
   getUserByUserId,
   getUserByEmail,
-  uidInDb,
   updateProfile,
   deleteUserDoc,
-  getAllUsers,
   addFriend,
   removeFriend,
   getFriends,

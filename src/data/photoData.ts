@@ -50,22 +50,13 @@ import {
 
 /*
 // Firebase cannot get photo urls or display post photos without a path
-// may try to use this function to fix issue as sort of constant variable
 // firebase also needs the path to delete the posts
 const postCloudPath = (uid: string, pid: string, name: string) => {
   return `photos/${uid}/${pid}/${name}`;
 }
 */
 
-/**
- * @description Replaces user profile image
- * @param userId
- * @param file
- */
-const updateProfileImg = async (userId: string, file: File) => {
-  const path = `profile-imgs/${userId}/profile-image`;
-  await uploadImageFile(file, path);
-};
+/******************************** CREATE *****************************************************/
 
 /**
  * @description Uploads image file to firebase storage
@@ -203,6 +194,8 @@ const resizeImage = async (source: File) =>
     resolve(source);
   });
 
+/******************************** RETRIEVE *****************************************************/
+
 /**
  * Get URL for profile image
  * @description Get URL for profile image
@@ -233,52 +226,6 @@ const getPhotoUrl = async (path: string) => {
   return Promise.resolve(url);
 };
 
-/**
- * @description Get Post data from firestore
- * @param postId - postId
- * @param comment - CommentType
- * @returns : post data doc: Promise<FeedPostType | undefined>
- */
-
-const postComment = async (postId: string, comment: CommentType) => {
-  const postRef = doc(firestore, "posts", postId);
-
-  await updateDoc(postRef, {
-    comments: arrayUnion(comment),
-  });
-};
-
-const addUserLikes = async (userId: string, postId: string) => {
-  const postRef = doc(firestore, "users", userId);
-
-  await updateDoc(postRef, {
-    likes: arrayUnion(postId),
-  });
-};
-
-const addPostLikes = async (postId: string, userId: string) => {
-  const postRef = doc(firestore, "posts", postId);
-
-  await updateDoc(postRef, {
-    likes: arrayUnion(userId),
-  });
-};
-
-const removeUserLikes = async (userId: string, postId: string) => {
-  const postRef = doc(firestore, "users", userId);
-
-  await updateDoc(postRef, {
-    likes: arrayRemove(postId),
-  });
-};
-
-const removePostLikes = async (postId: string, userId: string) => {
-  const postRef = doc(firestore, "posts", postId);
-
-  await updateDoc(postRef, {
-    likes: arrayRemove(userId),
-  });
-};
 
 const getOnePost = async (postId: string) => {
   // may have to rethink having userID in path?
@@ -357,6 +304,7 @@ const getLiveUserPostData = async (
  * @param userId : string
  * @returns
  */
+/*
 const getAllPostData = async (userId: string) => {
   const userPosts: FeedPostType[] = [];
   const collectionRef = collection(firestore, "posts");
@@ -389,42 +337,7 @@ const getAllPostData = async (userId: string) => {
   });
   return Promise.resolve(userPosts);
 };
-
-/**
- * @description adds the public url, used to create new post
- * @param docPath
- * @param filePath
- */
-const updatePublicUrl = async (docPath: string, filePath: string) => {
-  try {
-    const fileRef = ref(storage, filePath);
-    const docRef = doc(firestore, docPath);
-    await getDownloadURL(fileRef).then((url) => {
-      // const res = updateDoc(docRef, { imageUrl: url });
-      // return Promise.resolve(res);
-      Promise.resolve(updateDoc(docRef, { imageUrl: url }));
-      // return Promise.resolve(res);
-    });
-  } catch (error) {
-    console.error(
-      "There was an error uploading a file to Cloud Storage:",
-      error
-    );
-  }
-};
-
-/**
- * @description : increments a photo's number of 'Likes'
- * @param likeNum : number, the number of likes a photo has
- * @param pid : string , photo's unique ID
- * @returns new number of likes
- */
-const incrementLikes = async (likeNum: number, pid: string) => {
-  const docRef = doc(firestore, "posts", pid);
-  const res = await updateDoc(docRef, { likes: likeNum + 1 });
-  return Promise.resolve(res);
-};
-
+*/
 /**
  * @description Get all photos of friends, sort by timestamp
  * @param user
@@ -473,6 +386,7 @@ const getPublicFeedData = async () => {
  * @param fieldPathOrderBy {string} Field to sort by
  * @param directionStr {string} Direction to sort by
  */
+
 async function populateFeedPosts(
   userPosts: FeedPostType[],
   fieldPath: string,
@@ -514,6 +428,105 @@ async function populateFeedPosts(
   });
 }
 
+/******************************** UPDATE *****************************************************/
+
+/**
+ * @description Replaces user profile image
+ * @param userId
+ * @param file
+ */
+ const updateProfileImg = async (userId: string, file: File) => {
+  const path = `profile-imgs/${userId}/profile-image`;
+  await uploadImageFile(file, path);
+};
+
+/**
+ * @description Get Post data from firestore
+ * @param postId - postId
+ * @param comment - CommentType
+ * @returns : post data doc: Promise<FeedPostType | undefined>
+ */
+
+ const postComment = async (postId: string, comment: CommentType) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    comments: arrayUnion(comment),
+  });
+};
+
+const addUserLikes = async (userId: string, postId: string) => {
+  const postRef = doc(firestore, "users", userId);
+
+  await updateDoc(postRef, {
+    likes: arrayUnion(postId),
+  });
+};
+
+const addPostLikes = async (postId: string, userId: string) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    likes: arrayUnion(userId),
+  });
+};
+
+const removeUserLikes = async (userId: string, postId: string) => {
+  const postRef = doc(firestore, "users", userId);
+
+  await updateDoc(postRef, {
+    likes: arrayRemove(postId),
+  });
+};
+
+const removePostLikes = async (postId: string, userId: string) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    likes: arrayRemove(userId),
+  });
+};
+
+/**
+ * @description : increments a photo's number of 'Likes'
+ * @param likeNum : number, the number of likes a photo has
+ * @param pid : string , photo's unique ID
+ * @returns new number of likes
+ */
+ const incrementLikes = async (likeNum: number, pid: string) => {
+  const docRef = doc(firestore, "posts", pid);
+  const res = await updateDoc(docRef, { likes: likeNum + 1 });
+  return Promise.resolve(res);
+};
+
+/**
+ * @description adds the public url, used to create new post
+ * @param docPath
+ * @param filePath
+ */
+ const updatePublicUrl = async (docPath: string, filePath: string) => {
+  try {
+    const fileRef = ref(storage, filePath);
+    const docRef = doc(firestore, docPath);
+    await getDownloadURL(fileRef).then((url) => {
+      // const res = updateDoc(docRef, { imageUrl: url });
+      // return Promise.resolve(res);
+      Promise.resolve(updateDoc(docRef, { imageUrl: url }));
+      // return Promise.resolve(res);
+    });
+  } catch (error) {
+    console.error(
+      "There was an error uploading a file to Cloud Storage:",
+      error
+    );
+  }
+};
+
+/**
+ * @description updates username field on all user's posts
+ * @param userId
+ * @param newUsername
+ */
 const updateAllPosts = async (userId: string, newUsername: string) => {
   const postIDs: string[] = [];
   const collectionRef = collection(firestore, "posts");
@@ -537,6 +550,7 @@ const updateAllPosts = async (userId: string, newUsername: string) => {
 };
 
 
+/******************************** DELETE *****************************************************/
 
 /**
  * @description Delete all of user's photo data docs from firebase
@@ -618,10 +632,12 @@ const deletePostByPid = async (pid: string, path: string) => {
     });
 };
 
+
+
 export {
   getLiveUserPostData,
   updateProfileImg,
-  getAllPostData,
+  //getAllPostData,
   getFriendsFeedData,
   getPublicFeedData,
   postComment,

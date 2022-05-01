@@ -15,21 +15,20 @@ import { useCurrentUser } from './useCurrentUser';
 export const useFriends = () => {
 
     const [friends, setFriends] = useState<AppUserInterface[] | []>([]);
-    // let usersPosts: FeedPostType[] = [];
     const user: AppUserInterface = useCurrentUser();
     // const id: string = user.uid;
-    // Load user's photo collection from Firestore db
+
     useEffect(() => {
         async function getFriendList() {
-            let friendList: AppUserInterface[];
+            // let friendList: AppUserInterface[];
             try {
-                friendList = await getFriends(user.friends);
+                await getFriends(user.friends, setFriends);
             }
             catch (e) {
-                friendList = [];
+                //friendList = [];
                 console.log(e);
             }
-            setFriends(friendList);
+            // setFriends(friendList);
         }
         getFriendList();
     }, [user]);

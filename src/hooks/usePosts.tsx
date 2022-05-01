@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
-import { getAllPostData, getPhotoUrl } from '../data/photoData';
-import { FeedPostType } from '../types/appTypes'
-// import { AppUserInterface } from '../types/authentication';
+// import { useState, useEffect } from 'react'
+// import { getAllPostData, getPhotoUrl } from '../data/photoData';
+// import { FeedPostType } from '../types/appTypes'
 
 
 /**
@@ -10,7 +9,7 @@ import { FeedPostType } from '../types/appTypes'
  * @param userId
  * @returns photos: DocumentData
  */
-
+/*
 // Sets as photoData
 export const usePosts = (userId: string) => {
 
@@ -35,4 +34,6 @@ export const usePosts = (userId: string) => {
 
   return { photos };
 }
+*/
 
+export {}
