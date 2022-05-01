@@ -40,9 +40,8 @@ const Profile: React.FC = () => {
 
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
   const currentUser = useCurrentUser();
-  const [isFriends, setIsFriends] = useState(
-    currentUser.friends.indexOf(profile.uid) >= 0
-  );
+  const [isFriends, setIsFriends] = useState(false);
+  console.log(isFriends);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -55,7 +54,8 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     getLiveUserPostData(profile.uid, setPosts);
-  }, [profile.uid]);
+    setIsFriends(currentUser.friends.indexOf(profile.uid) >= 0);
+  }, [profile.uid, currentUser.friends]);
 
   console.log(currentUser.friends);
   console.log(profile.uid);
