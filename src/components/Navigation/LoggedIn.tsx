@@ -1,24 +1,46 @@
-import React from 'react';
-import { ListItem, ListItemText } from '@mui/material';
-import { logout } from '../../data/authFunctions';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { ListItem, ListItemText } from "@mui/material";
+import { logout } from "../../data/authFunctions";
+import { Link } from "react-router-dom";
 
-const LoggedIn = ({ uid }: { uid: string | undefined }) => {
+const LoggedIn = ({ email }: { email: string | null }) => {
   return (
     <>
       <ListItem button component={Link} to="/feed" role="navigation-feed">
         <ListItemText primary="Feed" />
       </ListItem>
-      <ListItem button component={Link} to={`/user/${uid}/profile`} role="navigation-user-profile">
+      <ListItem button component={Link} to="/explore" role="navigation-explore">
+        <ListItemText primary="Explore" />
+      </ListItem>
+      <ListItem
+        button
+        component={Link}
+        to={`/user/${email}`}
+        role="navigation-user-profile"
+      >
         <ListItemText primary="Profile" />
       </ListItem>
-      <ListItem button component={Link} to={`/user/${uid}/settings`} role="navigation-user-settings">
+      <ListItem
+        button
+        component={Link}
+        to={`/user/${email}/friends`}
+        role="navigation-user-friends"
+      >
+        <ListItemText primary="Friends" />
+      </ListItem>
+      <ListItem
+        button
+        component={Link}
+        to={`/user/${email}/settings`}
+        role="navigation-user-settings"
+      >
         <ListItemText primary="Settings" />
       </ListItem>
-      <ListItem button component={Link} to={`/user/${uid}/upload-image`} role="navigation-user-upload-image">
-        <ListItemText primary="Upload Image" />
-      </ListItem>
-      <ListItem button component={Link} to="/" role="navigation-logout"
+      <ListItem
+        button
+        component={Link}
+        to="/"
+        role="navigation-logout"
         onClick={() => {
           logout();
         }}
@@ -26,9 +48,7 @@ const LoggedIn = ({ uid }: { uid: string | undefined }) => {
         <ListItemText primary="Sign Out" />
       </ListItem>
     </>
-  )
-}
+  );
+};
 
-export {
-  LoggedIn
-}
+export { LoggedIn };
