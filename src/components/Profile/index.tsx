@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UploadFab } from "../UploadFab";
-import { getUserByEmail } from "../../data/userData";
+import { addFriend, getUserByEmail, removeFriend } from "../../data/userData";
 import {
   FeedPostInterface,
   FeedPostType,
@@ -18,6 +18,8 @@ import {
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { getLiveUserPostData } from "../../data/photoData";
 import ProfilePost from "./ProfilePost";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 
 const Profile: React.FC = () => {
   type Params = {
@@ -37,6 +39,10 @@ const Profile: React.FC = () => {
   });
 
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
+  const currentUser = useCurrentUser();
+  const [isFriends, setIsFriends] = useState(
+    currentUser.friends.indexOf(profile.uid) >= 0
+  );
 
   useEffect(() => {
     async function fetchProfile() {
@@ -50,6 +56,20 @@ const Profile: React.FC = () => {
   useEffect(() => {
     getLiveUserPostData(profile.uid, setPosts);
   }, [profile.uid]);
+
+  console.log(currentUser.friends);
+  console.log(profile.uid);
+  console.log(currentUser.friends.indexOf(profile.uid));
+
+  const handleAddFriend = () => {
+    addFriend(profile.uid, currentUser.uid);
+    setIsFriends(true);
+  };
+
+  const handleRemoveFriend = () => {
+    removeFriend(profile.uid, currentUser.uid);
+    setIsFriends(false);
+  };
 
   return (
     <Container
@@ -70,9 +90,16 @@ const Profile: React.FC = () => {
         <Grid item xs={12} md={8}>
           <Box display="flex">
             <Typography variant="h4">{profile.displayName}</Typography>
-            <IconButton>
-              <PersonAddIcon sx={{ color: "secondary.main" }} />
-            </IconButton>
+            {profile.uid != currentUser.uid &&
+              (isFriends ? (
+                <IconButton onClick={handleRemoveFriend}>
+                  <PersonRemoveIcon sx={{ color: "secondary.main" }} />
+                </IconButton>
+              ) : (
+                <IconButton onClick={handleAddFriend}>
+                  <PersonAddIcon sx={{ color: "secondary.main" }} />
+                </IconButton>
+              ))}
           </Box>
           <Typography variant="h6">
             {posts.length} Posts | {profile.friends.length} Friends{" "}
