@@ -86,7 +86,6 @@ const fabPostCallback = async (
     const uid = user.uid;
     const pid = uuidv4() + "." + currentFile.name.split(".").pop();
     console.log(currentFile.name.split(".").pop());
-    console.log(pid);
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
     const firestoreRef = doc(firestore, firestorePath);
@@ -179,6 +178,7 @@ const createNewPost = async (
     }
   }
 };
+
 /**
  * @description Save image file (.png, .jpg) to Cloud Storage path
  * @param file
@@ -195,7 +195,6 @@ const uploadImageFile = async (file: File, path: string) => {
   const storageRef = ref(storage, path);
   // const uploadTask = uploadBytesResumable(storageRef, file, metadata);
   const imgForUpload: File = await resizeImage(file);
-  console.log(imgForUpload);
   const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
