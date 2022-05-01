@@ -10,6 +10,7 @@ import {
   arrayUnion,
   arrayRemove,
   updateDoc,
+  onSnapshot
 } from "firebase/firestore";
 import { query, where } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
@@ -19,7 +20,8 @@ import {
   AppUserInterface,
 } from "../types/authentication";
 import { ProfileInterface, ProfileUpdateInterface } from "../types/appTypes";
-import { updateName } from "./authFunctions";
+import { updateName, changeEmail } from "./authFunctions";
+import { updateAllPosts } from '../data/photoData'
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -71,7 +73,7 @@ const createUser = async (
 const uidInDb = async (uid: string) => {
   const userRef = doc(firestore, "users", uid);
   const docSnap = await getDoc(userRef);
-  const inDb =  docSnap.exists();
+  const inDb = docSnap.exists();
   return await Promise.resolve(inDb);
 }
 
@@ -135,26 +137,30 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
-// update functions must incorporate db and auth functions
+//update functions must incorporate db and auth functions
 /**
  * @description Update user profile information not in auth.currentUser
  * @param userId: string
  * @param profileData: ProfileInterface
  */
-const updateProfile = async (
-  userId: string,
-  profileData: ProfileUpdateInterface
-) => {
+const updateProfile = async (userId: string, profileData: ProfileUpdateInterface) => {
   // const docSnap = await getDoc(docRef);
-  console.log(`updating profile ${profileData.displayName}`);
+  console.log(`updating profile ${profileData.displayName}`)
   const docRef = doc(firestore, "users", `${userId}`);
-  const name = profileData.displayName;
+  const displayName = profileData.displayName;
+  const email = profileData.email;
   const bio = profileData.bio;
-  if (name !== "") {
-    updateName(name);
+  if (displayName !== '' || displayName !== null) {
+    updateName(displayName);
   }
-  await updateDoc(docRef, { displayName: name, bio: bio });
+  if (email !== '' || email !== null) {
+    changeEmail(email);
+    await updateAllPosts(userId, email);
+  }
+  await updateDoc(docRef, { displayName: displayName, email: email, bio: bio });
+  // return docRef.update(user);
 };
+
 
 /**
  * Delete user document from Firestore
@@ -197,8 +203,28 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
  * @param friends : string[]
  * @returns : UserInterface[]
  */
- const getFriends = async (friends: string[]) => {
+const getFriends = async (friends: string[]) => {
 
+    const friendList: AppUserInterface[] = [];
+
+    const q = query(usersRef, where('uid', 'in', friends));
+    const unsubscribe: any = onSnapshot(q, (querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const friend: AppUserInterface = {
+        uid: data.uid,
+        displayName: data.displayName,
+        email: data.email,
+        bio: data.bio,
+        friends: data.friends,
+        likes: data.likes,
+        interests: data.interests
+      };
+      friendList.push(doc.data().name);
+    });
+    return unsubscribe;
+  });
+  /*
   const friendList: AppUserInterface[] = [];
   const q = query(usersRef, where('uid', 'in', friends));
   const querySnapshot = await getDocs(q);
@@ -217,7 +243,8 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
     friendList.push(friend);
   });
   return friendList;
- }
+  */
+}
 
 export {
   createUser,
