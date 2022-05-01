@@ -11,6 +11,7 @@ import { AppUserInterface } from "../types/authentication";
  *
  ******************************************************/
 
+
 // get current user by id, if there is a logged in user
 export const useCurrentUser = () => {
   // const userId = useContext(AuthContext)?.uid || "";
