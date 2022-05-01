@@ -51,8 +51,8 @@ import {
 /*
 // Firebase cannot get photo urls or display post photos without a path
 // firebase also needs the path to delete the posts
-const postCloudPath = (uid: string, pid: string, name: string) => {
-  return `photos/${uid}/${pid}/${name}`;
+const profileUrl = (uid: string, pid: string, name: string) => {
+  return `photos/${uid}/${pid}`;
 }
 */
 
@@ -168,8 +168,10 @@ const uploadImageFile = async (file: File, path: string) => {
   );
 };
 
+/******************************** MIDDLEWARE for fabPostCallback ******************************************/
+
 /**
- * Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
+ * @description Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
  * @param source Source file object
  * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
  */
@@ -299,45 +301,6 @@ const getLiveUserPostData = async (
   return unsubscribe;
 };
 
-/**
- * @description Get all of user's photo data docs from firebase
- * @param userId : string
- * @returns
- */
-/*
-const getAllPostData = async (userId: string) => {
-  const userPosts: FeedPostType[] = [];
-  const collectionRef = collection(firestore, "posts");
-  // Get all posts where uid == userId, in order by time posted
-  const q = query(
-    collectionRef,
-    where("uid", "==", userId),
-    orderBy("timestamp", "desc")
-  );
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    const data = doc.data();
-    const imgData: FeedPostType = {
-      pid: data.imgId, // make both ids user id for profile?
-      uid: data.userId,
-      username: data.userId,
-      postText: data.caption || "",
-      // numberLikes: data.numberLikes,
-      comments: data.comments,
-      likes: data.likes,
-      isPrivate: data.isPrivate,
-      classification: data.classification,
-      // numberComments: data.comments,
-      path: data.path,
-      timestamp: data.timestamp,
-      imageUrl: data.imageUrl,
-    };
-    userPosts.push(imgData);
-  });
-  return Promise.resolve(userPosts);
-};
-*/
 /**
  * @description Get all photos of friends, sort by timestamp
  * @param user
@@ -633,25 +596,23 @@ const deletePostByPid = async (pid: string, path: string) => {
 };
 
 
-
 export {
+  fabPostCallback,
   getLiveUserPostData,
   updateProfileImg,
-  //getAllPostData,
-  getFriendsFeedData,
-  getPublicFeedData,
-  postComment,
   getOnePost,
   getProfileUrl,
   getPhotoUrl,
+  getFriendsFeedData,
+  getPublicFeedData,
+  postComment,
   incrementLikes,
-  deleteAllPosts,
-  deletePostByPid,
-  deleteProfileImg,
-  fabPostCallback,
   addUserLikes,
   removeUserLikes,
   addPostLikes,
   removePostLikes,
-  updateAllPosts
+  updateAllPosts,
+  deleteAllPosts,
+  deletePostByPid,
+  deleteProfileImg,
 };
