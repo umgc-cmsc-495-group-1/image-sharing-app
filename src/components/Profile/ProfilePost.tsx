@@ -2,6 +2,8 @@ import React from "react";
 import { FeedPostType } from "../../types/appTypes";
 import { Box, Card, Grid } from "@mui/material";
 import { Link } from "@mui/icons-material";
+import FriendButton from "../FriendButton";
+import PrivateButton from "../PrivateButton";
 interface Props {
   item: FeedPostType;
 }
@@ -27,6 +29,8 @@ export default function ProfilePost(props: Props) {
             backgroundSize: "cover",
           }}
         />
+        <FriendButton uid={item.uid} />
+        <PrivateButton pid={item.pid} />
       </Card>
     </Grid>
   );
