@@ -3,7 +3,6 @@ import { createUser, deleteUserDoc } from "./userData";
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   UserCredential,
@@ -33,9 +32,16 @@ const PASSWORD_REGEX =
  *
  ****************************************************************/
 
+/******************************** MIDDLEWARE *****************************************************/
+
 const checkEmptyValues = (user: UserInterface): boolean => {
   return user.username === "" || user.email === "" || user.password === "";
 };
+
+
+
+/******************************** CREATE / REGISTER  *****************************************************/
+
 
 /**
  * @description Registers user and creates a new user in firestore
@@ -84,83 +90,11 @@ const signup = async (user: UserInterface) => {
 };
 
 /**
- * @description Logout User
- * @returns
- */
-const logout = async () => {
-  return await auth.signOut();
-};
-
-/**
- * Login user with email and password
- * @param email - user email
- * @param password - user password
- * @returns {Promise<UserCredential>}
- */
-const login = async (email: string, password: string) => {
-  return await signInWithEmailAndPassword(auth, email, password)
-    .then((result) => {
-      return Promise.resolve(result);
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    });
-};
-
-/**
- * Google Redirect Sign Up / Sign In (needs work if to be used)
- * requires a new sign-in form ?
- */
-// TODO: Google signup - creates account by redirecting to signup
-const signInGoogleRedirect = async () => {
-  let user: GoogleUserType;
-  let addedUser: UserCredential["user"];
-
-  getRedirectResult(auth)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access Google APIs.
-      if (result) {
-        // const credential = GoogleAuthProvider.credentialFromResult(result);
-        // const token = credential?.accessToken;
-
-        // The signed-in user info.
-        addedUser = result.user;
-        if (!addedUser) {
-          return addedUser;
-        }
-        user = {
-          displayName: addedUser.displayName || "",
-          email: addedUser.email || "",
-        };
-        createUser(addedUser, user);
-        // Start a sign-in process for an unauthenticated user.
-
-        // third possible parameter is popup redirect resolver
-        // signInWithRedirect(auth, credential);
-        return Promise.resolve(addedUser);
-      } else {
-        return Promise.reject(addedUser);
-      }
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`);
-    });
-};
-
-/**
  *  @description Google Popup Sign Up / Sign In
  *  Function should check to see if email is entered in
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-// TODO: add Google sign up option - this is a popup option
 const signInGooglePopup = async () => {
   let user: GoogleUserType;
   let addedUser: UserCredential["user"];
@@ -200,6 +134,38 @@ const signInGooglePopup = async () => {
       console.log(`email: ${email}`);
     });
 };
+
+/******************************** LOG IN *****************************************************/
+
+/**
+ * Login user with email and password
+ * @param email - user email
+ * @param password - user password
+ * @returns {Promise<UserCredential>}
+ */
+ const login = async (email: string, password: string) => {
+  return await signInWithEmailAndPassword(auth, email, password)
+    .then((result) => {
+      return Promise.resolve(result);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+};
+
+/******************************** LOG OUT *****************************************************/
+
+/**
+ * @description Logout User
+ * @returns
+ */
+const logout = async () => {
+  return await auth.signOut();
+};
+
+
+
+/******************************** UPDATE firebase.User ***********************************************/
 
 /**
  *  @descriptionReset Email Address For Auth User
@@ -274,31 +240,12 @@ const passwordResetEmail = async () => {
         console.log("email not sent");
       });
 }
-// TODO: Re-authenticate user this should be used for password
-/**
- * @description Re-authorizes user before
- * changes or closing accounts
- */
-const reAuth = async () => {
-  // const user = auth.currentUser
-  window.location.href = "http://localhost:3000/login";
-  // TODO: need to create a valid pop up window
-  // TODO: for now redirecting to login page
-  // if (user && credential) {
-  // credential: AuthCredential
-  //   reauthenticateWithCredential(user, credential).then(() => {
-  //     // User re-authenticated.
-  //   }).catch((error) => {
-  //     // An error occurred
-  //     console.log(error)
-  //   })
-  // }
-};
+
+/******************************** DELETE ACCOUNT *****************************************************/
 
 /**
- * @description Deletes user's auth and data from databases
- * including profile photo and all posts
- * so any photos will be removed
+ * @description Deletes All user data from all databases
+ * including, firebase.User, user, profile photo, and all post photos and data
  */
 const deleteAccount = async () => {
   const user = auth.currentUser;
@@ -324,12 +271,10 @@ export {
   signup,
   logout,
   login,
-  signInGoogleRedirect,
   signInGooglePopup,
   changeEmail,
   updateName,
   passwordResetEmail,
-  reAuth,
   deleteAccount
 };
 
