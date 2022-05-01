@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Box display="flex">
-            <Typography variant="h4">{profile.email}</Typography>
+            <Typography variant="h4">{profile.displayName}</Typography>
             <IconButton>
               <PersonAddIcon sx={{ color: "secondary.main" }} />
             </IconButton>
