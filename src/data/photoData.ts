@@ -108,7 +108,6 @@ const fabPostCallback = async (
   }
 };
 
-
 /**
  * @description Save image file (.png, .jpg) to Cloud Storage path
  * @param file
@@ -239,6 +238,33 @@ const getPhotoUrl = async (path: string) => {
   return Promise.resolve(url);
 };
 
+/**
+ * @description Get live post by id
+ * @param postId : string
+ * @param callback : function
+ * @returns unsubscribe function
+ */
+const getLivePost = async (
+  postId: string,
+  // eslint-disable-next-line no-unused-vars
+  callback: (_post: FeedPostType) => void
+) => {
+  const unsubscribe = onSnapshot(doc(firestore, "posts", postId), (doc) => {
+    const gotPost: FeedPostType = {
+      uid: doc.data()?.uid,
+      username: doc.data()?.username,
+      pid: doc.data()?.pid,
+      postText: doc.data()?.postText,
+      likes: doc.data()?.likes,
+      isPrivate: doc.data()?.isPrivate,
+      comments: doc.data()?.comments,
+      classification: doc.data()?.classification,
+      timestamp: doc.data()?.timestamp,
+    };
+    callback(gotPost);
+  });
+  return unsubscribe;
+};
 
 const getOnePost = async (postId: string) => {
   // may have to rethink having userID in path?
@@ -409,7 +435,7 @@ async function populateFeedPosts(
  * @param userId
  * @param file
  */
- const updateProfileImg = async (userId: string, file: File) => {
+const updateProfileImg = async (userId: string, file: File) => {
   const path = `profile-imgs/${userId}/profile-image`;
   await uploadImageFile(file, path);
 };
@@ -421,11 +447,18 @@ async function populateFeedPosts(
  * @returns : post data doc: Promise<FeedPostType | undefined>
  */
 
- const postComment = async (postId: string, comment: CommentType) => {
+const postComment = async (postId: string, comment: CommentType) => {
   const postRef = doc(firestore, "posts", postId);
 
   await updateDoc(postRef, {
     comments: arrayUnion(comment),
+  });
+};
+
+const updateIsPrivate = async (postId: string, isPrivate: boolean) => {
+  const postRef = doc(firestore, "posts", postId);
+  await updateDoc(postRef, {
+    isPrivate: isPrivate,
   });
 };
 
@@ -467,7 +500,7 @@ const removePostLikes = async (postId: string, userId: string) => {
  * @param pid : string , photo's unique ID
  * @returns new number of likes
  */
- const incrementLikes = async (likeNum: number, pid: string) => {
+const incrementLikes = async (likeNum: number, pid: string) => {
   const docRef = doc(firestore, "posts", pid);
   const res = await updateDoc(docRef, { likes: likeNum + 1 });
   return Promise.resolve(res);
@@ -478,7 +511,7 @@ const removePostLikes = async (postId: string, userId: string) => {
  * @param docPath
  * @param filePath
  */
- const updatePublicUrl = async (docPath: string, filePath: string) => {
+const updatePublicUrl = async (docPath: string, filePath: string) => {
   try {
     const fileRef = ref(storage, filePath);
     const docRef = doc(firestore, docPath);
@@ -515,14 +548,12 @@ const updateAllPosts = async (userId: string, newUsername: string) => {
     // doc.data() is never undefined for query doc snapshots
     const data = doc.data();
     postIDs.push(data.pid);
-
   });
   postIDs.forEach(async (pid) => {
     const docRef = doc(firestore, "posts", pid);
-    await updateDoc(docRef, {username: newUsername});
+    await updateDoc(docRef, { username: newUsername });
   });
 };
-
 
 /******************************** DELETE *****************************************************/
 
@@ -606,11 +637,11 @@ const deletePostByPid = async (pid: string, path: string) => {
     });
 };
 
-
 export {
   fabPostCallback,
   getLiveUserPostData,
   updateProfileImg,
+  getLivePost,
   getOnePost,
   getProfileUrl,
   getPhotoUrl,
@@ -623,6 +654,7 @@ export {
   addPostLikes,
   removePostLikes,
   updateAllPosts,
+  updateIsPrivate,
   deleteAllPosts,
   deletePostByPid,
   deleteProfileImg,
