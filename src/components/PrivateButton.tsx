@@ -45,7 +45,10 @@ export default function PrivateButton(props: Props) {
   };
 
   useEffect(() => {
-    getLivePost(pid, setPost);
+    const unsubscribe = getLivePost(pid, setPost);
+    return () => {
+      unsubscribe;
+    };
   }, [pid]);
 
   return (
