@@ -241,12 +241,11 @@ const passwordResetEmail = async () => {
       });
 }
 
-/******************************** DELETE *****************************************************/
+/******************************** DELETE ACCOUNT *****************************************************/
 
 /**
- * @description Deletes user's auth and data from databases
- * including profile photo and all posts
- * so any photos will be removed
+ * @description Deletes All user data from all databases
+ * including, firebase.User, user, profile photo, and all post photos and data
  */
 const deleteAccount = async () => {
   const user = auth.currentUser;
