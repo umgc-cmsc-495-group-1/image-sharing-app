@@ -1,9 +1,9 @@
 import {
   ref,
   getDownloadURL,
-  uploadBytesResumable,
   StorageReference,
   deleteObject,
+  uploadBytes,
 } from "firebase/storage";
 import { storage, auth, firestore } from "../firebaseSetup";
 import { v4 as uuidv4 } from "uuid";
@@ -84,7 +84,9 @@ const fabPostCallback = async (
 ) => {
   if (user !== null && currentFile !== undefined) {
     const uid = user.uid;
-    const pid = uuidv4();
+    const pid = uuidv4() + "." + currentFile.name.split(".").pop();
+    console.log(currentFile.name.split(".").pop());
+    console.log(pid);
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
     const firestoreRef = doc(firestore, firestorePath);
@@ -177,12 +179,12 @@ const createNewPost = async (
     }
   }
 };
-
 /**
  * @description Save image file (.png, .jpg) to Cloud Storage path
  * @param file
  * @param path
  */
+/*
 const uploadImageFile = async (file: File, path: string) => {
   // example storage file path: const path = `users/${userId}/profile-img`;
   // TODO: make this match photo extension? does this allow png upload?
@@ -193,6 +195,7 @@ const uploadImageFile = async (file: File, path: string) => {
   const storageRef = ref(storage, path);
   // const uploadTask = uploadBytesResumable(storageRef, file, metadata);
   const imgForUpload: File = await resizeImage(file);
+  console.log(imgForUpload);
   const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
@@ -236,6 +239,15 @@ const uploadImageFile = async (file: File, path: string) => {
       });
     }
   );
+};
+*/
+const uploadImageFile = async (file: File, path: string) => {
+  const resizedImage = await resizeImage(file);
+  const storageRef = ref(storage, path);
+  uploadBytes(storageRef, resizedImage).then((snapshot) => {
+    console.log(snapshot);
+    console.log("Uploaded file!");
+  });
 };
 
 /**
