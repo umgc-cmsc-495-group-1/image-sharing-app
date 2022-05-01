@@ -9,7 +9,7 @@ import {
   arrayUnion,
   arrayRemove,
   updateDoc,
-  onSnapshot
+  onSnapshot,
 } from "firebase/firestore";
 import { query, where } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
@@ -20,7 +20,7 @@ import {
 } from "../types/authentication";
 import { ProfileInterface, ProfileUpdateInterface } from "../types/appTypes";
 import { updateName, changeEmail } from "./authFunctions";
-import { updateAllPosts } from '../data/photoData'
+import { updateAllPosts } from "../data/photoData";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -37,7 +37,6 @@ import { User } from "@firebase/auth";
  * @description Gets reference to the User collection
  */
 const usersRef = collection(firestore, "users");
-
 
 /******************************** CREATE *****************************************************/
 /**
@@ -129,19 +128,41 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
+/**
+ * @description Live updating friends list
+ * @param userId
+ * @return unsubcribe callback
+ */
+const getLiveFriends = async (
+  userId: string,
+  // eslint-disable-next-line no-unused-vars
+  callback: (_friendList: string[]) => void
+) => {
+  const collectionRef = collection(firestore, "users");
+  const q = query(collectionRef, where("uid", "==", userId));
+  const unsubcribe = onSnapshot(q, (querySnapshot) => {
+    const friendList: string[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      friendList.push(...data.friends);
+    });
+    callback(friendList);
+  });
+  return unsubcribe;
+};
 
 /**
  * @description Returns an array of the user's friends
  * @param friends : string[]
  * @returns : UserInterface[]
  */
- const getFriends = async (
+const getFriends = async (
   friends: string[],
   // eslint-disable-next-line no-unused-vars
   callback: (_friendList: AppUserInterface[]) => void
 ) => {
   const usersRef = collection(firestore, "users");
-  const q = query(usersRef, where('uid', 'in', friends));
+  const q = query(usersRef, where("uid", "in", friends));
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const friendList: AppUserInterface[] = [];
     querySnapshot.forEach((doc) => {
@@ -153,16 +174,16 @@ const getUserByEmail = async (email: string) => {
         bio: data.bio,
         friends: data.friends,
         likes: data.likes,
-        interests: data.interests
+        interests: data.interests,
       };
       friendList.push(friend);
     });
     callback(friendList);
   });
   return unsubscribe;
-}
+};
 
-  /*
+/*
   //saving until sure new code works consisitently
 
   const friendList: AppUserInterface[] = [];
@@ -185,9 +206,7 @@ const getUserByEmail = async (email: string) => {
   return friendList;
   */
 
-
 /******************************** UPDATE *****************************************************/
-
 
 //update functions must incorporate db and auth functions
 /**
@@ -195,17 +214,20 @@ const getUserByEmail = async (email: string) => {
  * @param userId: string
  * @param profileData: ProfileInterface
  */
-const updateProfile = async (userId: string, profileData: ProfileUpdateInterface) => {
+const updateProfile = async (
+  userId: string,
+  profileData: ProfileUpdateInterface
+) => {
   // const docSnap = await getDoc(docRef);
-  console.log(`updating profile ${profileData.displayName}`)
+  console.log(`updating profile ${profileData.displayName}`);
   const docRef = doc(firestore, "users", `${userId}`);
   const displayName = profileData.displayName;
   const email = profileData.email;
   const bio = profileData.bio;
-  if (displayName !== '' || displayName !== null) {
+  if (displayName !== "" || displayName !== null) {
     updateName(displayName);
   }
-  if (email !== '' || email !== null) {
+  if (email !== "" || email !== null) {
     changeEmail(email);
     await updateAllPosts(userId, email);
   }
@@ -250,9 +272,9 @@ const deleteUserDoc = async (userId: string) => {
   await deleteDoc(doc(firestore, "users", `${userId}`));
 };
 
-
 export {
   createUser,
+  getLiveFriends,
   getUserByUserId,
   getUserByEmail,
   updateProfile,

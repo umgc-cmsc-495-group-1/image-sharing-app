@@ -40,6 +40,7 @@ import {
 } from "../../data/photoData";
 import { getUserByUserId } from "../../data/userData";
 import { AppUserInterface } from "../../types/authentication";
+import FriendButton from "../FriendButton";
 
 const LikeIcon: React.FC<LikeIconProps> = ({ isLiked }): JSX.Element => {
   let Icon: JSX.Element = (
@@ -233,6 +234,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
           <CommentIcon />
         </IconButton>
         <Typography>{post.comments.length}</Typography>
+        <FriendButton uid={uid} />
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

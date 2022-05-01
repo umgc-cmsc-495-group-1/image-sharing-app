@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UploadFab } from "../UploadFab";
-import { addFriend, getUserByEmail, removeFriend } from "../../data/userData";
+import { getUserByEmail } from "../../data/userData";
 import {
   FeedPostInterface,
   FeedPostType,
   ProfileInterface,
 } from "../../types/appTypes";
-import {
-  Box,
-  Card,
-  Container,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { Box, Card, Container, Grid, Typography } from "@mui/material";
 import { getLiveUserPostData } from "../../data/photoData";
 import ProfilePost from "./ProfilePost";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import FriendButton from "../FriendButton";
 
 const Profile: React.FC = () => {
   type Params = {
@@ -61,16 +53,6 @@ const Profile: React.FC = () => {
   console.log(profile.uid);
   console.log(currentUser.friends.indexOf(profile.uid));
 
-  const handleAddFriend = () => {
-    addFriend(profile.uid, currentUser.uid);
-    setIsFriends(true);
-  };
-
-  const handleRemoveFriend = () => {
-    removeFriend(profile.uid, currentUser.uid);
-    setIsFriends(false);
-  };
-
   return (
     <Container
       component="main"
@@ -90,16 +72,7 @@ const Profile: React.FC = () => {
         <Grid item xs={12} md={8}>
           <Box display="flex">
             <Typography variant="h4">{profile.displayName}</Typography>
-            {profile.uid != currentUser.uid &&
-              (isFriends ? (
-                <IconButton onClick={handleRemoveFriend}>
-                  <PersonRemoveIcon sx={{ color: "secondary.main" }} />
-                </IconButton>
-              ) : (
-                <IconButton onClick={handleAddFriend}>
-                  <PersonAddIcon sx={{ color: "secondary.main" }} />
-                </IconButton>
-              ))}
+            <FriendButton uid={profile.uid} />
           </Box>
           <Typography variant="h6">
             {posts.length} Posts | {profile.friends.length} Friends{" "}
