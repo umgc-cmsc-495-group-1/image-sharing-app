@@ -35,7 +35,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
   // const user: User | null = useContext(AuthContext);
-  const { user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const imageRef = useRef<any>();
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     setDescription(event.target.value);
@@ -106,6 +106,12 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
         user,
         fileToUpload
       );
+      handleClose();
+      setFileToUpload(undefined);
+      setDescription("");
+      setIsPrivate(false);
+      setErrors([]);
+      setImageUrl("");
     } else {
       setErrors(["Error uploading image"]);
     }
