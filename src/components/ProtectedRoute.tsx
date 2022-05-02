@@ -1,45 +1,28 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-// import { Backdrop, CircularProgress } from "@mui/material";
 import HootLogin from "./HootLogin";
+import { LoadingBackdrop } from "../components/UploadFab/LoadingBackdrop";
 
 interface Props {
   component: React.ComponentType;
-  fallback?: React.ComponentType;
+  // fallback?: React.ComponentType;
   path?: string;
 }
 
-// const LoadingBackdrop = () => {
-//   const [open, setOpen] = useState(true);
-//   const handleClose = () => {
-//     setOpen(!open)
-//   }
-//   return (
-//     <>
-//       <Backdrop
-//         sx={{
-//           color: '#fff',
-//           zIndex: (theme) => theme.zIndex.drawer + 1
-//         }}
-//         open={open}
-//         onClick={handleClose}
-//       >
-//         <CircularProgress color="inherit" />
-//       </Backdrop>
-//     </>
-
-//   )
-// }
-
 export const ProtectedRoute: React.FC<Props> = ({
-  component: RouteComponent,
-  fallback: FallbackComponent,
+  component: RouteComponent
 }) => {
-  const authValue = useContext(AuthContext);
+  const {isLoading, user} = useContext(AuthContext);
+  // if (!FallbackComponent) FallbackComponent = HootLogin;
 
-  if (!FallbackComponent) FallbackComponent = HootLogin;
+  if (user) {
+    if (isLoading) {
+      return <LoadingBackdrop />;
+    } else {
+      return <RouteComponent />;
+    }
+  }
 
-  if (authValue) return <RouteComponent />;
+  return <HootLogin />;
 
-  return <FallbackComponent />;
 };

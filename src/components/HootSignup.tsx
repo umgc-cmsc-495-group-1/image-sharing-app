@@ -55,7 +55,6 @@ export default function HootSignup() {
             if (res.status === 201) {
               // TODO: redirect to the profile page after adding stepper fro creating account
               // navigate('/profile');
-              console.log(res.user);
             }
           }
         })
@@ -68,7 +67,7 @@ export default function HootSignup() {
           }
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -78,7 +77,7 @@ export default function HootSignup() {
         navigate("/auth-loading");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

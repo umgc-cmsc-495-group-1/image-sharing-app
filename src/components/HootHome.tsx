@@ -8,6 +8,7 @@ const headerStyle: React.CSSProperties = {
 }
 
 export default function HootHome() {
+
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <HootHero />

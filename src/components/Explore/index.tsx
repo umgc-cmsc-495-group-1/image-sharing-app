@@ -1,12 +1,12 @@
 import React from "react";
-import { Box } from "@mui/material";
-import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
-import { useFeed } from "../../hooks/useFeed";
-import { Post } from "../Post";
+import { Box } from "@mui/material";
+import { useExplore } from "../../hooks/useExplore";
+import { FeedPostType } from "../../types/appTypes";
+import Post from "../Post";
 
-const Feed: React.FC = (): JSX.Element => {
-  const feed = useFeed();
+const Explore = () => {
+  const explore = useExplore();
   return (
     <Box
       sx={{
@@ -17,7 +17,7 @@ const Feed: React.FC = (): JSX.Element => {
       }}
     >
       <Box maxWidth="md">
-        {feed.map((item: FeedPostType) => (
+        {explore.map((item: FeedPostType) => (
           <Post key={item.pid} pid={item.pid} />
         ))}
       </Box>
@@ -28,4 +28,4 @@ const Feed: React.FC = (): JSX.Element => {
   );
 };
 
-export default Feed;
+export { Explore };

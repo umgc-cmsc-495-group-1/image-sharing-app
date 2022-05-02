@@ -64,4 +64,4 @@ const HootUserSettings: React.FC = () => {
   );
 }
 
-export default HootUserSettings;
+export default userSettings;

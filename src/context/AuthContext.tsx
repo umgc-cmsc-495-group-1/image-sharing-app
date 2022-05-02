@@ -1,4 +1,12 @@
 import React from "react";
 import { User } from "firebase/auth";
 
-export const AuthContext = React.createContext<User | null>(null);
+export type AuthProviderProps = {
+  user: User | null;
+  isLoading: boolean | true;
+}
+
+export const AuthContext = React.createContext<AuthProviderProps>({
+  user: null,
+  isLoading: true
+});
