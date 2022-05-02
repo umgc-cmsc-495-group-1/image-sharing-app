@@ -1,56 +1,49 @@
-import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { auth } from '../../firebaseSetup';
-import { Box, Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
-import { getUserByUserId } from '../../data/userData';
+import { Avatar, Link, List, ListItem, ListItemText } from '@mui/material';
+import { AppUserInterface } from '../../types/authentication';
+import FriendButton from '../FriendButton';
 
-export default function FriendsList() {
-  console.log('FriendsList happened')
-  const user = auth.currentUser ? auth.currentUser.uid : 'no user'
-  console.log(user)
-  console.log(userEvent)
-  const friendArray: string[] = []
+interface FriendsListInterface {
+  friends: AppUserInterface[] | [];
+}
 
-  if (auth.currentUser !== null) {
-    getUserByUserId(auth.currentUser.uid).then(user => {
-      const friends = user?.friends
-      if (friends !== undefined) {
-        for (const frd of friends) {
-          friendArray.push(frd)
-        }
-      }
-    });
+const FriendsList: React.FC<FriendsListInterface> = (
+  { friends }
+) => {
+
+  const textStyle = {
+    width: 'fit-content',
+    padding: 40,
+  }
+
+  const friendListItemStyle = {
+    border: '2px solid black',
+    borderRadius: 5,
+    margin: 10,
+    height: 60,
   }
 
   return (
-    <Box>
-      <h2>Friends</h2>
-      <List>
-        {friendArray.map((frd) => (
-          /* const user = getUserByUserId(uid).then(user => {
-          return user
-          }); */
-          // TODO: set img to user's image
-          <ListItem key={frd}>
-            <ListItemAvatar>
-              src={"../assets/logo/png/simple-72x72.png"}
-            </ListItemAvatar>
-            <ListItemText primary={frd} />
-            <ListItemButton>Remove</ListItemButton>
+    <List>
+      {friends.map((frd) => (
+        <>
+          <ListItem key={frd.displayName} style={friendListItemStyle}>
+            <ListItem style={{ width: 'fit-content' }}>
+              <Link style={{ textDecoration: 'none' }} href={"/user/" + frd.email}>
+                <Avatar sx={{ bgcolor: "primary.main" }}>
+                  {frd.displayName.charAt(0)}
+                </Avatar>
+              </Link>
+            </ListItem>
+            <ListItemText style={textStyle} primary={frd.displayName} />
+            <ListItem style={{ width: 'fit-content' }}>
+              <FriendButton uid={frd.uid} />
+            </ListItem>
           </ListItem>
-        ))}
-        <ListItem>
-          <Link href="/">
-            <ListItemAvatar>
-              <img src="../assets/logo/png/simple-72x72.png" />
-            </ListItemAvatar>
-          </Link>
-          <ListItemText primary="Friend name" />
-          <ListItemButton onClick={() => {
-            console.log("Delete response: ", confirm("Are you sure?"));
-          }}>Remove</ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
+        </>
+      ))}
+    </List>
   );
 }
+
+export default FriendsList
