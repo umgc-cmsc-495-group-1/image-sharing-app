@@ -35,15 +35,15 @@ export default function App() {
         },
         {
           path: "/candy-mountain",
-          element: <ProtectedRoute component={EasterEgg} path="/candy-mountain"/>,
+          element: <ProtectedRoute component={EasterEgg} />,
         },
         {
           path: "/feed",
-          element: <ProtectedRoute component={Feed} path="/feed"/>,
+          element: <ProtectedRoute component={Feed} />,
         },
         {
           path: "/explore",
-          element: <ProtectedRoute component={Explore} path="/explore" />,
+          element: <ProtectedRoute component={Explore} />,
         },
         {
           path: "/user",
@@ -53,15 +53,15 @@ export default function App() {
               children: [
                 {
                   index: true,
-                  element: <ProtectedRoute component={Profile} path="/user"/>,
+                  element: <ProtectedRoute component={Profile} />,
                 },
                 {
                   path: "settings",
-                  element: <ProtectedRoute component={HootUserSettings} path="/user/settings"/>,
+                  element: <ProtectedRoute component={HootUserSettings} />,
                 },
                 {
                   path: "friends",
-                  element: <ProtectedRoute component={Friends} path="/user/friends"/>,
+                  element: <ProtectedRoute component={Friends} />,
                 },
               ],
             },
@@ -107,20 +107,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-
-//         <Routes>
-//           <Route path="/" element={<Navigation />} >
-//             <Route element={<HootHome />}>
-//               <Route path="login" element={<HootLogin />} />
-//               <Route path="signup" element={<HootSignup />} />
-//               <Route path="candy-mountain" element={<EasterEgg />} />
-//               <Route path="feed" element={<ProtectedRouteRewrite {...defaultProtectedRouteProps} outlet={<Feed />} />} />
-//                 {/*<Route path="explore" element={<ProtectedRoute component={Explore} path="/explore" />} />*/}
-//                 {/*<Route path="user" element={<ProtectedRoute component={Profile} path="/user" />}>*/}
-//                 {/*  <Route path="settings" element={<ProtectedRoute component={HootUserSettings} path="/user/settings" />} />*/}
-//                 {/*  <Route path="friends" element={<ProtectedRoute component={Friends} path="/user/friends" />} />*/}
-//                 {/*</Route>*/}
-//               <Route path="*" element={<Hoot404 />} />
-//             </Route>
-//           </Route>
-//         </Routes>

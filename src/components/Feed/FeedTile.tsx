@@ -22,6 +22,7 @@ import {
   addUserLikes, removeUserLikes,
   addPostLikes, removePostLikes
 } from "../../data/photoData";
+import {getUserByUserId} from "../../data/userData";
 
 const LikeIcon: React.FC<LikeIconProps> = ({
   isLiked
@@ -90,6 +91,12 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   const [expanded, setExpanded] = useState(false);
   const [userComment, setUserComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean>(currentLikes.includes(user.uid));
+  const [currentAvatar, setCurrentAvatar] = useState<string>("");
+
+  (async () => {
+    const user = await getUserByUserId(uid);
+    setCurrentAvatar(user.avatarImage);
+  })()
 
   async function determineIfLiked() {
     // check if the user has liked anything
@@ -159,7 +166,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
       }}
     >
       <CardHeader
-        avatar={<Avatar sx={{ bgcolor: "primary.main" }}>?</Avatar>}
+        avatar={<Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>}
         title={post.username}
       />
       <CardMedia component="img" image={post.imageUrl} />

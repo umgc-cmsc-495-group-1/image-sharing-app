@@ -3,7 +3,7 @@ import { getAllPostData, getPhotoUrl } from '../data/photoData';
 import { FeedPostType } from '../types/appTypes'
 // import { AppUserInterface } from '../types/authentication';
 
-
+// todo: delete this file as it is not being used anywhere
 /**
  * @description React Hook to get all post related data for a user
  * using the user's ID

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import HootLogin from "./HootLogin";
 import { LoadingBackdrop } from "../components/UploadFab/LoadingBackdrop";
-import {Navigate} from "react-router-dom";
 
 interface Props {
   component: React.ComponentType;
@@ -10,8 +10,8 @@ interface Props {
 }
 
 export const ProtectedRoute: React.FC<Props> = ({
-  component: RouteComponent
-}) => {
+                                                  component: RouteComponent
+                                                }) => {
   const {isLoading, user} = useContext(AuthContext);
   // if (!FallbackComponent) FallbackComponent = HootLogin;
 
@@ -23,6 +23,6 @@ export const ProtectedRoute: React.FC<Props> = ({
     }
   }
 
-  return <Navigate to="/login" />;
+  return <HootLogin />;
 
 };

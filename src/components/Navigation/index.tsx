@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   Box,
   AppBar,
@@ -13,10 +13,23 @@ import { Outlet } from "react-router-dom";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
 import { AuthContext } from "../../context/AuthContext";
+import {getUserByUserId} from "../../data/userData";
 
 const Navigation: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [encodedEmail, setEncodedEmail] = useState("");
+  useEffect(() => {
+    (async () => {
+      if (user) {
+        const userData = await getUserByUserId(user.uid);
+        let currentEmail = userData.email;
+        currentEmail = encodeURIComponent(currentEmail);
+        currentEmail = currentEmail.replace(".", "-");
+        setEncodedEmail(currentEmail);
+      }
+    })();
+  }, [user]);
 
   return (
     <div className="class.navigation">
@@ -61,7 +74,7 @@ const Navigation: React.FC = () => {
           role="presentation"
           onClick={() => setIsOpen(false)}
         >
-          <List>{user ? <LoggedIn email={user.email} /> : <NotLoggedIn />}</List>
+          <List>{user ? <LoggedIn email={encodedEmail} /> : <NotLoggedIn />}</List>
         </Box>
       </Drawer>
       <Outlet />

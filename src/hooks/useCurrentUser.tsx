@@ -16,9 +16,9 @@ export const useCurrentUser = () => {
   const {user} = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState<AppUserInterface>({
     displayName: "",
-    username: "",
     email: "",
     photoURL: "",
+    avatarImage: "",
     isVerified: false,
     uid: "",
     friends: [],

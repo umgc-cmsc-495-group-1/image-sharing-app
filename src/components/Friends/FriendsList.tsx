@@ -10,7 +10,6 @@ import {AppUserInterface} from "../../types/authentication";
 const FriendsList: React.FC<AppUserInterface> = (
   {
     friends,
-    username,
     email,
     photoURL,
     isVerified,
@@ -21,7 +20,7 @@ const FriendsList: React.FC<AppUserInterface> = (
     displayName,
   }
 ) => {
-  console.log(friends, username, email, photoURL, isVerified, uid, bio, interests, likes, displayName);
+  console.log(friends, email, photoURL, isVerified, uid, bio, interests, likes, displayName);
   const friendArray: string[] = []
 
   if (auth.currentUser !== null) {

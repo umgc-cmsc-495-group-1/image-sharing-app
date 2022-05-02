@@ -133,6 +133,7 @@ export type FeedPostType = FeedPostInterface;
 export interface ProfileInterface extends UserInterface, UserImagesInterface {
   displayName: string;
   email: string;
+  avatarImage: string;
   friends: [];
   likes: [];
   posts: number;

@@ -3,7 +3,6 @@ import { UserInterestsType } from './interests';
 
 export interface BaseUserInterface {
   displayName: string;
-  username: string;
   email: string;
   photoURL: string;
   isVerified: boolean;
@@ -26,6 +25,7 @@ export interface AppUserInterface extends BaseUserInterface {
   bio?: string;
   friends: string[];
   likes: string[];
+  avatarImage: string;
   interests: UserInterestsType | UserInterestsType[] | [];
 }
 

@@ -15,7 +15,6 @@ import {
 import {
   UserInterface,
   GoogleUserType,
-  UserCheckInterface,
 } from "../types/authentication";
 import { deleteAllPosts, deleteProfileImg } from "./photoData";
 const PASSWORD_REGEX =
@@ -34,7 +33,7 @@ const PASSWORD_REGEX =
  ****************************************************************/
 
 const checkEmptyValues = (user: UserInterface): boolean => {
-  return user.username === "" || user.email === "" || user.password === "";
+  return user.email === "" || user.password === "";
 };
 
 /**
@@ -42,62 +41,26 @@ const checkEmptyValues = (user: UserInterface): boolean => {
  * @param user : UserInterface
  * @returns
  */
-const signup = async (user: UserInterface) => {
-  let res: UserCredential;
-  let result: UserCheckInterface | undefined;
+const signup = async (user: UserInterface) : Promise<UserCredential | undefined> => {
+  let res;
   // data is empty, do not create user
   if (checkEmptyValues(user)) {
-    result = {
-      status: 400,
-      user: null,
-      message: "Required items are missing",
-    };
-    return Promise.reject(result);
-    // TODO: write custom error to throw during creation to trigger during Promise
+    return Promise.reject("Required items are missing");
   } else if (!PASSWORD_REGEX.test(user.password)) {
-    result = {
-      status: 400,
-      user: null,
-      message:
-        "Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #",
-    };
-    return Promise.reject(result);
+    return Promise.reject("Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #");
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
     res = await createUserWithEmailAndPassword(auth, user.email, user.password)
       .then(userCredential => {
-        const currentUser = userCredential.user;
-        updateProfile(currentUser,
-          {
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-          });
         return Promise.resolve(userCredential);
       })
       .catch(error => {
-        result = {
-          status: 400,
-          user: null,
-          message: error.message,
-        };
-        return Promise.reject(result);
+        return Promise.reject(error);
       });
     await createUser(res.user, user);
-    updateName(user.displayName);
-    result = {
-      status: 201,
-      user: res.user,
-      message: "User successfully created",
-    };
-    return Promise.resolve(result);
-  } else {
-    result = {
-      status: 400,
-      user: null,
-      message: "Unknown issues, please try again",
-    };
-    return Promise.reject(result);
+    await updateName(user.displayName);
   }
+  return res;
 };
 
 /**
@@ -120,7 +83,10 @@ const login = async (email: string, password: string) => {
       return Promise.resolve(result);
     })
     .catch((error) => {
-      return Promise.reject(error);
+      return Promise.reject({
+        status: error.code,
+        message: error.message
+      });
     });
 };
 
@@ -146,7 +112,6 @@ const signInGoogleRedirect = async () => {
         const user = result.user;
         googleUserInfo = {
           displayName: user.displayName || "",
-          username: user.displayName || "",
           email: user.email || "",
           photoURL: user.photoURL || "",
           isVerified: user.emailVerified || false,
@@ -192,7 +157,6 @@ const signInGooglePopup = async () => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       googleUserInfo = {
         displayName: user.displayName || "",
-        username: user.displayName || "",
         email: user.email || "",
         photoURL: user.photoURL || "",
         isVerified: user.emailVerified || false,
@@ -242,20 +206,12 @@ const changeEmail = (newEmail: string) => {
  * @param displayName
  * @param imgUrl
  */
-const updateName = (displayName: string) => {
+const updateName = async (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
-    updateProfile(user, {
+    await updateProfile(user, {
       displayName: displayName
     })
-      .then(() => {
-        // Profile updated!
-        console.log(`${user.displayName} your profile has been updated`);
-      })
-      .catch((error) => {
-        // An error occurred
-        console.log(error);
-      });
   }
 };
 

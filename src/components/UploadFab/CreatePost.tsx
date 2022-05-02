@@ -103,7 +103,9 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
         isPrivate,
         user,
         fileToUpload
-      );
+      ).then(() => {
+        handleClose();
+      });
     } else {
       setErrors(["Error uploading image"]);
     }

@@ -11,9 +11,9 @@ const Friends: React.FC = () => {
       bio={user.bio}
       friends={user.friends}
       likes={user.likes}
+      avatarImage={user.avatarImage}
       interests={user.interests}
       displayName={user.displayName}
-      username={user.username}
       email={user.email}
       photoURL={user.photoURL}
       isVerified={user.isVerified}

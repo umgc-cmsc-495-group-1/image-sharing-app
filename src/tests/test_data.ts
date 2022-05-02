@@ -115,6 +115,7 @@ function generateRandomUsers(): ProfileInterface[] {
       username: `${demoUsernames[i]}`,
       posts: Math.floor(Math.random() * 100),
       displayName: `${demoDisplayNames[i]}`,
+      avatarImage: `${demoProfilePictures[i]}`,
       friends: [],
       likes: [],
       email: `${demoDisplayNames[i]}@test.com`,

@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./css/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { AuthProvider } from "./provider/AuthProvider";
+import { AuthProvider } from "./context/AuthContext";
 
 // TODO: need default data for emulator
 ReactDOM.render(
