@@ -252,6 +252,7 @@ const getLivePost = async (
   const unsubscribe = onSnapshot(doc(firestore, "posts", postId), (doc) => {
     const gotPost: FeedPostType = {
       uid: doc.data()?.uid,
+      imageUrl: doc.data()?.imageUrl,
       username: doc.data()?.username,
       pid: doc.data()?.pid,
       postText: doc.data()?.postText,
