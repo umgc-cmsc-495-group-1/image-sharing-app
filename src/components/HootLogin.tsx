@@ -22,12 +22,11 @@ export default function HootLogin() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await login(email, password)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         navigate("/feed");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -37,7 +36,7 @@ export default function HootLogin() {
         navigate("/auth-loading");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

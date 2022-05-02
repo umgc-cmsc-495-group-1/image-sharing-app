@@ -9,7 +9,7 @@ import {
   sendPasswordResetEmail,
   updateEmail,
   deleteUser,
-  updateProfile
+  updateProfile,
 } from "firebase/auth";
 import {
   UserInterface,
@@ -38,10 +38,7 @@ const checkEmptyValues = (user: UserInterface): boolean => {
   return user.username === "" || user.email === "" || user.password === "";
 };
 
-
-
 /******************************** CREATE / REGISTER  *****************************************************/
-
 
 /**
  * @description Registers user and creates a new user in firestore
@@ -110,8 +107,10 @@ const signInGooglePopup = async () => {
       // The signed-in user info.
       addedUser = result.user;
 
-     // FirebaseUserMetadata metadata = auth.currentUser.getMetadata();
-      if (addedUser.metadata.creationTime == addedUser.metadata.lastSignInTime) {
+      // FirebaseUserMetadata metadata = auth.currentUser.getMetadata();
+      if (
+        addedUser.metadata.creationTime == addedUser.metadata.lastSignInTime
+      ) {
         user = {
           displayName: addedUser.displayName || "",
           email: addedUser.email || "",
@@ -126,12 +125,7 @@ const signInGooglePopup = async () => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(`${errorCode}, ${errorMessage}`);
-      // The email of the user's account used.
-      const email = error.email;
-      // The AuthCredential type that was used.
-      // const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`email: ${email}`);
+      console.error(`${errorCode}, ${errorMessage}`);
     });
 };
 
@@ -143,7 +137,7 @@ const signInGooglePopup = async () => {
  * @param password - user password
  * @returns {Promise<UserCredential>}
  */
- const login = async (email: string, password: string) => {
+const login = async (email: string, password: string) => {
   return await signInWithEmailAndPassword(auth, email, password)
     .then((result) => {
       return Promise.resolve(result);
@@ -163,8 +157,6 @@ const logout = async () => {
   return await auth.signOut();
 };
 
-
-
 /******************************** UPDATE firebase.User ***********************************************/
 
 /**
@@ -179,12 +171,11 @@ const changeEmail = (newEmail: string) => {
     updateEmail(user, `${newEmail}`)
       .then(() => {
         // TODO: user settings UI updated here
-        console.log(`Email for ${user.email} successfully updated`);
       })
       .catch((error) => {
         // An error occurred
-        console.log(error);
-        console.log(`Email update for ${user.email} failed`);
+        console.error(error);
+        console.error(`Email update for ${user.email} failed`);
       });
 };
 
@@ -192,25 +183,22 @@ const changeEmail = (newEmail: string) => {
  * @description Update Profile displayName
  * called with auth.currentUser.displayName
  * @param displayName
- * @param imgUrl
  */
 const updateName = (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
     updateProfile(user, {
-      displayName: displayName
+      displayName: displayName,
     })
       .then(() => {
         // Profile updated!
-        console.log(`${user.displayName} your profile has been updated`);
       })
       .catch((error) => {
         // An error occurred
-        console.log(error);
+        console.error(error);
       });
   }
 };
-
 
 /**
  * @description Sends email with link to
@@ -231,15 +219,14 @@ const passwordResetEmail = async () => {
     await sendPasswordResetEmail(auth, email)
       .then(() => {
         // Password reset email sent!
-        console.log("password reset email sent");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(`${errorCode}: ${errorMessage}`)
-        console.log("email not sent");
+        console.error(`${errorCode}: ${errorMessage}`);
+        console.error("email not sent");
       });
-}
+};
 
 /******************************** DELETE ACCOUNT *****************************************************/
 
@@ -255,12 +242,12 @@ const deleteAccount = async () => {
     await deleteUserDoc(user.uid);
     await deleteUser(user)
       .then(() => {
-        console.log(`The account number ${user.uid} has been deleted`);
+        //
       })
       .catch((error) => {
         // An error occurred
-        console.log(error);
-        console.log(
+        console.error(error);
+        console.error(
           `An error occurred while deleted the account number ${user.uid}`
         );
       });
@@ -275,6 +262,5 @@ export {
   changeEmail,
   updateName,
   passwordResetEmail,
-  deleteAccount
+  deleteAccount,
 };
-
