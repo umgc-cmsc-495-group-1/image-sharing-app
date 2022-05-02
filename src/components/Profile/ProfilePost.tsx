@@ -4,6 +4,7 @@ import { Box, Card, Grid } from "@mui/material";
 import { Link } from "@mui/icons-material";
 import FriendButton from "../FriendButton";
 import PrivateButton from "../PrivateButton";
+import DeleteButton from "../DeleteButton";
 interface Props {
   item: FeedPostType;
 }
@@ -31,6 +32,7 @@ export default function ProfilePost(props: Props) {
         />
         <FriendButton uid={item.uid} />
         <PrivateButton pid={item.pid} />
+        <DeleteButton pid={item.pid} />
       </Card>
     </Grid>
   );
