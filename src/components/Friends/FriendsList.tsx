@@ -1,55 +1,46 @@
-import React, { useState } from 'react';
-import { Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
+import React from 'react';
+import { Avatar, Link, List, ListItem, ListItemText } from '@mui/material';
 import { AppUserInterface } from '../../types/authentication';
-import { removeFriend } from '../../data/userData';
+import FriendButton from '../FriendButton';
 
 interface FriendsListInterface {
-  uid: string;
-  profilePicURL: string;
   friends: AppUserInterface[] | [];
 }
 
 const FriendsList: React.FC<FriendsListInterface> = (
-  { uid, profilePicURL, friends }
+  { friends }
 ) => {
-  const [removeButtonText, setRemoveButtonText] = useState("Remove");
-  const [confirmClicked, setConfirmClicked] = useState(false)
 
-  const changeButtonText = (text: string) => {
-    setRemoveButtonText(text)
-    setConfirmClicked(true)
+  const textStyle = {
+    width: 'fit-content',
+    padding: 40,
   }
 
-  const confirmDelete = (friendUid: string) => {
-    if (confirmClicked) {
-      console.log("Removing " + friendUid)
-      removeFriend(uid, friendUid)
-      .then(() => console.log("success"))
-      .catch(() => console.log("failure"))
-    }
+  const friendListItemStyle = {
+    border: '2px solid black',
+    borderRadius: 5,
+    margin: 10,
+    height: 60,
   }
 
   return (
     <List>
       {friends.map((frd) => (
-        /* const user = getUserByUserId(uid).then(user => {
-        return user
-        }); */
-        // TODO: set img to user's image
-        <ListItem key={frd.uid}>
-          <Link href={"/" + frd.uid}>
-            <ListItemAvatar>
-              src={profilePicURL}
-            </ListItemAvatar>
-          </Link>
-          <ListItemText primary={frd.displayName} />
-          <ListItemButton onClick={() => {
-            changeButtonText("Are you sure?")
-            confirmDelete(frd.uid)
-          }}>
-            {removeButtonText}
-          </ListItemButton>
-        </ListItem>
+        <>
+          <ListItem key={frd.displayName} style={friendListItemStyle}>
+            <ListItem style={{ width: 'fit-content' }}>
+              <Link style={{ textDecoration: 'none' }} href={"/user/" + frd.email}>
+                <Avatar sx={{ bgcolor: "primary.main" }}>
+                  {frd.displayName.charAt(0)}
+                </Avatar>
+              </Link>
+            </ListItem>
+            <ListItemText style={textStyle} primary={frd.displayName} />
+            <ListItem style={{ width: 'fit-content' }}>
+              <FriendButton uid={frd.uid} />
+            </ListItem>
+          </ListItem>
+        </>
       ))}
     </List>
   );
