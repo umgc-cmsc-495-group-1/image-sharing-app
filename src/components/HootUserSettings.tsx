@@ -10,11 +10,22 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { AppUserInterface } from "../types/authentication";
 
 const bodyStyle: React.CSSProperties = {
 	fontFamily: 'Roboto',
 	fontSize: 8
 }
+
+export default function updateProfile(getUserByUserId: {user:AppUserInterface}) { //= async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const [bio, setBio] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const updateProfile = () => {
+    bio: "updatedBio";
+    displayName: "updatedDisplayName";
+  }
+  
+};
 
 const HootUserSettings: React.FC = () => {
   return(
@@ -41,28 +52,11 @@ const HootUserSettings: React.FC = () => {
 	  id="UpdatedBio"
 	/>
      
-       <Button style={bodyStyle} color="primary" variant="contained" onClick={updateProfile}>
+       <Button style={bodyStyle} color="primary" variant="contained" onClick={() => updateProfile}>
 	  Update User Settings
        </Button>
        </List>
        </>
 
   );
-}
-
-const updateProfile = async (event: React.MouseEvent<HTMLButtonElement>) => {
-	return (
-		getUserByUserId.bio = "UpdatedBio",
-		getUserByUserId.displayName = "UpdatedDisplayName",
-	//user: AppUserInterface= {
-		//bio: UpdatedBio,
-		//dispayName: UpdatedDisplayName,
-	//}
-	
-    );
 };
-
-
-
-
-export HootUserSettings;
