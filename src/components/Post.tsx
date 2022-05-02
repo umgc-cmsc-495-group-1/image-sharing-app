@@ -76,18 +76,16 @@ export default function Post(props: Props) {
     if (post) getPostUser();
   }, [post]);
 
-  console.log(post);
-
   return (
     <Card
       raised={true}
       sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "column",
         marginBottom: 5,
         maxWidth: "lg",
-        width: {
-          xs: 1.0,
-          sm: 0.9,
-        },
+        width: "100%",
       }}
     >
       <CardHeader
@@ -107,13 +105,14 @@ export default function Post(props: Props) {
       />
       <CardMedia component="img" image={post?.imageUrl} />
       <CardContent>
-        <div style={{ display: "flex", marginBottom: 20 }}>
+        <div style={{ marginBottom: 20 }}>
           {post?.classification.classifications.map((item) => (
             <div key={item.className}>
               <Chip
+                size="small"
                 label={item.className}
                 color="secondary"
-                sx={{ marginRight: 1 }}
+                sx={{ margin: 0.125 }}
               />
             </div>
           ))}
