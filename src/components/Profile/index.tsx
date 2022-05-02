@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UploadFab } from "../UploadFab";
-import { emailInDb } from "../../data/userData";
+import { getUserByEmail } from "../../data/userData";
 import {
   FeedPostInterface,
   FeedPostType,
   ProfileInterface,
 } from "../../types/appTypes";
-import {
-  Box,
-  Card,
-  Container,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { Box, Card, Container, Grid, Typography } from "@mui/material";
 import { getLiveUserPostData } from "../../data/photoData";
 import ProfilePost from "./ProfilePost";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import FriendButton from "../FriendButton";
 
 const Profile: React.FC = () => {
   type Params = {
@@ -37,10 +31,13 @@ const Profile: React.FC = () => {
   });
 
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
+  const currentUser = useCurrentUser();
+  const [isFriends, setIsFriends] = useState(false);
+  console.log(isFriends);
 
   useEffect(() => {
     async function fetchProfile() {
-      const inProfile = await emailInDb(email ? email : "");
+      const inProfile = await getUserByEmail(email ? email : "");
       inProfile && setProfile(inProfile);
     }
 
@@ -49,7 +46,12 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     getLiveUserPostData(profile.uid, setPosts);
-  }, [profile.uid]);
+    setIsFriends(currentUser.friends.indexOf(profile.uid) >= 0);
+  }, [profile.uid, currentUser.friends]);
+
+  console.log(currentUser.friends);
+  console.log(profile.uid);
+  console.log(currentUser.friends.indexOf(profile.uid));
 
   return (
     <Container
@@ -69,10 +71,8 @@ const Profile: React.FC = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Box display="flex">
-            <Typography variant="h4">{profile.email}</Typography>
-            <IconButton>
-              <PersonAddIcon sx={{ color: "secondary.main" }} />
-            </IconButton>
+            <Typography variant="h4">{profile.displayName}</Typography>
+            <FriendButton uid={profile.uid} />
           </Box>
           <Typography variant="h6">
             {posts.length} Posts | {profile.friends.length} Friends{" "}
