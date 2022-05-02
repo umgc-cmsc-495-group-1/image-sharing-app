@@ -1,10 +1,10 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { FeedTile } from "./FeedTile";
 import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
 import { useFeed } from "../../hooks/useFeed";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { Post } from "../Post";
 // import { totalFeedPosts } from "../../tests/test_data"
 
 const Feed: React.FC = (): JSX.Element => {
@@ -21,7 +21,7 @@ const Feed: React.FC = (): JSX.Element => {
     >
       <Box maxWidth="md">
         {feed.map((item: FeedPostType) => (
-          <FeedTile
+          <Post
             key={item.pid}
             path={item.path}
             imageUrl={item.imageUrl}
