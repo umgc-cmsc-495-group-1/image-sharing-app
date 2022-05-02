@@ -49,7 +49,6 @@ const createUser = async (
   userInfo: UserInterface | GoogleUserType
 ) => {
   // Write to firestore db
-  console.log("adding user:" + user + " " + userInfo);
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
@@ -62,7 +61,7 @@ const createUser = async (
       likes: [],
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -79,7 +78,6 @@ const getUserByUserId = async (userId: string) => {
   const docSnap = await getDoc(userRef);
 
   if (!docSnap.exists()) {
-    console.log("No user document found");
     return;
   }
   const data = docSnap.data();
@@ -219,7 +217,6 @@ const updateProfile = async (
   profileData: ProfileUpdateInterface
 ) => {
   // const docSnap = await getDoc(docRef);
-  console.log(`updating profile ${profileData.displayName}`);
   const docRef = doc(firestore, "users", `${userId}`);
   const displayName = profileData.displayName;
   const email = profileData.email;
