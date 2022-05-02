@@ -28,7 +28,7 @@ export const useFeed = () => {
         // });
       } catch (e) {
         usersPhotos = [];
-        console.log(e);
+        console.error(e);
       }
       setPosts(usersPhotos);
     }

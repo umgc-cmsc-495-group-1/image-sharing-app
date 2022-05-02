@@ -31,7 +31,6 @@ const FriendsList: React.FC<FriendsListInterface> = ({ friends }) => {
             <ListItemText primary={frd.displayName} />
             <FriendButton uid={frd.uid} />
           </ListItem>
-          {console.log(index + "<" + friends.length)}
           {index < friends.length - 1 && <Divider />}
         </>
       ))}
