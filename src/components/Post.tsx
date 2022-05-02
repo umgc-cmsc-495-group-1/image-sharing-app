@@ -105,7 +105,7 @@ export default function Post(props: Props) {
       />
       <CardMedia component="img" image={post?.imageUrl} />
       <CardContent>
-        <div style={{ marginBottom: 20 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           {post?.classification.classifications.map((item) => (
             <div key={item.className}>
               <Chip
@@ -116,7 +116,7 @@ export default function Post(props: Props) {
               />
             </div>
           ))}
-        </div>
+        </Box>
         <Typography>{post?.postText}</Typography>
       </CardContent>
       <CardActions>
