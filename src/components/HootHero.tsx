@@ -2,11 +2,6 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import heroImage from "../assets/static/images/alex-rybin-Ne5nShVl6NM-unsplash.jpg";
 
-const titleStyle: React.CSSProperties = {
-	fontFamily: 'Merienda', cursive;
-	fontSize: 12
-}
- 
 export default function HootHero() {
   return (
     <Grid
@@ -32,10 +27,10 @@ export default function HootHero() {
           alignContent: "space-between",
         }}
       >
-        <Typography style={titleStyle} width="100%" variant="h4" color="white" align="center">
+        <Typography width="100%" variant="h4" color="white" align="center">
           Unlimited Possibilities
         </Typography>
-        <Typography style={titleStyle} width="100%" variant="h4" color="white" align="center">
+        <Typography width="100%" variant="h4" color="white" align="center">
           Powered by Your Imagination
         </Typography>
       </Box>

@@ -13,11 +13,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { login, signInGooglePopup } from "../data/authFunctions";
 
-const headerStyle: React.CSSProperties = {
-	fontFamily: 'Roboto',
-	fontSize: 8
-}
-
 export default function HootLogin() {
   const navigate = useNavigate();
 
@@ -59,7 +54,7 @@ export default function HootLogin() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography style={headerStyle}>Login</Typography>
+        <Typography>Login</Typography>
         <Box
           component="form"
           noValidate
@@ -88,7 +83,6 @@ export default function HootLogin() {
                 }}
                 required
                 fullWidth
-		style={headerStyle}
                 name="password"
                 label="Password"
                 type="password"
@@ -105,7 +99,7 @@ export default function HootLogin() {
           >
             Login
           </Button>
-          <Typography style={headerStyle} textAlign="center">- or -</Typography>
+          <Typography textAlign="center">- or -</Typography>
           <Button
             fullWidth
             variant="contained"
