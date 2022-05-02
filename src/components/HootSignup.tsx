@@ -16,6 +16,18 @@ import { UserInterface } from "../types/authentication";
 import { UserSignupValidationError } from "../utils/Error";
 import { useNavigate } from "react-router-dom";
 
+
+const titleStyle: React.CSSProperties = {
+	fontFamily: 'Merienda', cursive;
+	fontSize: 12
+}
+
+const bodyStyle: React.CSSProperties = {
+	fontFamily: 'Roboto'
+	fontSize: 8
+}
+
+
 export default function HootSignup() {
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
@@ -83,7 +95,7 @@ export default function HootSignup() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography>Sign Up</Typography>
+        <Typography style={bodyStyle}>Sign Up</Typography>
         <Box
           component="form"
           noValidate
@@ -99,6 +111,7 @@ export default function HootSignup() {
                 }}
                 required
                 fullWidth
+		style={bodyStyle}
                 id="displayName"
                 label="Display Name"
                 name="displayName"
@@ -113,6 +126,7 @@ export default function HootSignup() {
                 }}
                 required
                 fullWidth
+		style={bodyStyle}
                 id="username"
                 label="User Name"
                 name="username"
@@ -127,6 +141,7 @@ export default function HootSignup() {
                 }}
                 required
                 fullWidth
+		style={bodyStyle}
                 id="email"
                 label="Email Address"
                 name="email"
@@ -141,6 +156,7 @@ export default function HootSignup() {
                 }}
                 required
                 fullWidth
+		style={bodyStyle}
                 name="password"
                 label="Password"
                 type="password"
@@ -156,6 +172,7 @@ export default function HootSignup() {
                 }}
                 required
                 fullWidth
+		style={bodyStyle}
                 name="verifyPassword"
                 label="Verify Password"
                 type="password"
@@ -176,6 +193,7 @@ export default function HootSignup() {
           <Typography textAlign="center"> - or -</Typography>
           <Button
             fullWidth
+	    style={bodyStyle}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleGoogleSignin}
@@ -184,7 +202,7 @@ export default function HootSignup() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link href="/login" style={bodyStyle} variant="body2">
                 Already have an account? Log in!
               </Link>
             </Grid>
