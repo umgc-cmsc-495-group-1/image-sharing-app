@@ -99,6 +99,11 @@ export default function Post(props: Props) {
           </Avatar>
         }
         title={postUser?.displayName}
+        titleTypographyProps={{ variant: "h5", color: "black" }}
+        subheader={postUser?.email}
+        sx={{
+          textDecoration: "none",
+        }}
       />
       <CardMedia component="img" image={post?.imageUrl} />
       <CardContent>
