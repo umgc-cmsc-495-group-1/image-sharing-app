@@ -1,39 +1,15 @@
 import React from "react";
 import { FeedPostType } from "../../types/appTypes";
-import { Box, Card, Grid } from "@mui/material";
-import { Link } from "@mui/icons-material";
-import FriendButton from "../FriendButton";
-import PrivateButton from "../PrivateButton";
-import DeleteButton from "../DeleteButton";
+import { Grid } from "@mui/material";
+import Post from "../Post";
 interface Props {
   item: FeedPostType;
 }
 export default function ProfilePost(props: Props) {
   const { item } = props;
   return (
-    <Grid item xs={12} sm={6} md={4}>
-      <Card
-        raised
-        sx={{
-          width: 1.0,
-          height: 1.0,
-          aspectRatio: 1,
-        }}
-      >
-        <Box
-          component={Link}
-          sx={{
-            width: 1.0,
-            height: 0,
-            paddingBottom: "100%",
-            backgroundImage: `url(${item.imageUrl})`,
-            backgroundSize: "cover",
-          }}
-        />
-        <FriendButton uid={item.uid} />
-        <PrivateButton pid={item.pid} />
-        <DeleteButton pid={item.pid} />
-      </Card>
+    <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
+      <Post key={item.pid} pid={item.pid} />
     </Grid>
   );
 }
