@@ -28,7 +28,6 @@ export default function DeleteButton(props: Props) {
   };
 
   const handleDelete = () => {
-    console.log("I'm here");
     deletePostByPid(pid);
     handleClose();
   };
