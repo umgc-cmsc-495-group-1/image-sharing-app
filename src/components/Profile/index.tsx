@@ -1,23 +1,16 @@
 import React, {useContext, useEffect, useState} from "react";
 import { UploadFab } from "../UploadFab";
-import {emailInDb, getUserByUserId} from "../../data/userData";
+import { getUserByEmail, getUserByUserId } from "../../data/userData";
 import {
   FeedPostInterface,
   FeedPostType,
   ProfileInterface,
 } from "../../types/appTypes";
-import {
-  Box,
-  Card,
-  Container,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { Box, Card, Container, Grid, Typography } from "@mui/material";
 import { getLiveUserPostData } from "../../data/photoData";
 import ProfilePost from "./ProfilePost";
 import {AuthContext} from "../../context/AuthContext";
+import FriendButton from "../FriendButton";
 
 const Profile: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -47,15 +40,7 @@ const Profile: React.FC = () => {
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
 
   useEffect(() => {
-    // async function fetchProfile() {
-    //   const inProfile = await emailInDb(email ? email : "");
-    //   inProfile && setProfile(inProfile);
-    // }
-    //
-    // fetchProfile();
-    const fetchProfile = async () => await emailInDb(email ? email : "")
-
-
+    const fetchProfile = async () => await getUserByEmail(email ? email : "")
 
     fetchProfile().then((inProfile) => {
       if (inProfile !== undefined) {
@@ -64,37 +49,18 @@ const Profile: React.FC = () => {
     });
   }, [email]);
 
-  // useEffect(() => {
-  //   async function fetchProfile() {
-  //     const userPosts = await getByUsername(currentUsername ? currentUsername : "");
-  //     return userPosts;
-  //   }
-  //   fetchProfile().then(res => {
-  //     console.log(res)
-  //     if (res) {
-  //       setProfile(res);
-  //     }
-  //   })
-  // }, [currentUsername]);
-  //
-  // useCallback(async () => {
-  //   const livePosts = await getLiveUserPostData(profile.uid, setPosts);
-  //   return livePosts;
-  // }, [profile.uid]);
-
   useEffect(() => {
     getLiveUserPostData(profile.uid, setPosts);
   }, [profile.uid]);
-  console.log(profile)
+
   return (
     <Container
       component="main"
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: "100%",
         paddingBottom: 10,
       }}
     >
@@ -119,10 +85,8 @@ const Profile: React.FC = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Box display="flex">
-            <Typography variant="h4">{profile.email}</Typography>
-            <IconButton>
-              <PersonAddIcon sx={{ color: "secondary.main" }} />
-            </IconButton>
+            <Typography variant="h4">{profile.displayName}</Typography>
+            <FriendButton uid={profile.uid} />
           </Box>
           <Typography variant="h6">
             {posts.length} Posts | {profile.friends.length} Friends{" "}

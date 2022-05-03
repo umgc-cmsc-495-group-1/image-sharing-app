@@ -23,7 +23,7 @@ export const useFeed = () => {
         mapUserPhotos(usersPhotos);
       } catch (e) {
         usersPhotos = [];
-        console.log(e);
+        console.error(e);
       }
       setPosts(usersPhotos);
     }

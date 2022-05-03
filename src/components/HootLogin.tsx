@@ -59,7 +59,6 @@ export default function HootLogin() {
           ...errors,
           [err.code]: err.message,
         });
-        console.log(err);
       });
   };
 

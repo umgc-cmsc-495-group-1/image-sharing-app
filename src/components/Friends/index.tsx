@@ -1,26 +1,18 @@
 import React from "react";
-import {FriendsList} from "./FriendsList";
-import {useCurrentUser} from "../../hooks/useCurrentUser";
+import FriendsList from "./FriendsList";
+import { useFriends } from "../../hooks/useFriends";
+import { Card, CardHeader, Container } from "@mui/material";
 
 const Friends: React.FC = () => {
-  const user= useCurrentUser()
-
+  const friends = useFriends();
   return (
-    <FriendsList
-      uid={user.uid}
-      bio={user.bio}
-      friends={user.friends}
-      likes={user.likes}
-      avatarImage={user.avatarImage}
-      interests={user.interests}
-      displayName={user.displayName}
-      email={user.email}
-      photoURL={user.photoURL}
-      isVerified={user.isVerified}
-    />
-  )
-}
+    <Container maxWidth="sm">
+      <Card raised sx={{ width: "100%" }}>
+        <CardHeader title="Friends" />
+        <FriendsList friends={friends} />
+      </Card>
+    </Container>
+  );
+};
 
-export {
-  Friends
-}
+export { Friends }

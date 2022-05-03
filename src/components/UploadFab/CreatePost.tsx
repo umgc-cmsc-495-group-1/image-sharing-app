@@ -65,8 +65,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
     }
   };
 
-  const identify = async () =>
-    new Promise<ImageClassificationType>((resolve) => {
+  const identify = async () => new Promise<ImageClassificationType>((resolve) => {
       if (model !== null) {
         const results = model.classify(imageRef.current);
         return resolve(results);
@@ -105,11 +104,20 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
         fileToUpload
       ).then(() => {
         handleClose();
+        setFileToUpload(undefined);
+        setDescription("");
+        setIsPrivate(false);
+        setErrors([]);
+        setImageUrl("");
+      }).catch((error) => {
+        console.error(error);
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          "Error Uploading Image"
+        ]);
       });
-    } else {
-      setErrors(["Error uploading image"]);
     }
-  };
+  }
 
   useEffect(() => {
     (async () => {

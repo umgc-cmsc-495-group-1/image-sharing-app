@@ -110,7 +110,7 @@ export default function HootSignup() {
           console.error([err.code] + `: ${err.message}`);
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
   };

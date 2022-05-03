@@ -3,14 +3,15 @@ import { createUser, deleteUserDoc } from "./userData";
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  getRedirectResult,
+  signInWithRedirect,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   UserCredential,
-  updatePassword,
+  sendPasswordResetEmail,
   updateEmail,
   deleteUser,
   updateProfile,
+  getRedirectResult
 } from "firebase/auth";
 import {
   UserInterface,
@@ -32,9 +33,13 @@ const PASSWORD_REGEX =
  *
  ****************************************************************/
 
+/******************************** MIDDLEWARE *****************************************************/
+
 const checkEmptyValues = (user: UserInterface): boolean => {
   return user.email === "" || user.password === "";
 };
+
+/******************************** CREATE / REGISTER  *****************************************************/
 
 /**
  * @description Registers user and creates a new user in firestore
@@ -64,37 +69,9 @@ const signup = async (user: UserInterface) : Promise<UserCredential | undefined>
 };
 
 /**
- * @description Logout User
- * @returns
- */
-const logout = async () => {
-  return await auth.signOut();
-};
-
-/**
- * Login user with email and password
- * @param email - user email
- * @param password - user password
- * @returns {Promise<UserCredential>}
- */
-const login = async (email: string, password: string) => {
-  return await signInWithEmailAndPassword(auth, email, password)
-    .then((result) => {
-      return Promise.resolve(result);
-    })
-    .catch((error) => {
-      return Promise.reject({
-        status: error.code,
-        message: error.message
-      });
-    });
-};
-
-/**
  * Google Redirect Sign Up / Sign In (needs work if to be used)
  * requires a new sign-in form ?
  */
-// TODO: Google signup - creates account by redirecting to signup
 const signInGoogleRedirect = async () => {
   let googleUserInfo: GoogleUserType;
 
@@ -105,34 +82,18 @@ const signInGoogleRedirect = async () => {
     prompt: "select_account",
   });
 
-  await getRedirectResult(auth)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access Google APIs.
-      if (result !== null) {
-        const user = result.user;
-        googleUserInfo = {
-          displayName: user.displayName || "",
-          email: user.email || "",
-          photoURL: user.photoURL || "",
-          isVerified: user.emailVerified || false,
-        };
-        createUser(user, googleUserInfo);
-
-        return Promise.resolve(googleUserInfo);
-      } else {
-        return Promise.reject(googleUserInfo);
-      }
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`${errorCode}: ${errorMessage} for ${email} ${credential}`);
-    });
+  await signInWithRedirect(auth, provider);
+  const result = await getRedirectResult(auth);
+  if (result) {
+    const user = result.user;
+    googleUserInfo = {
+      displayName: user.displayName || "",
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      isVerified: user.emailVerified || false,
+    };
+    await createUser(user, googleUserInfo);
+  }
 };
 
 /**
@@ -141,7 +102,6 @@ const signInGoogleRedirect = async () => {
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-// TODO: add Google sign up option - this is a popup option
 const signInGooglePopup = async () => {
   let googleUserInfo: GoogleUserType;
 
@@ -169,15 +129,42 @@ const signInGooglePopup = async () => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(`${errorCode}, ${errorMessage}`);
-      // The email of the user's account used.
-      const email = error.email;
-      // The AuthCredential type that was used.
-      // const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(`email: ${email}`);
-      // ...
+      console.error(`${errorCode}, ${errorMessage}`);
     });
 };
+
+/******************************** LOG IN *****************************************************/
+
+/**
+ * Login user with email and password
+ * @param email - user email
+ * @param password - user password
+ * @returns {Promise<UserCredential>}
+ */
+const login = async (email: string, password: string) => {
+  return await signInWithEmailAndPassword(auth, email, password)
+    .then((result) => {
+      return Promise.resolve(result);
+    })
+    .catch((error) => {
+      return Promise.reject({
+        status: error.code,
+        message: error.message
+      });
+    });
+};
+
+/******************************** LOG OUT *****************************************************/
+
+/**
+ * @description Logout User
+ * @returns
+ */
+const logout = async () => {
+  return await auth.signOut();
+};
+
+/******************************** UPDATE firebase.User ***********************************************/
 
 /**
  *  @descriptionReset Email Address For Auth User
@@ -191,12 +178,11 @@ const changeEmail = (newEmail: string) => {
     updateEmail(user, `${newEmail}`)
       .then(() => {
         // TODO: user settings UI updated here
-        console.log(`Email for ${user.uid} successfully updated`);
       })
       .catch((error) => {
         // An error occurred
-        console.log(error);
-        console.log(`Email update for ${user.uid} failed`);
+        console.error(error);
+        console.error(`Email update for ${user.email} failed`);
       });
 };
 
@@ -204,7 +190,6 @@ const changeEmail = (newEmail: string) => {
  * @description Update Profile displayName
  * called with auth.currentUser.displayName
  * @param displayName
- * @param imgUrl
  */
 const updateName = async (displayName: string) => {
   const user = auth.currentUser;
@@ -213,67 +198,42 @@ const updateName = async (displayName: string) => {
       displayName: displayName
     })
   }
+  return Promise.resolve(user);
 };
 
 /**
- * @description Update password
- * @param newPassword
- * @param verifyNewPassword
+ * @description Sends email with link to
+ * reset password
+ *
+ * WARNING: WILL NOT WORK WITH EMULATORS
+ * WILL LOCK ACCOUNT
  */
-
-// TODO: should make sure user has signed in recently. If not
-// call re-auth function
-const changePassword = async (
-  newPassword: string,
-  verifyNewPassword: string
-) => {
+// TODO: example - can add as parameter
+// of action settting add url to redirect user
+// const resetActionCodeSettings = {
+//  url: 'https://www.example.com/?email=' //+ auth.currentUser.email,
+// };
+const passwordResetEmail = async () => {
   const user = auth.currentUser;
-  // const newPass = getASecureRandomPassword()
-
-  if (newPassword !== verifyNewPassword) {
-    return Promise.reject(`Passwords do not match`);
-  } else if (newPassword.length < 8 && !PASSWORD_REGEX.test(newPassword)) {
-    return Promise.reject(`Password must be at least 8 characters`);
-  } else {
-    if (user && newPassword.length > 0 && PASSWORD_REGEX.test(newPassword)) {
-      await updatePassword(user, newPassword)
-        .then(() => {
-          alert("Password successfully updated.");
-          Promise.resolve("Password successfully updated");
-        })
-        .catch((error) => {
-          console.log(error);
-          alert("Password update failed.");
-        });
-    }
-  }
+  const email = user?.email;
+  if (email)
+    await sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(`${errorCode}: ${errorMessage}`);
+        console.error("email not sent");
+      });
 };
 
-// TODO: Re-authenticate user this should be used for password
-/**
- * @description Re-authorizes user before
- * changes or closing accounts
- */
-const reAuth = async () => {
-  // const user = auth.currentUser
-  window.location.href = "http://localhost:3000/login";
-  // TODO: need to create a valid pop up window
-  // TODO: for now redirecting to login page
-  // if (user && credential) {
-  // credential: AuthCredential
-  //   reauthenticateWithCredential(user, credential).then(() => {
-  //     // User re-authenticated.
-  //   }).catch((error) => {
-  //     // An error occurred
-  //     console.log(error)
-  //   })
-  // }
-};
+/******************************** DELETE ACCOUNT *****************************************************/
 
 /**
- * @description Deletes user's auth and data from databases
- * including profile photo and all posts
- * so any photos will be removed
+ * @description Deletes All user data from all databases
+ * including, firebase.User, user, profile photo, and all post photos and data
  */
 const deleteAccount = async () => {
   const user = auth.currentUser;
@@ -283,12 +243,12 @@ const deleteAccount = async () => {
     await deleteUserDoc(user.uid);
     await deleteUser(user)
       .then(() => {
-        console.log(`The account number ${user.uid} has been deleted`);
+        //
       })
       .catch((error) => {
         // An error occurred
-        console.log(error);
-        console.log(
+        console.error(error);
+        console.error(
           `An error occurred while deleted the account number ${user.uid}`
         );
       });
@@ -299,12 +259,10 @@ export {
   signup,
   logout,
   login,
-  signInGoogleRedirect,
   signInGooglePopup,
   changeEmail,
   updateName,
-  changePassword,
-  reAuth,
+  passwordResetEmail,
   deleteAccount,
+  signInGoogleRedirect
 };
-
