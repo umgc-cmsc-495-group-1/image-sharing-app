@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 const NotLoggedIn = () => {
   return (
     <>
-      <ListItem button component={Link} to="/" role="navigation-feed">
+      <ListItem component={Link} to="/" role="navigation-feed">
         <ListItemText primary="Home" />
       </ListItem>
-      <ListItem button component={Link} to="/login" role="navigation-login">
+      <ListItem component={Link} to="/login" role="navigation-login">
         <ListItemText primary="Login" />
       </ListItem>
-      <ListItem button component={Link} to="/signup" role="navigation-signup">
+      <ListItem component={Link} to="/signup" role="navigation-signup">
         <ListItemText primary="Sign Up" />
       </ListItem>
     </>

@@ -1,9 +1,9 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { FeedTile } from "./FeedTile";
 import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
 import { useFeed } from "../../hooks/useFeed";
+import { Post } from "../Post";
 
 const Feed: React.FC = (): JSX.Element => {
   const feed = useFeed();
@@ -16,22 +16,11 @@ const Feed: React.FC = (): JSX.Element => {
         width: "100%",
       }}
     >
-      {feed.map((item: FeedPostType) => (
-        <FeedTile
-          key={item.pid}
-          path={item.path}
-          imageUrl={item.imageUrl}
-          uid={item.uid}
-          username={item.username}
-          pid={item.pid}
-          postText={item.postText}
-          numberLikes={item.numberLikes}
-          numberComments={item.numberComments}
-          classification={item.classification}
-          timestamp={item.timestamp}
-          comments={item.comments}
-        />
-      ))}
+      <Box maxWidth="md">
+        {feed.map((item: FeedPostType) => (
+          <Post key={item.pid} pid={item.pid} />
+        ))}
+      </Box>
       <Box>
         <UploadFab />
       </Box>
