@@ -27,7 +27,6 @@ import {
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-// import {useNavigate} from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import SendIcon from "@mui/icons-material/Send";
 import {
@@ -117,6 +116,11 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   const [tileUser, setTileUser] = useState<AppUserInterface | undefined>(
     undefined
   );
+  const [currentAvatar, setCurrentAvatar] = useState<string>("");
+  (async () => {
+    const user = await getUserByUserId(uid);
+    setCurrentAvatar(user.avatarImage);
+  })()
 
   useEffect(() => {
     async function retrieveUser() {
@@ -194,14 +198,10 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
       }}
     >
       <CardHeader
+        avatar={<Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>}
+        title={post.username}
         component={Link}
         href={`user/${tileUser?.email}`}
-        avatar={
-          <Avatar sx={{ bgcolor: "primary.main" }}>
-            {tileUser?.displayName.charAt(0)}
-          </Avatar>
-        }
-        title={tileUser?.displayName}
       />
       <CardMedia component="img" image={post.imageUrl} />
       <CardContent>
@@ -219,7 +219,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
         <Typography>{post.postText}</Typography>
       </CardContent>
       <CardActions>
-        <IconButton aria-label="like" onClick={handleLike}>
+        <IconButton role="like-button" aria-label="like" onClick={handleLike}>
           <LikeIcon isLiked={isLiked} />
         </IconButton>
         <Typography>{numberOfLikes}</Typography>
@@ -227,6 +227,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show comments"
+          role="comment-button"
         >
           <CommentIcon />
         </IconButton>

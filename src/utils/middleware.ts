@@ -10,5 +10,5 @@ function mapUserPhotos(usersPhotos: FeedPostType[]) {
 }
 
 export {
-  mapUserPhotos,
+  mapUserPhotos
 };

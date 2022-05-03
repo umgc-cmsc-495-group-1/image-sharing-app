@@ -59,6 +59,13 @@ export default function Post(props: Props) {
   );
   const [expanded, setExpanded] = useState(false);
   const user = useCurrentUser();
+  const [currentAvatar, setCurrentAvatar] = useState<string>("");
+  (async () => {
+    if (post !== undefined) {
+      const user = await getUserByUserId(post.uid);
+      setCurrentAvatar(user.avatarImage);
+    }
+  })()
 
   useEffect(() => {
     const unsubscribe = getLivePost(pid, setPost);
@@ -92,9 +99,7 @@ export default function Post(props: Props) {
         component={Link}
         href={`user/${postUser?.email}`}
         avatar={
-          <Avatar sx={{ bgcolor: "primary.main" }}>
-            {postUser?.displayName.charAt(0)}
-          </Avatar>
+          <Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>
         }
         title={postUser?.displayName}
         titleTypographyProps={{ variant: "h5", color: "black" }}

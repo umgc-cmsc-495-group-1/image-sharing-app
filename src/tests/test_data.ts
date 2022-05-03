@@ -43,7 +43,7 @@ import feedImage19 from "../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplas
 import { serverTimestamp } from "firebase/firestore";
 
 /**
- * Array of test user names to be used in the feed and profile
+ * Array of test.tsx user names to be used in the feed and profile
  */
 const demoDisplayNames = [
   "abhinav",
@@ -120,7 +120,7 @@ const demoUsernames = [
   "Illustrious Doom",
 ];
 /**
- * Array of test profile pictures to be used in the feed and profile
+ * Array of test.tsx profile pictures to be used in the feed and profile
  */
 const demoProfilePictures = [
   profileImage1,
@@ -139,7 +139,7 @@ const demoProfilePictures = [
   profileImage14,
 ];
 /**
- * Array of test feed posts to be used in the feed
+ * Array of test.tsx feed posts to be used in the feed
  */
 const demoFeedImages = [
   feedImage1,
@@ -163,7 +163,7 @@ const demoFeedImages = [
   feedImage19,
 ];
 /**
- * Object of test users and images to be used in the feed and profile
+ * Object of test.tsx users and images to be used in the feed and profile
  */
 const demoContent = {
   profile: demoProfilePictures,
@@ -171,7 +171,7 @@ const demoContent = {
 };
 
 /**
- * @description - Generate a random test user to be used in the feed and profile
+ * @description - Generate a random test.tsx user to be used in the feed and profile
  * @returns {ProfileInterface[]}
  */
 function generateRandomUsers(): ProfileInterface[] {
@@ -182,6 +182,7 @@ function generateRandomUsers(): ProfileInterface[] {
       username: `${demoUsernames[i]}`,
       posts: Math.floor(Math.random() * 100),
       displayName: `${demoDisplayNames[i]}`,
+      avatarImage: `${demoProfilePictures[i]}`,
       friends: [],
       likes: [],
       email: `${demoDisplayNames[i]}@test.com`,

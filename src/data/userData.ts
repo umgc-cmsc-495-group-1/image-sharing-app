@@ -1,17 +1,11 @@
-import "firebase/storage";
 import {
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  getDoc,
-  getDocsFromServer,
-  arrayUnion,
-  arrayRemove,
-  updateDoc,
-  onSnapshot,
+  collection, doc,
+  setDoc, deleteDoc,
+  getDoc, getDocsFromServer,
+  arrayUnion, arrayRemove,
+  updateDoc, query,
+  where, onSnapshot
 } from "firebase/firestore";
-import { query, where } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
 import {
   GoogleUserType,
@@ -40,7 +34,7 @@ const usersRef = collection(firestore, "users");
 
 /******************************** CREATE *****************************************************/
 /**
- * Create a a new user document in Firestore 'users' collection
+ * Create a new user document in Firestore 'users' collection
  * @param user
  * @param userInfo
  */
@@ -52,9 +46,8 @@ const createUser = async (
   try {
     await setDoc(doc(usersRef, `${user.uid}`), {
       uid: user.uid,
-      first: userInfo.first || "",
-      last: userInfo.last || "",
       displayName: userInfo.displayName,
+      avatarImage: userInfo.photoURL,
       email: userInfo.email,
       bio: "",
       friends: [],
@@ -78,23 +71,23 @@ const getUserByUserId = async (userId: string) => {
   const docSnap = await getDoc(userRef);
 
   if (!docSnap.exists()) {
-    return;
+    return Promise.reject("User does not exist");
+  } else {
+    const data = docSnap.data();
+    const user: AppUserInterface = {
+      uid: data.uid,
+      displayName: data.displayName,
+      email: data.email,
+      avatarImage: data.avatarImage,
+      isVerified: data.isVerified,
+      photoURL: data.photoURL,
+      bio: data.bio,
+      likes: data.likes,
+      friends: data.friends,
+      interests: data.interests,
+    };
+    return Promise.resolve(user);
   }
-  const data = docSnap.data();
-  const user: AppUserInterface = {
-    uid: data.uid,
-    username: data.username,
-    displayName: data.displayName,
-    first: data.first,
-    last: data.last,
-    email: data.email,
-    bio: data.bio,
-    likes: data.likes,
-    friends: data.friends,
-    interests: data.interests,
-  };
-
-  return user;
 };
 
 /**
@@ -109,13 +102,15 @@ const getUserByEmail = async (email: string) => {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     data = doc.data();
+    console.log(data);
   });
-  if (data != undefined) {
+  if (data !== null) {
     const profile: ProfileInterface = {
       uid: data["uid"],
       username: data["username"],
       imageUrl: data["imageUrl"],
       displayName: data["displayName"],
+      avatarImage: data["avatarImage"],
       email: data["email"],
       friends: data["friends"],
       likes: data["likes"],
@@ -169,6 +164,9 @@ const getFriends = async (
         uid: data.uid,
         displayName: data.displayName,
         email: data.email,
+        isVerified: data.isVerified,
+        photoURL: data.photoURL,
+        avatarImage: data.avatarImage,
         bio: data.bio,
         friends: data.friends,
         likes: data.likes,
@@ -232,11 +230,48 @@ const updateProfile = async (
   // return docRef.update(user);
 };
 
-/**
- * @description adds friend and update user
- * @param newFriend
- * @param userAdding
- */
+// /**
+//  * @description adds friend and update user
+//  * @param newFriend
+//  * @param userAdding
+//  */
+// <<<<<<< HEAD
+// const getAllUsers = async () => {
+//   const totalUsers: AppUserInterface[] = [];
+//   const querySnapshot = await getDocs(collection(firestore, "users"));
+//   await querySnapshot.forEach((doc) => {
+//     totalUsers.push({
+//       uid: doc.id,
+//       displayName: doc.data().displayName,
+//       email: doc.data().email,
+//       avatarImage: doc.data().avatarImage,
+//       isVerified: doc.data().isVerified,
+//       photoURL: doc.data().photoURL,
+//       bio: doc.data().bio,
+//       friends: doc.data().friends,
+//       likes: doc.data().likes,
+//       interests: doc.data().interests,
+//     });
+//     // doc.data() is never undefined for query doc snapshots
+//     // console.log(doc.id, ' => ', doc.data());
+//   });
+//   return Promise.resolve(totalUsers)
+// };
+//
+// // todo: shouldnt need this method anymore
+// // const getTotalUsernames = async () => {
+// //   const totalUsernames: string[] = [];
+// //   const querySnapshot = await getDocs(collection(firestore, "users"));
+// //   console.log(querySnapshot);
+// //   await querySnapshot.forEach((doc) => {
+// //     console.log(doc.data().username)
+// //     totalUsernames.push(doc.data().username);
+// //   });
+// //   return Promise.resolve(totalUsernames);
+// // }
+//
+// =======
+// >>>>>>> dev
 const addFriend = async (newFriend: string, userAdding: string) => {
   const friendsRef = doc(firestore, "users", userAdding);
 
@@ -260,11 +295,6 @@ const removeFriend = async (toBeRemoved: string, userRemoving: string) => {
 
 /******************************** DELETE *****************************************************/
 
-/**
- * Delete user document from Firestore
- * This function is used by deleteAccount in authFunctions
- * @param userId
- */
 const deleteUserDoc = async (userId: string) => {
   await deleteDoc(doc(firestore, "users", `${userId}`));
 };

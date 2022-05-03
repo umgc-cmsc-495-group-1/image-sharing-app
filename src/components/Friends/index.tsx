@@ -15,4 +15,4 @@ const Friends: React.FC = () => {
   );
 };
 
-export { Friends };
+export { Friends }

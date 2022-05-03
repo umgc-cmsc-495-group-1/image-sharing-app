@@ -10,8 +10,8 @@ interface Props {
 }
 
 export const ProtectedRoute: React.FC<Props> = ({
-  component: RouteComponent
-}) => {
+                                                  component: RouteComponent
+                                                }) => {
   const {isLoading, user} = useContext(AuthContext);
   // if (!FallbackComponent) FallbackComponent = HootLogin;
 
