@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { UploadFab } from "../UploadFab";
-import { getUserByEmail, getUserByUserId } from "../../data/userData";
+import {getUserByEmail} from "../../data/userData";
 import {
   FeedPostInterface,
   FeedPostType,
@@ -9,21 +9,22 @@ import {
 import { Box, Card, Container, Grid, Typography } from "@mui/material";
 import { getLiveUserPostData } from "../../data/photoData";
 import ProfilePost from "./ProfilePost";
-import {AuthContext} from "../../context/AuthContext";
 import FriendButton from "../FriendButton";
+import {useParams} from "react-router-dom";
 
 const Profile: React.FC = () => {
-  const { user } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
+  const [currentEmail, setCurrentEmail] = useState("");
+  const { email } = useParams<string>()
+  const decodeEmail = () => {
+    if (!email) {
+      return;
+    }
+    let temp = email;
+    temp = decodeURIComponent(temp);
+    temp = temp.replace("-", ".");
+    setCurrentEmail(temp);
+  }
 
-  useEffect(() => {
-    (async () => {
-      if (user) {
-        const userData = await getUserByUserId(user.uid);
-        setEmail(userData.email);
-      }
-    })();
-  }, [user]);
   const [profile, setProfile] = useState<ProfileInterface>({
     uid: "",
     username: "",
@@ -40,14 +41,15 @@ const Profile: React.FC = () => {
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
 
   useEffect(() => {
-    const fetchProfile = async () => await getUserByEmail(email ? email : "")
+    decodeEmail();
+    const fetchProfile = async () => await getUserByEmail(currentEmail)
 
     fetchProfile().then((inProfile) => {
       if (inProfile !== undefined) {
         setProfile(inProfile);
       }
     });
-  }, [email]);
+  }, [currentEmail]);
 
   useEffect(() => {
     getLiveUserPostData(profile.uid, setPosts);
