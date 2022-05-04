@@ -60,10 +60,15 @@ export default function Post(props: Props) {
   const [expanded, setExpanded] = useState(false);
   const user = useCurrentUser();
   const [currentAvatar, setCurrentAvatar] = useState<string>("");
+  const [encodedEmail, setEncodedEmail] = useState("");
   (async () => {
     if (post !== undefined) {
       const user = await getUserByUserId(post.uid);
-      setCurrentAvatar(user.avatarImage);
+      let currentEmail = user.email;
+      currentEmail = encodeURIComponent(currentEmail);
+      currentEmail = currentEmail.replace(".", "-");
+      setCurrentAvatar(user.avatarImage)
+      setEncodedEmail(currentEmail);
     }
   })()
 
@@ -97,13 +102,13 @@ export default function Post(props: Props) {
     >
       <CardHeader
         component={Link}
-        href={`user/${postUser?.email}`}
+        href={`user/${encodedEmail}`}
         avatar={
           <Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>
         }
         title={postUser?.displayName}
         titleTypographyProps={{ variant: "h5", color: "black" }}
-        subheader={postUser?.email}
+        subheader={postUser?.displayName}
         sx={{
           textDecoration: "none",
         }}

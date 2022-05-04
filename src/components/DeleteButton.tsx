@@ -27,16 +27,21 @@ export default function DeleteButton(props: Props) {
     setOpen(false);
   };
 
-  const handleDelete = () => {
-    deletePostByPid(pid);
-    handleClose();
+  const handleDelete = async () => {
+    await deletePostByPid(pid).then(() => {
+      handleClose();
+    });
   };
 
   useEffect(() => {
-    const unsubscribe = getLivePost(pid, setPost);
-    return () => {
-      unsubscribe;
-    };
+    (async () => {
+      const unsubscribe = await getLivePost(pid, setPost);
+      return unsubscribe;
+    })()
+    // const unsubscribe = getLivePost(pid, setPost);
+    // return () => {
+    //   unsubscribe;
+    // };
   }, [pid]);
 
   return (
