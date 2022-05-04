@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { UploadFab } from "../UploadFab";
 import {getUserByEmail} from "../../data/userData";
 import {
@@ -15,15 +15,18 @@ import {useParams} from "react-router-dom";
 const Profile: React.FC = () => {
   const [currentEmail, setCurrentEmail] = useState("");
   const { email } = useParams<string>()
-  const decodeEmail = () => {
-    if (!email) {
-      return;
-    }
-    let temp = email;
-    temp = decodeURIComponent(temp);
-    temp = temp.replace("-", ".");
-    setCurrentEmail(temp);
-  }
+  const decodeEmail = useCallback(
+    () => {
+        if (!email) {
+          return;
+        }
+        let temp = email;
+        temp = decodeURIComponent(temp);
+        temp = temp.replace("-", ".");
+        setCurrentEmail(temp);
+    },
+    [email],
+  );
 
   const [profile, setProfile] = useState<ProfileInterface>({
     uid: "",
@@ -49,7 +52,7 @@ const Profile: React.FC = () => {
         setProfile(inProfile);
       }
     });
-  }, [currentEmail]);
+  }, [currentEmail, decodeEmail]);
 
   useEffect(() => {
     getLiveUserPostData(profile.uid, setPosts);
