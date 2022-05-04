@@ -16,9 +16,9 @@ import { Explore } from "./components/Explore";
 import {LoadingBackdrop} from "./components/UploadFab/LoadingBackdrop";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
+import PostPage from "./components/PostPage";
 
 export default function App() {
-
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -75,6 +75,15 @@ export default function App() {
                   element: <ProtectedRoute component={Friends}  />,
                 },
               ],
+            },
+          ],
+        },
+        {
+          path: "/post",
+          children: [
+            {
+              path: ":pid",
+              element: <ProtectedRoute component={PostPage} />,
             },
           ],
         },

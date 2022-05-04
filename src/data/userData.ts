@@ -102,7 +102,6 @@ const getUserByEmail = async (email: string) => {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     data = doc.data();
-    console.log(data);
   });
   if (data !== null) {
     const profile: ProfileInterface = {
@@ -218,7 +217,6 @@ const updateProfile = async (
 //       interests: doc.data().interests,
 //     });
 //     // doc.data() is never undefined for query doc snapshots
-//     // console.log(doc.id, ' => ', doc.data());
 //   });
 //   return Promise.resolve(totalUsers)
 // };
@@ -227,9 +225,7 @@ const updateProfile = async (
 // // const getTotalUsernames = async () => {
 // //   const totalUsernames: string[] = [];
 // //   const querySnapshot = await getDocs(collection(firestore, "users"));
-// //   console.log(querySnapshot);
 // //   await querySnapshot.forEach((doc) => {
-// //     console.log(doc.data().username)
 // //     totalUsernames.push(doc.data().username);
 // //   });
 // //   return Promise.resolve(totalUsernames);
