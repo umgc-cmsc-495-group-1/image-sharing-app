@@ -3,7 +3,7 @@ import {
   getDownloadURL,
   StorageReference,
   deleteObject,
-  uploadBytes
+  uploadBytes,
 } from "firebase/storage";
 import { storage, firestore } from "../firebaseSetup";
 import { v4 as uuidv4 } from "uuid";
@@ -23,11 +23,11 @@ import {
   arrayRemove,
   onSnapshot,
 } from "firebase/firestore";
-import {CommentType, FeedPostType} from "../types/appTypes";
-import {AppUserInterface} from "../types/authentication";
+import { CommentType, FeedPostType } from "../types/appTypes";
+import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
-import {updateProfile, User} from "firebase/auth";
+import { updateProfile, User } from "firebase/auth";
 import {
   WhereFilterOp,
   FieldPath,
@@ -75,7 +75,7 @@ const fabPostCallback = async (
 ) => {
   if (user !== null && currentFile !== undefined) {
     const uid = user.uid;
-    const pid = uuidv4() + "." + currentFile.name.split(".").pop();
+    const pid = uuidv4();
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
     const photoRef = ref(storage, cloudPath);
@@ -102,25 +102,27 @@ const fabPostCallback = async (
           setDoc(doc(firestore, firestorePath), currentPost);
         });
       }, 800);
-
     } catch (error) {
       console.error(error);
     }
   }
 };
 
-const uploadProfileImg = async (user: User | null, currentFile: File | undefined) => {
+const uploadProfileImg = async (
+  user: User | null,
+  currentFile: File | undefined
+) => {
   if (user !== null && currentFile !== undefined) {
     const uid = user.uid;
     const pid = uuidv4();
     const cloudPath = `profile-imgs/${pid}`;
-    const uploadRef = ref(storage,cloudPath);
+    const uploadRef = ref(storage, cloudPath);
     const usersRef = collection(firestore, "users");
     try {
       // upload the photo to storage
       await uploadBytes(uploadRef, currentFile);
       setTimeout(async () => {
-        await getDownloadURL(uploadRef).then(url => {
+        await getDownloadURL(uploadRef).then((url) => {
           setDoc(doc(usersRef, uid), {
             uid: user.uid,
             displayName: user.displayName,
@@ -128,12 +130,11 @@ const uploadProfileImg = async (user: User | null, currentFile: File | undefined
             bio: "",
             friends: [],
             likes: [],
-            avatarImage: url
+            avatarImage: url,
           });
-          updateProfile(user, {photoURL: url});
-        })
-      }, 800)
-
+          updateProfile(user, { photoURL: url });
+        });
+      }, 800);
     } catch (error) {
       console.error(error);
     }
@@ -662,5 +663,5 @@ export {
   deleteAllPosts,
   deletePostByPid,
   deleteProfileImg,
-  updatePublicUrl
+  updatePublicUrl,
 };

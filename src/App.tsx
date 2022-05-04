@@ -13,9 +13,9 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { EasterEgg } from "./components/EasterEgg";
 import { Friends } from "./components/Friends";
 import { Explore } from "./components/Explore";
+import PostPage from "./components/PostPage";
 
 export default function App() {
-
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -44,6 +44,20 @@ export default function App() {
         {
           path: "/explore",
           element: <ProtectedRoute component={Explore} />,
+        },
+        {
+          path: "/post",
+          children: [
+            {
+              path: ":pid",
+              children: [
+                {
+                  index: true,
+                  element: <ProtectedRoute component={PostPage} />,
+                },
+              ],
+            },
+          ],
         },
         {
           path: "/user",
@@ -101,9 +115,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        {element}
-      </div>
+      <div className="App">{element}</div>
     </ThemeProvider>
   );
 }

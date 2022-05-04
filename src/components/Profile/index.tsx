@@ -1,32 +1,157 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { UploadFab } from "../UploadFab";
-import {getUserByEmail} from "../../data/userData";
+import { getUserByEmail } from "../../data/userData";
+import { FeedPostInterface, ProfileInterface } from "../../types/appTypes";
 import {
-  FeedPostInterface,
-  FeedPostType,
-  ProfileInterface,
-} from "../../types/appTypes";
-import { Box, Card, Container, Grid, Typography } from "@mui/material";
+  Box,
+  Card,
+  Container,
+  Grid,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  Typography,
+} from "@mui/material";
 import { getLiveUserPostData } from "../../data/photoData";
-import ProfilePost from "./ProfilePost";
 import FriendButton from "../FriendButton";
-import {useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const Profile: React.FC = () => {
+export default function Profile() {
+  const navigate = useNavigate();
+  const { email } = useParams<string>();
   const [currentEmail, setCurrentEmail] = useState("");
-  const { email } = useParams<string>()
-  const decodeEmail = useCallback(
-    () => {
-        if (!email) {
-          return;
-        }
-        let temp = email;
-        temp = decodeURIComponent(temp);
-        temp = temp.replace("-", ".");
-        setCurrentEmail(temp);
-    },
-    [email],
+  const decodeEmail = useCallback(() => {
+    if (!email) {
+      return;
+    }
+    let temp = email;
+    temp = decodeURIComponent(temp);
+    temp = temp.replace("-", ".");
+    setCurrentEmail(temp);
+  }, [email]);
+  const [profile, setProfile] = useState<ProfileInterface>({
+    uid: "",
+    username: "",
+    imageUrl: "",
+    displayName: "",
+    avatarImage: "",
+    email: "",
+    friends: [],
+    likes: [],
+    posts: 0,
+    bio: "",
+  });
+
+  const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
+
+  useEffect(() => {
+    decodeEmail();
+    const fetchProfile = async () => await getUserByEmail(currentEmail);
+    fetchProfile().then((inProfile) => {
+      if (inProfile) {
+        setProfile(inProfile);
+      }
+    });
+  }, [currentEmail, decodeEmail]);
+
+  useEffect(() => {
+    profile && getLiveUserPostData(profile.uid, setPosts);
+  }, [profile]);
+
+  function handleClick(pid: string) {
+    navigate("/post/" + pid);
+  }
+
+  return (
+    <Container
+      component="main"
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingBottom: 10,
+      }}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4}>
+          <Card
+            raised
+            sx={{
+              width: "100%",
+              aspectRatio: "1",
+            }}
+          >
+            <Box
+              sx={{
+                width: 1,
+                height: 0,
+                paddingBottom: "100%",
+                backgroundImage: `url(${profile?.avatarImage})`,
+                bacckgroundSize: "cover",
+              }}
+            />
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <Box display="flex">
+            <Typography variant="h4">{profile.displayName}</Typography>
+            <FriendButton uid={profile.uid} />
+          </Box>
+          <Typography variant="h6">
+            {posts.length} Posts | {profile.friends.length} Friends{" "}
+          </Typography>
+          <Typography>{profile.bio}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <ImageList
+            sx={{ width: "100%" }}
+            variant="masonry"
+            cols={posts.length < 3 ? 1 : posts.length < 5 ? 2 : 3}
+            gap={4}
+          >
+            {posts.map((item: FeedPostInterface) => (
+              <ImageListItem key={item.pid}>
+                <a
+                  id={item.pid}
+                  onClick={() => handleClick(item.pid)}
+                  style={{ display: "block", height: "100%" }}
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt={item.postText}
+                    loading="lazy"
+                    style={{
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                </a>
+                <ImageListItemBar title={item.postText} />
+              </ImageListItem>
+            ))}
+          </ImageList>
+        </Grid>
+      </Grid>
+      <UploadFab />
+    </Container>
   );
+}
+
+/*
+const OldProfile: React.FC = () => {
+  const [currentEmail, setCurrentEmail] = useState("");
+  const { email } = useParams<string>();
+  const decodeEmail = useCallback(() => {
+    if (!email) {
+      return;
+    }
+    let temp = email;
+    temp = decodeURIComponent(temp);
+    temp = temp.replace("-", ".");
+    setCurrentEmail(temp);
+  }, [email]);
 
   const [profile, setProfile] = useState<ProfileInterface>({
     uid: "",
@@ -45,7 +170,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     decodeEmail();
-    const fetchProfile = async () => await getUserByEmail(currentEmail)
+    const fetchProfile = async () => await getUserByEmail(currentEmail);
 
     fetchProfile().then((inProfile) => {
       if (inProfile !== undefined) {
@@ -74,7 +199,8 @@ const Profile: React.FC = () => {
           <Card
             raised
             sx={{
-              width: "100%", aspectRatio: "1",
+              width: "100%",
+              aspectRatio: "1",
             }}
           >
             <Box
@@ -112,5 +238,5 @@ const Profile: React.FC = () => {
     </Container>
   );
 };
-
+*/
 export { Profile };
