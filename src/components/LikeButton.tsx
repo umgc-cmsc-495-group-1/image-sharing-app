@@ -30,7 +30,7 @@ export default function LikeButton(props: Props) {
   }, [pid]);
 
   useEffect(() => {
-    if (post) {
+    if (post?.pid) {
       setIsLiked(post.likes.includes(user.uid));
       setNumLikes(post.likes.length);
     }

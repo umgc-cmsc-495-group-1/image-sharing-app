@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FeedPostType, ImageItemProps } from "../types/appTypes";
+import { FeedPostType } from "../types/appTypes";
 import {
   Avatar,
   Box,
@@ -23,30 +23,6 @@ import { CommentButton, CommentSection } from "./CommentButton";
 import { getLivePost } from "../data/photoData";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 
-const ImageItem: React.FC<ImageItemProps> = ({
-  src,
-  alt,
-  margin,
-  padding,
-}): JSX.Element => {
-  const isAlt = alt !== "" ? alt : "image";
-  const details: React.CSSProperties = {
-    height: "100%",
-    width: "100%",
-    objectFit: "contain",
-  };
-  return (
-    <Box
-      sx={{
-        px: padding,
-        mx: margin,
-      }}
-    >
-      <img src={src} alt={isAlt} style={details} loading="lazy" />
-    </Box>
-  );
-};
-
 type Props = {
   pid: string;
 };
@@ -62,15 +38,15 @@ export default function Post(props: Props) {
   const [currentAvatar, setCurrentAvatar] = useState<string>("");
   const [encodedEmail, setEncodedEmail] = useState("");
   (async () => {
-    if (post !== undefined) {
+    if (post?.pid !== undefined) {
       const user = await getUserByUserId(post.uid);
       let currentEmail = user.email;
       currentEmail = encodeURIComponent(currentEmail);
       currentEmail = currentEmail.replace(".", "-");
-      setCurrentAvatar(user.avatarImage)
+      setCurrentAvatar(user.avatarImage);
       setEncodedEmail(currentEmail);
     }
-  })()
+  })();
 
   useEffect(() => {
     const unsubscribe = getLivePost(pid, setPost);
@@ -85,7 +61,7 @@ export default function Post(props: Props) {
       if (post) inUser = await getUserByUserId(post.uid);
       if (inUser) setPostUser(inUser);
     };
-    if (post) getPostUser();
+    if (post?.pid) getPostUser();
   }, [post]);
 
   return (
@@ -116,7 +92,7 @@ export default function Post(props: Props) {
       <CardMedia component="img" image={post?.imageUrl} />
       <CardContent>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          {post?.classification.classifications.map((item) => (
+          {post?.classification?.classifications.map((item) => (
             <div key={item.className}>
               <Chip
                 size="small"
@@ -141,4 +117,4 @@ export default function Post(props: Props) {
   );
 }
 
-export { Post, ImageItem };
+export { Post };
