@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   CommentType,
   FeedPostInterface,
@@ -38,7 +38,7 @@ import {
   removePostLikes,
 } from "../../data/photoData";
 import { getUserByUserId } from "../../data/userData";
-import { AppUserInterface } from "../../types/authentication";
+// import { AppUserInterface } from "../../types/authentication";
 import FriendButton from "../FriendButton";
 import PrivateButton from "../PrivateButton";
 import DeleteButton from "../DeleteButton";

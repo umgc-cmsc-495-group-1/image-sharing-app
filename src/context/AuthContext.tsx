@@ -12,7 +12,7 @@ export const AuthContext = React.createContext<AuthProviderProps>({
   isLoading: true
 });
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider = ({ children }:{children: React.ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const AuthCheck = auth.onAuthStateChanged((firebaseUser) => {
