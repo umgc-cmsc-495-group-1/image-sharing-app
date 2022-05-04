@@ -12,6 +12,7 @@ import {
   ImageListItemBar,
   Typography,
 } from "@mui/material";
+import HootDefaultImage from "../../assets/logo/png/simple-192x192.png"
 import { getLiveUserPostData } from "../../data/photoData";
 import FriendButton from "../FriendButton";
 import { useNavigate, useParams } from "react-router-dom";
@@ -43,12 +44,13 @@ export default function Profile() {
   });
 
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
-
+  // const [profileImage, setProfileImage] = useState<string>("");
   useEffect(() => {
     decodeEmail();
     const fetchProfile = async () => await getUserByEmail(currentEmail);
     fetchProfile().then((inProfile) => {
       if (inProfile) {
+        // setProfileImage(inProfile.avatarImage);
         setProfile(inProfile);
       }
     });
@@ -87,8 +89,9 @@ export default function Profile() {
                 width: 1,
                 height: 0,
                 paddingBottom: "100%",
-                backgroundImage: `url(${profile?.avatarImage})`,
-                bacckgroundSize: "cover",
+                backgroundImage: `url(${profile.avatarImage ? profile.avatarImage : HootDefaultImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             />
           </Card>

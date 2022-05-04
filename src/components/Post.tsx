@@ -12,7 +12,7 @@ import {
   Link,
   Chip,
 } from "@mui/material";
-// import {useNavigate} from "react-router-dom";
+// import {Navigate} from "react-router-dom";
 import { getUserByUserId } from "../data/userData";
 import { AppUserInterface } from "../types/authentication";
 import FriendButton from "./FriendButton";
@@ -29,6 +29,7 @@ type Props = {
 
 export default function Post(props: Props) {
   const { pid } = props;
+  // const navigate = useNavigate();
   const [post, setPost] = useState<FeedPostType | undefined>(undefined);
   const [postUser, setPostUser] = useState<AppUserInterface | undefined>(
     undefined
@@ -78,7 +79,7 @@ export default function Post(props: Props) {
     >
       <CardHeader
         component={Link}
-        href={`user/${encodedEmail}`}
+        href={`/user/${encodedEmail}`}
         avatar={
           <Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>
         }
@@ -116,5 +117,3 @@ export default function Post(props: Props) {
     </Card>
   );
 }
-
-export { Post };

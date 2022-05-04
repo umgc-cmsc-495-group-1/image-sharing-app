@@ -35,7 +35,7 @@ const LoggedIn = ({ email }: { email: string }) => {
       </ListItemButton>
       <ListItemButton
         component={Link}
-        to="/"
+        to={"/"}
         role="navigation-logout"
         onClick={() => logout()}
       >

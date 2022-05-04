@@ -8,20 +8,25 @@ const bodyStyle: React.CSSProperties = {
 }
 
 const headingStyle: React.CSSProperties = {
-	fontFamily: 'Roboto', 
+	fontFamily: 'Roboto',
 	fontSize: 12
 }
 
-export default function HootTOS() {
+export default function TermsOfService() {
   return (
 		<Container component="main" maxWidth="xs">
-			<Grid item xs={12}>
+			<Grid
+				item xs={12}
+				sx={{
+					marginBottom: 5
+				}}
+			>
 				<h1 style={headingStyle}>Hoot! Terms of Service</h1>
 				<p style={bodyStyle}>These terms of service (“Terms”) govern your use of and access to Hoot (the “Site”) and any images, text, or other types of media uploaded, downloaded, or appearing on the platform (collectively referred to as “Content”), except where expressly stated otherwise. By creating an account with and using the Site, you agree to be bound by these Terms. The Site reserves the right to modify these terms at a future date as necessary for reasons including but not limited to technological changes, system requirements, industry trends, and ensuring continued proper function. In the event that such changes are made, you will be provided with an opportunity to review these changes, and close your account with the Site if you do not agree to the changes within thirty (30) days of being sent such notification. By keeping your account open after this thirty-day period, you agree to be bound by these changes.</p>
 				<h3 style={headingStyle}>WHO MAY USE THIS SITE</h3>
 				<p style={bodyStyle}>You may use the Site only if you agree to the rules outlined by these Terms, and are not a person barred from using or receiving Content through such sites and similar services by law. Additionally, in all cases, you must be at least 13 years old, and must not have previously held an account with the Site which was removed or suspended for violation of these Terms. By creating an account with the Site, you accept these Terms, and confirm to the best of your knowledge that you satisfy all eligibility criteria. Discovery of an account made in violation of these Terms will be cause for immediate suspension.</p>
 				<h3 style={headingStyle}>PRIVACY</h3>
-				<p style={bodyStyle}>The Site has a separate Privacy Policy, which may be viewed at <a href="/about/privacy" >privacy policy</a>. This policy describes how we handle the information you provide us when you use the Site. By creating an account and using the Site, you agree that you have read this privacy policy, and agree to allow the Site to collect and use information collected as is necessary to facilitate operation of the Site and rendering of services to users, as outlined in the Privacy Policy. The Site reserves the right to modify the Privacy Policy at a future date as necessary to allow proper function for reasons including but not limited to technological changes, system requirements, and industry trends. In the event that such changes are made, you will be provided with an opportunity to review these changes, and close your account with the Site if you do not agree to the changes within thirty (30) days of being sent such notification. By keeping your account open after this thirty-day period, you agree to be bound by these changes.</p>
+				<p style={bodyStyle}>The Site has a separate Privacy Policy, which may be viewed at <a href="/privacy" >privacy policy</a>. This policy describes how we handle the information you provide us when you use the Site. By creating an account and using the Site, you agree that you have read this privacy policy, and agree to allow the Site to collect and use information collected as is necessary to facilitate operation of the Site and rendering of services to users, as outlined in the Privacy Policy. The Site reserves the right to modify the Privacy Policy at a future date as necessary to allow proper function for reasons including but not limited to technological changes, system requirements, and industry trends. In the event that such changes are made, you will be provided with an opportunity to review these changes, and close your account with the Site if you do not agree to the changes within thirty (30) days of being sent such notification. By keeping your account open after this thirty-day period, you agree to be bound by these changes.</p>
 				<h3 style={headingStyle}>CONTENT ON THE SITE</h3>
 
 				<p style={bodyStyle}>You are responsible for any Content, as defined above, which you provide and upload to the Site, including ensuring compliance with all applicable laws, rules, and regulations. Illegal content or incitement of illegal activity is expressly prohibited on the Site.

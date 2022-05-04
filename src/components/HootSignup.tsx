@@ -8,6 +8,8 @@ import {
   Link,
   TextField,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { signInGooglePopup, signup } from "../data/authFunctions"; // , signup
@@ -28,10 +30,22 @@ export default function HootSignup() {
   const [profileImage, setProfileImage] = useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
-  const EMAIL_REGEX =
-    /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const [registerDisabled, setRegisterDisabled] = useState<boolean>(true);
+  const EMAIL_REGEX = /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
   const navigate = useNavigate();
+  const FormControlLabelText: React.ReactNode = (
+    <Typography variant="body2" color="textSecondary">
+      By signing up, you agree to our{" "}
+      <Link href="/terms-of-service" color="inherit">
+        Terms of Service
+      </Link>{" "}
+      and{" "}
+      <Link href="/privacy" color="inherit">
+        Privacy Policy
+      </Link>
+    </Typography>
+  );
 
   const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -257,10 +271,26 @@ export default function HootSignup() {
                 role="verify-password-input"
               />
             </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!registerDisabled}
+                    onChange={(event) => {
+                      setRegisterDisabled(!event.target.checked);
+                    }}
+                    inputProps={{"aria-label": "submit-checkbox-agreement"}}
+                  />
+                }
+                label={FormControlLabelText}
+                labelPlacement='end'
+              />
+            </Grid>
           </Grid>
           <Button
             type="submit"
             fullWidth
+            disabled={registerDisabled}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
@@ -269,6 +299,7 @@ export default function HootSignup() {
           <Typography textAlign="center"> - or -</Typography>
           <Button
             fullWidth
+            disabled={registerDisabled}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleGoogleSignin}

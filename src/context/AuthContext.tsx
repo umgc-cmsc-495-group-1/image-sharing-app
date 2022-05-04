@@ -4,12 +4,12 @@ import {auth} from "../firebaseSetup";
 
 export type AuthProviderProps = {
   user: User | null;
-  isLoading: boolean | true;
+  // isLoading: boolean | true;
 }
 
 export const AuthContext = React.createContext<AuthProviderProps>({
   user: null,
-  isLoading: true
+  // isLoading: true
 });
 
 export const AuthProvider = ({ children }:{children: React.ReactNode}) => {
@@ -30,5 +30,5 @@ export const AuthProvider = ({ children }:{children: React.ReactNode}) => {
     return () => AuthCheck();
   }, [isLoading, user, AuthCheck]);
 
-  return <AuthContext.Provider value={{isLoading, user}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{user}}>{children}</AuthContext.Provider>;
 };
