@@ -4,7 +4,7 @@ import {
   getDoc, getDocsFromServer,
   arrayUnion, arrayRemove,
   updateDoc, query,
-  where, onSnapshot
+  where, onSnapshot,
 } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
 import {
@@ -133,46 +133,11 @@ const getLiveFriends = async (
 ) => {
   const collectionRef = collection(firestore, "users");
   const q = query(collectionRef, where("uid", "==", userId));
-  const unsubcribe = onSnapshot(q, (querySnapshot) => {
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const friendList: string[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       friendList.push(...data.friends);
-    });
-    callback(friendList);
-  });
-  return unsubcribe;
-};
-
-/**
- * @description Returns an array of the user's friends
- * @param friends : string[]
- * @returns : UserInterface[]
- */
-const getFriends = async (
-  friends: string[],
-  // eslint-disable-next-line no-unused-vars
-  callback: (_friendList: AppUserInterface[]) => void
-) => {
-  const usersRef = collection(firestore, "users");
-  const q = query(usersRef, where("uid", "in", friends));
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    const friendList: AppUserInterface[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const friend: AppUserInterface = {
-        uid: data.uid,
-        displayName: data.displayName,
-        email: data.email,
-        isVerified: data.isVerified,
-        photoURL: data.photoURL,
-        avatarImage: data.avatarImage,
-        bio: data.bio,
-        friends: data.friends,
-        likes: data.likes,
-        interests: data.interests,
-      };
-      friendList.push(friend);
     });
     callback(friendList);
   });
@@ -308,5 +273,5 @@ export {
   deleteUserDoc,
   addFriend,
   removeFriend,
-  getFriends,
+  // getFriends,
 };
