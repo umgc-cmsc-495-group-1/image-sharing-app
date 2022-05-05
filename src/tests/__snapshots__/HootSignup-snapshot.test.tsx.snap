@@ -6,6 +6,7 @@ exports[`Renders correctly 1`] = `
 >
   <div
     className="MuiBox-root css-binzgt"
+    role="sign-up-page-container"
   >
     <div
       className="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-1999axt-MuiAvatar-root"
@@ -154,6 +155,7 @@ exports[`Renders correctly 1`] = `
                 onFocus={[Function]}
                 required={true}
                 type="text"
+                value=""
               />
               <fieldset
                 aria-hidden={true}
@@ -164,64 +166,6 @@ exports[`Renders correctly 1`] = `
                 >
                   <span>
                     Display Name
-                     
-                    *
-                  </span>
-                </legend>
-              </fieldset>
-            </div>
-          </div>
-        </div>
-        <div
-          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-        >
-          <div
-            className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
-            role="username-input"
-          >
-            <label
-              className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink={false}
-              htmlFor="username"
-              id="username-label"
-            >
-              User Name
-              <span
-                aria-hidden={true}
-                className="MuiInputLabel-asterisk MuiFormLabel-asterisk css-wgai2y-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
-            <div
-              className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
-              onClick={[Function]}
-            >
-              <input
-                aria-invalid={false}
-                autoComplete="username"
-                autoFocus={false}
-                className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                disabled={false}
-                id="username"
-                name="username"
-                onAnimationStart={[Function]}
-                onBlur={[Function]}
-                onChange={[Function]}
-                onFocus={[Function]}
-                required={true}
-                type="text"
-              />
-              <fieldset
-                aria-hidden={true}
-                className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-              >
-                <legend
-                  className="css-1ftyaf0"
-                >
-                  <span>
-                    User Name
                      
                     *
                   </span>
@@ -270,6 +214,7 @@ exports[`Renders correctly 1`] = `
                 onFocus={[Function]}
                 required={true}
                 type="text"
+                value=""
               />
               <fieldset
                 aria-hidden={true}
@@ -328,6 +273,7 @@ exports[`Renders correctly 1`] = `
                 onFocus={[Function]}
                 required={true}
                 type="password"
+                value=""
               />
               <fieldset
                 aria-hidden={true}
@@ -386,6 +332,7 @@ exports[`Renders correctly 1`] = `
                 onFocus={[Function]}
                 required={true}
                 type="password"
+                value=""
               />
               <fieldset
                 aria-hidden={true}
@@ -404,10 +351,79 @@ exports[`Renders correctly 1`] = `
             </div>
           </div>
         </div>
+        <div
+          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+        >
+          <label
+            className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-j204z7-MuiFormControlLabel-root"
+          >
+            <span
+              className="MuiCheckbox-root MuiCheckbox-colorPrimary MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+              onBlur={[Function]}
+              onContextMenu={[Function]}
+              onDragLeave={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <input
+                aria-label="submit-checkbox-agreement"
+                checked={false}
+                className="PrivateSwitchBase-input css-1m9pwf3"
+                data-indeterminate={false}
+                onChange={[Function]}
+                type="checkbox"
+              />
+              <svg
+                aria-hidden={true}
+                className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="CheckBoxOutlineBlankIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                />
+              </svg>
+            </span>
+            <p
+              className="MuiTypography-root MuiTypography-body2 css-r40f8v-MuiTypography-root"
+            >
+              By signing up, you agree to our
+               
+              <a
+                className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1cghntr-MuiTypography-root-MuiLink-root"
+                href="/terms-of-service"
+                onBlur={[Function]}
+                onFocus={[Function]}
+              >
+                Terms of Service
+              </a>
+               
+              and
+               
+              <a
+                className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1cghntr-MuiTypography-root-MuiLink-root"
+                href="/privacy"
+                onBlur={[Function]}
+                onFocus={[Function]}
+              >
+                Privacy Policy
+              </a>
+            </p>
+          </label>
+        </div>
       </div>
       <button
-        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
-        disabled={false}
+        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root Mui-disabled  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
+        disabled={true}
         onBlur={[Function]}
         onContextMenu={[Function]}
         onDragLeave={[Function]}
@@ -420,7 +436,7 @@ exports[`Renders correctly 1`] = `
         onTouchEnd={[Function]}
         onTouchMove={[Function]}
         onTouchStart={[Function]}
-        tabIndex={0}
+        tabIndex={-1}
         type="submit"
       >
         Sign Up
@@ -431,8 +447,8 @@ exports[`Renders correctly 1`] = `
          - or -
       </p>
       <button
-        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
-        disabled={false}
+        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root Mui-disabled  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
+        disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
         onContextMenu={[Function]}
@@ -446,7 +462,7 @@ exports[`Renders correctly 1`] = `
         onTouchEnd={[Function]}
         onTouchMove={[Function]}
         onTouchStart={[Function]}
-        tabIndex={0}
+        tabIndex={-1}
         type="button"
       >
         Sign In with Google!
@@ -458,7 +474,7 @@ exports[`Renders correctly 1`] = `
           className="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
         >
           <a
-            className="MuiTypography-root MuiTypography-body2 MuiLink-root MuiLink-underlineAlways css-wpssva-MuiTypography-root-MuiLink-root"
+            className="MuiTypography-root MuiTypography-body2 MuiLink-root MuiLink-underlineAlways css-101ca9i-MuiTypography-root-MuiLink-root"
             href="/login"
             onBlur={[Function]}
             onFocus={[Function]}

@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { AppUserInterface } from "../../types/authentication";
-import FriendButton from "../FriendButton";
+import FriendButton from "../Buttons/FriendButton";
 
 interface FriendsListInterface {
   friend: AppUserInterface;

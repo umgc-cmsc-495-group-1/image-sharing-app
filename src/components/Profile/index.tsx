@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import HootDefaultImage from "../../assets/logo/png/simple-192x192.png"
 import { getLiveUserPostData } from "../../data/photoData";
-import FriendButton from "../FriendButton";
+import FriendButton from "../Buttons/FriendButton";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function Profile() {
@@ -93,12 +93,13 @@ export default function Profile() {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
+              role="profile-image"
             />
           </Card>
         </Grid>
         <Grid item xs={12} md={8}>
           <Box display="flex">
-            <Typography variant="h4">{profile.displayName}</Typography>
+            <Typography variant="h4" role="display-name">{profile.displayName}</Typography>
             <FriendButton uid={profile.uid} />
           </Box>
           <Typography variant="h6">
@@ -114,7 +115,7 @@ export default function Profile() {
             gap={4}
           >
             {posts.map((item: FeedPostInterface) => (
-              <ImageListItem key={item.pid}>
+              <ImageListItem key={item.pid} role="profile-image">
                 <a
                   id={item.pid}
                   onClick={() => handleClick(item.pid)}
@@ -242,4 +243,3 @@ const OldProfile: React.FC = () => {
   );
 };
 */
-export { Profile };

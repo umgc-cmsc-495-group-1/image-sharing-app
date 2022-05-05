@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { FeedPostType } from "../types/appTypes";
-import { deletePostByPid, getLivePost } from "../data/photoData";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { FeedPostType } from "../../types/appTypes";
+import { deletePostByPid, getLivePost } from "../../data/photoData";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import {
   Button,
   Dialog,

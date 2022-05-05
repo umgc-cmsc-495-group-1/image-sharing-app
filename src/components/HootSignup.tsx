@@ -149,6 +149,7 @@ export default function HootSignup() {
           flexDirection: "column",
           alignItems: "center",
         }}
+        role="sign-up-page-container"
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
@@ -279,7 +280,7 @@ export default function HootSignup() {
                     onChange={(event) => {
                       setRegisterDisabled(!event.target.checked);
                     }}
-                    inputProps={{"aria-label": "submit-checkbox-agreement"}}
+                    inputProps={{ "aria-label": "submit-checkbox-agreement" }}
                   />
                 }
                 label={FormControlLabelText}

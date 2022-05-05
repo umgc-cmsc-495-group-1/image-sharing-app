@@ -39,10 +39,10 @@ import {
 } from "../../data/photoData";
 import { getUserByUserId } from "../../data/userData";
 // import { AppUserInterface } from "../../types/authentication";
-import FriendButton from "../FriendButton";
-import PrivateButton from "../PrivateButton";
-import DeleteButton from "../DeleteButton";
-
+import FriendButton from "../Buttons/FriendButton";
+import PrivateButton from "../Buttons/PrivateButton";
+import DeleteButton from "../Buttons/DeleteButton";
+// todo: remove this component as it is not being used anymore
 const LikeIcon: React.FC<LikeIconProps> = ({ isLiked }): JSX.Element => {
   let Icon: JSX.Element = (
     <SvgIcon component={FavoriteBorderIcon} color="info" />

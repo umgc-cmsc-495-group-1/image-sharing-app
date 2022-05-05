@@ -11,11 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getLivePost, postComment } from "../data/photoData";
-import { CommentType, FeedPostType } from "../types/appTypes";
+import { getLivePost, postComment } from "../../data/photoData";
+import { CommentType, FeedPostType } from "../../types/appTypes";
 import CommentIcon from "@mui/icons-material/Comment";
 import SendIcon from "@mui/icons-material/Send";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 type CommentButtonProps = {
   pid: string;
@@ -51,10 +51,10 @@ function CommentButton(props: CommentButtonProps) {
 
   return (
     <>
-      <IconButton onClick={handleExpand}>
+      <IconButton onClick={handleExpand} role="comment-button">
         <CommentIcon />
       </IconButton>
-      <Typography>{numComments}</Typography>
+      <Typography role="number-of-comments">{numComments}</Typography>
     </>
   );
 }

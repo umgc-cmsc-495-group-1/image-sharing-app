@@ -71,6 +71,7 @@ export default function HootLogin() {
           flexDirection: "column",
           alignItems: "center",
         }}
+        role="login-page-container"
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
@@ -98,6 +99,7 @@ export default function HootLogin() {
                 fullWidth
                 id="email"
                 label="Email Address"
+                role="email-login"
                 name="email"
                 autoComplete="email"
               />
@@ -111,6 +113,7 @@ export default function HootLogin() {
                 fullWidth
                 name="password"
                 label="Password"
+                role="password-login"
                 type="password"
                 id="password"
                 autoComplete="new-password"

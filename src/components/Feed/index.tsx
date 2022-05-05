@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
 import { useFeed } from "../../hooks/useFeed";
-import Post  from "../Post";
+import Post  from "../Profile/Post";
 
 const Feed: React.FC = (): JSX.Element => {
   const feed = useFeed();
