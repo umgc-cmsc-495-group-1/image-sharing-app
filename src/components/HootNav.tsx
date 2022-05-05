@@ -98,15 +98,15 @@ export default function HootNav() {
           }}
         >
           <List>
-            <ListItem button component={Link} to="/" role="navigation-home">
+            <ListItem component={Link} to="/" role="navigation-home">
               <ListItemText primary="Home" />
             </ListItem>
             {!uid ? ( // Logged out User Nav Section
               <>
-                <ListItem button component={Link} to="/login" role="navigation-login">
+                <ListItem component={Link} to="/login" role="navigation-login">
                   <ListItemText primary="Login" />
                 </ListItem>
-                <ListItem button component={Link} to="/signup" role="navigation-signup">
+                <ListItem component={Link} to="/signup" role="navigation-signup">
                   <ListItemText primary="Sign Up" />
                 </ListItem>
               </>
@@ -116,7 +116,6 @@ export default function HootNav() {
             {uid ? ( // Logged in User Nav Section
               <>
                 <ListItem
-                  button
                   onClick={() => {
                     logout();
                     navigate("../", { replace: true });

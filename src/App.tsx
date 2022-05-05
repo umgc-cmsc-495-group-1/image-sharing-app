@@ -15,6 +15,7 @@ import { Friends } from "./components/Friends";
 import { Explore } from "./components/Explore";
 
 export default function App() {
+
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -61,7 +62,7 @@ export default function App() {
                 {
                   path: "friends",
                   element: <ProtectedRoute component={Friends} />,
-                }
+                },
               ],
             },
           ],
@@ -73,9 +74,7 @@ export default function App() {
       ],
     },
   ];
-
   const element = useRoutes(routes);
-
   const theme = createTheme({
     palette: {
       primary: {
@@ -102,7 +101,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">{element}</div>
+      <div className="App">
+        {element}
+      </div>
     </ThemeProvider>
   );
 }

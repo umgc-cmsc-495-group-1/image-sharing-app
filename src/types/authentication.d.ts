@@ -2,11 +2,10 @@ import { User } from '@firebase/auth';
 import { UserInterestsType } from './interests';
 
 export interface BaseUserInterface {
-  first?: string | undefined;
-  last?: string | undefined;
   displayName: string;
-  username?: string | undefined;
   email: string;
+  photoURL: string;
+  isVerified: boolean;
 }
 
 export interface UserInterface extends BaseUserInterface {
@@ -26,6 +25,7 @@ export interface AppUserInterface extends BaseUserInterface {
   bio?: string;
   friends: string[];
   likes: string[];
+  avatarImage: string;
   interests: UserInterestsType | UserInterestsType[] | [];
 }
 

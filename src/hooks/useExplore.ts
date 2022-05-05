@@ -21,14 +21,9 @@ export const useExplore = () => {
       let usersPhotos: FeedPostType[] = await getPublicFeedData();
       try {
         mapUserPhotos(usersPhotos);
-        // usersPhotos.map((photo) => {
-        //   getPhotoUrl(photo.path || "").then(
-        //     (url: string | undefined) => url && (photo.imageUrl = url)
-        //   );
-        // });
       } catch (e) {
         usersPhotos = [];
-        console.log(e);
+        console.error(e);
       }
       setPosts(usersPhotos);
     }

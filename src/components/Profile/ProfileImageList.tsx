@@ -8,7 +8,6 @@ const ProfileImageList = ({ images, uid }: { images: string[], uid: string }) =>
 
   function generatePath(index: number) {
     const pid = (index + 1).toString();
-    console.log(pid)
     return `/user/${uid}/profile/${pid}`
   }
 
