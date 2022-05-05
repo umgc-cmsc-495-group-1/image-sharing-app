@@ -159,11 +159,25 @@ const getAllUsers = async () => {
   });
 };
 
+const updateBio = async (userId: string, bio: string) => {
+  const docRef = doc(firestore, "users", `${userId}`);
+  await updateDoc(docRef, { bio: bio });
+}
+
+const updateDisplayName = async (userId: string, displayName: string) => {
+  const docRef = doc(firestore, "users", `${userId}`);
+  await updateDoc(docRef, { displayName: displayName });
+}
+
 export {
   createUser,
+  getLiveFriends,
   getUserByUserId,
-  emailInDb,
-  updateUser,
+  getUserByEmail,
+  updateProfile,
   deleteUserDoc,
-  getAllUsers,
+  addFriend,
+  removeFriend,
+  updateBio,
+  updateDisplayName
 };
