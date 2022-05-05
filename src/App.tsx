@@ -2,7 +2,6 @@ import * as React from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Feed from "./components/Feed";
-import { UserPost } from "./components/UserPost";
 import HootHome from "./components/HootHome";
 import HootLogin from "./components/HootLogin";
 import { Navigation } from "./components/Navigation";
@@ -11,11 +10,12 @@ import Hoot404 from "./components/Hoot404";
 import HootUserSettings from "./components/HootUserSettings";
 import { Profile } from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Signup } from "./components/Signup";
 import { EasterEgg } from "./components/EasterEgg";
-import { LoadingBackdrop } from "./components/UploadFab/LoadingBackdrop";
+import { Friends } from "./components/Friends";
+import { Explore } from "./components/Explore";
 
 export default function App() {
+
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -23,29 +23,15 @@ export default function App() {
       children: [
         {
           index: true,
-          element: <ProtectedRoute component={Feed} fallback={HootHome} />,
+          element: <HootHome />,
         },
         {
           path: "/login",
           element: <HootLogin />,
         },
         {
-          path: "/auth-loading",
-          element: (
-            <ProtectedRoute component={Feed} fallback={LoadingBackdrop} />
-          ),
-        },
-        {
-          path: "/home",
-          element: <HootHome />,
-        },
-        {
           path: "/signup",
           element: <HootSignup />,
-        },
-        {
-          path: "/test-signup",
-          element: <Signup />,
         },
         {
           path: "/candy-mountain",
@@ -56,32 +42,26 @@ export default function App() {
           element: <ProtectedRoute component={Feed} />,
         },
         {
+          path: "/explore",
+          element: <ProtectedRoute component={Explore} />,
+        },
+        {
           path: "/user",
           children: [
             {
-              path: ":uid",
+              path: ":email",
               children: [
                 {
-                  path: "profile",
-                  children: [
-                    {
-                      index: true,
-                      element: <ProtectedRoute component={Profile} />,
-                    },
-                    {
-                      path: ":pid",
-                      children: [
-                        {
-                          index: true,
-                          element: <ProtectedRoute component={UserPost} />,
-                        },
-                      ],
-                    },
-                  ],
+                  index: true,
+                  element: <ProtectedRoute component={Profile} />,
                 },
                 {
                   path: "settings",
                   element: <ProtectedRoute component={HootUserSettings} />,
+                },
+                {
+                  path: "friends",
+                  element: <ProtectedRoute component={Friends} />,
                 },
               ],
             },
@@ -94,9 +74,7 @@ export default function App() {
       ],
     },
   ];
-
   const element = useRoutes(routes);
-
   const theme = createTheme({
     palette: {
       primary: {
@@ -123,7 +101,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">{element}</div>
+      <div className="App">
+        {element}
+      </div>
     </ThemeProvider>
   );
 }

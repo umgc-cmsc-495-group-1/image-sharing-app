@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
   Avatar,
   Box,
@@ -10,63 +10,118 @@ import {
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-//import { useNavigate } from 'react-router-dom';
-import { signInGooglePopup, signup } from "../data/authFunctions";
+import {signInGooglePopup, signup} from "../data/authFunctions"; // , signup
 import { UserInterface } from "../types/authentication";
-import { UserSignupValidationError } from "../utils/Error";
-import { useNavigate } from "react-router-dom";
+import ErrorsDisplay from "./ErrorsDisplay";
+import {useNavigate} from "react-router-dom";
+import {uploadProfileImg} from "../data/photoData";
 
 export default function HootSignup() {
-  const [displayName, setDisplayName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [verifyPassword, setVerifyPassword] = useState("");
+  const [createdUser, setCreatedUser] = useState<UserInterface>({
+    displayName: "",
+    photoURL: "",
+    email: "",
+    isVerified: false,
+    password: "",
+    verifyPassword: "",
+  });
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+  const [errors, setErrors] = useState<string[]>([]);
+  const EMAIL_REGEX = /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
   const navigate = useNavigate();
 
-  // TODO: write error handler
+  const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files !== null && files.length > 0) {
+      const url = URL.createObjectURL(files[0]);
+      setFileToUpload(files[0]);
+      setProfileImage(url);
+    } else {
+      setFileToUpload(undefined);
+      setProfileImage("");
+    }
+  };
+
+  const sanitizeDisplayName = (displayName: string) => {
+    return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
+  };
+
+  const checkEmptyValues = () => {
+    setErrors([]);
+    if (
+      createdUser.displayName === "" ||
+      createdUser.email === "" ||
+      createdUser.password === "" ||
+      createdUser.verifyPassword === ""
+    ) {
+      setErrors((errors) => [...errors, "All fields are required!"]);
+      return false;
+    }
+    if (createdUser.password !== createdUser.verifyPassword) {
+      setErrors((errors) => [...errors, "Passwords do not match!"]);
+      return false;
+    }
+    console.log(createdUser.displayName.length)
+    console.log(createdUser.displayName)
+    if (createdUser.displayName.length < 6 || createdUser.displayName.length > 20) {
+      setErrors((errors) => [...errors, "Display name must be between 6 and 20 characters!"]);
+      return false;
+    }
+    if (!EMAIL_REGEX.test(createdUser.email)) {
+      setErrors((errors) => [...errors, "Email is not valid!"]);
+      return false;
+    }
+    if (fileToUpload === undefined) {
+      setErrors((errors) => [...errors, "Please upload a profile image!"]);
+      return false;
+    }
+
+    return true;
+  }
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log(event)
     event.preventDefault();
     const user: UserInterface = {
-      displayName: displayName,
-      username: username,
-      email: email,
-      password: password,
-      verifyPassword: verifyPassword,
+      displayName: createdUser.displayName,
+      photoURL: profileImage,
+      email: createdUser.email,
+      isVerified: false,
+      password: createdUser.password,
+      verifyPassword: createdUser.verifyPassword,
     };
+    // prevent form submission if there are errors
+    if (!checkEmptyValues()) return;
+    console.log(user)
 
     try {
+      // sign up the user
       await signup(user)
         .then((res) => {
-          if (res !== undefined) {
-            if (res.status === 201) {
-              // TODO: redirect to the profile page after adding stepper fro creating account
-              // navigate('/profile');
-              console.log(res.user);
-            }
+          if (res !== undefined){
+            uploadProfileImg(res.user, fileToUpload);
+            navigate("/explore");
           }
         })
         .catch((err) => {
-          if (err.status == 400) {
-            throw new UserSignupValidationError(
-              "UserSignupValidation",
-              err.message
-            );
-          }
+          console.error([err.code] + `: ${err.message}`);
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
+
   };
 
   const handleGoogleSignin = async () => {
     await signInGooglePopup()
       .then(() => {
-        navigate("/auth-loading");
+        navigate("/explore");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -93,10 +148,46 @@ export default function HootSignup() {
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
+              <Box>
+                <ErrorsDisplay errors={errors} />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    mt: 3, mb: 2
+                }}
+                >
+                  <label htmlFor="profile-image">Please select a profile image</label>
+                </Button>
+                <TextField
+                  sx={{
+                    display: "none",
+                  }}
+                  required
+                  fullWidth
+                  id="profile-image"
+                  type="file"
+                  onChange={uploadProfileImage}
+                  inputProps={{
+                    accept: "image/*",
+                    id: "profile-image",
+                    placeholder: "Select Profile Image",
+                    style: { display: "none" },
+                  }}
+                />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setDisplayName(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    displayName: sanitizeDisplayName(event.target.value)
+                  });
                 }}
+                value={createdUser.displayName}
                 required
                 fullWidth
                 id="displayName"
@@ -109,22 +200,12 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setUsername(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    email: event.target.value
+                  });
                 }}
-                required
-                fullWidth
-                id="username"
-                label="User Name"
-                name="username"
-                autoComplete="username"
-                role="username-input"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                }}
+                value={createdUser.email}
                 required
                 fullWidth
                 id="email"
@@ -137,8 +218,12 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setPassword(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    password: event.target.value
+                  });
                 }}
+                value={createdUser.password}
                 required
                 fullWidth
                 name="password"
@@ -152,8 +237,12 @@ export default function HootSignup() {
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
-                  setVerifyPassword(event.target.value);
+                  setCreatedUser({
+                    ...createdUser,
+                    verifyPassword: event.target.value
+                  });
                 }}
+                value={createdUser.verifyPassword}
                 required
                 fullWidth
                 name="verifyPassword"

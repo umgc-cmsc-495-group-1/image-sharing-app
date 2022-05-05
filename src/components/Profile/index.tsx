@@ -1,107 +1,111 @@
-import React from 'react';
-import { demoFeedImages, getProfileData } from '../../tests/test_data'
-import { useParams, Outlet } from 'react-router-dom';
-import { Box, Container } from '@mui/material';
-import { UserMetaData } from './UserMetaData';
-import {UploadFab} from "../UploadFab";
-
-// const TestUpload: React.FC = () => {
-//
-//   const [profile, setProfile] = useState<File[]>()
-//   const [feed, setFeed] = useState<File[]>()
-//
-//   const handleProfile = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const fileList = event.target.files;
-//     if (!fileList) return;
-//     console.log(fileList)
-//     const result: File[] = [];
-//     for (const key in fileList) {
-//       if (Object.prototype.hasOwnProperty.call(fileList, key)) {
-//         const element = fileList[key];
-//         result.push(element);
-//       }
-//     }
-//     setProfile(result)
-//   }
-//
-//   const handleFeed = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const fileList = event.target.files;
-//     if (!fileList) return;
-//     console.log(fileList)
-//     const result: File[] = [];
-//     for (const key in fileList) {
-//       if (Object.prototype.hasOwnProperty.call(fileList, key)) {
-//         const element = fileList[key];
-//         result.push(element);
-//       }
-//     }
-//     setFeed(result)
-//   }
-//
-//   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
-//     event.preventDefault();
-//     if (profile !== undefined && feed !== undefined) {
-//       // add test data to databasa
-//       registerRandomUsers(profile, feed)
-//     }
-//   }
-//
-//
-//
-//   return (
-//     <Box>
-//       <div>
-//         <label htmlFor="add-profile">Add Profile</label>
-//         <input
-//           id='add-profile' name='add-profile' type="file"
-//           accept='.jpg, .jpeg, .png' multiple onChange={handleProfile}
-//         />
-//         <label htmlFor="add-feed">Add Feed</label>
-//         <input
-//           id='add-feed' name='add-feed' type="file"
-//           accept='.jpg, .jpeg, .png' multiple onChange={handleFeed}
-//         />
-//       </div>
-//       <div>
-//         <button
-//           onClick={handleSubmit}
-//         >Submit</button>
-//       </div>
-//     </Box>
-//   )
-// }
+import React, {useContext, useEffect, useState} from "react";
+import { UploadFab } from "../UploadFab";
+import { getUserByEmail, getUserByUserId } from "../../data/userData";
+import {
+  FeedPostInterface,
+  FeedPostType,
+  ProfileInterface,
+} from "../../types/appTypes";
+import { Box, Card, Container, Grid, Typography } from "@mui/material";
+import { getLiveUserPostData } from "../../data/photoData";
+import ProfilePost from "./ProfilePost";
+import {AuthContext} from "../../context/AuthContext";
+import FriendButton from "../FriendButton";
 
 const Profile: React.FC = () => {
-  const { uid } = useParams();
-  const profileData = getProfileData(uid);
+  const { user } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      if (user) {
+        const userData = await getUserByUserId(user.uid);
+        setEmail(userData.email);
+      }
+    })();
+  }, [user]);
+  const [profile, setProfile] = useState<ProfileInterface>({
+    uid: "",
+    username: "",
+    imageUrl: "",
+    displayName: "",
+    avatarImage: "",
+    email: email || "",
+    friends: [],
+    likes: [],
+    posts: 0,
+    bio: "",
+  });
+
+  const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
+
+  useEffect(() => {
+    const fetchProfile = async () => await getUserByEmail(email ? email : "")
+
+    fetchProfile().then((inProfile) => {
+      if (inProfile !== undefined) {
+        setProfile(inProfile);
+      }
+    });
+  }, [email]);
+
+  useEffect(() => {
+    getLiveUserPostData(profile.uid, setPosts);
+  }, [profile.uid]);
+
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          my: 10
-        }}
-      >
-        <UserMetaData
-          uid={profileData.uid}
-          username={profileData.username}
-          posts={profileData.posts}
-          displayName={profileData.displayName}
-          friends={profileData.friends}
-          likes={profileData.likes}
-          email={profileData.email}
-          bio={profileData.bio}
-          imageUrl={profileData.imageUrl}
-          testImages={demoFeedImages}
-        />
-      </Box>
+    <Container
+      component="main"
+      maxWidth="xl"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingBottom: 10,
+      }}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4}>
+          <Card
+            raised
+            sx={{
+              width: "100%", aspectRatio: "1",
+            }}
+          >
+            <Box
+              sx={{
+                width: 1.0,
+                height: 0,
+                paddingBottom: "100%",
+                backgroundImage: `url(${profile.avatarImage})`,
+                backgroundSize: "cover",
+              }}
+            />
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <Box display="flex">
+            <Typography variant="h4">{profile.displayName}</Typography>
+            <FriendButton uid={profile.uid} />
+          </Box>
+          <Typography variant="h6">
+            {posts.length} Posts | {profile.friends.length} Friends{" "}
+          </Typography>
+          <Typography>{profile.bio}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            {posts.map((item: FeedPostType) => (
+              <ProfilePost key={item.pid} item={item} />
+            ))}
+          </Grid>
+        </Grid>
+      </Grid>
       <Box>
         <UploadFab />
       </Box>
-      <Outlet />
     </Container>
-  )
-}
+  );
+};
 
-export {
-  Profile
-}
+export { Profile };
