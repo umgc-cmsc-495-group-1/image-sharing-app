@@ -6,10 +6,10 @@ import {
   getLivePost,
   removePostLikes,
   removeUserLikes,
-} from "../data/photoData";
-import { FeedPostType } from "../types/appTypes";
+} from "../../data/photoData";
+import { FeedPostType } from "../../types/appTypes";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 type Props = {
   pid: string;
@@ -49,11 +49,11 @@ export default function LikeButton(props: Props) {
   return (
     <>
       {isLiked ? (
-        <IconButton onClick={handleUnlike}>
+        <IconButton onClick={handleUnlike} role="like-button">
           <FavoriteIcon sx={{ color: "red" }} />
         </IconButton>
       ) : (
-        <IconButton onClick={handleLike}>
+        <IconButton onClick={handleLike} role="like-button">
           <FavoriteIcon />
         </IconButton>
       )}

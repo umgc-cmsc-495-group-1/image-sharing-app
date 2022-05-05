@@ -3,7 +3,7 @@ import { UploadFab } from "../UploadFab";
 import { Box } from "@mui/material";
 import { useExplore } from "../../hooks/useExplore";
 import { FeedPostType } from "../../types/appTypes";
-import Post from "../Post";
+import Post from "../Profile/Post";
 
 const Explore = () => {
   const explore = useExplore();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FeedPostType } from "../types/appTypes";
+import { FeedPostType } from "../../types/appTypes";
 import {
   Avatar,
   Box,
@@ -13,15 +13,15 @@ import {
   Chip,
 } from "@mui/material";
 // import {Navigate} from "react-router-dom";
-import { getUserByUserId } from "../data/userData";
-import { AppUserInterface } from "../types/authentication";
-import FriendButton from "./FriendButton";
-import PrivateButton from "./PrivateButton";
-import DeleteButton from "./DeleteButton";
-import LikeButton from "./LikeButton";
-import { CommentButton, CommentSection } from "./CommentButton";
-import { getLivePost } from "../data/photoData";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { getUserByUserId } from "../../data/userData";
+import { AppUserInterface } from "../../types/authentication";
+import FriendButton from "../Buttons/FriendButton";
+import PrivateButton from "../Buttons/PrivateButton";
+import DeleteButton from "../Buttons/DeleteButton";
+import LikeButton from "../Buttons/LikeButton";
+import { CommentButton, CommentSection } from "../Buttons/CommentButton";
+import { getLivePost } from "../../data/photoData";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 type Props = {
   pid: string;
@@ -86,6 +86,7 @@ export default function Post(props: Props) {
         title={postUser?.displayName}
         titleTypographyProps={{ variant: "h5", color: "black" }}
         subheader={postUser?.displayName}
+        role="post-header"
         sx={{
           textDecoration: "none",
         }}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
-import heroImage from "../assets/static/images/alex-rybin-Ne5nShVl6NM-unsplash.jpg";
+import heroImage from "../../assets/static/images/alex-rybin-Ne5nShVl6NM-unsplash.jpg";
 
 export default function HootHero() {
   return (

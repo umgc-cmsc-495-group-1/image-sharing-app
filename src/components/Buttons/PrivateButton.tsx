@@ -7,11 +7,11 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getLivePost, updateIsPrivate } from "../data/photoData";
-import { FeedPostType } from "../types/appTypes";
+import { getLivePost, updateIsPrivate } from "../../data/photoData";
+import { FeedPostType } from "../../types/appTypes";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 type Props = {
   pid: string;

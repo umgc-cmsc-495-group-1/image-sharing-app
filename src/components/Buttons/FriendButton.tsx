@@ -9,8 +9,8 @@ import {
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import React, { useEffect, useState } from "react";
-import { useCurrentUser } from "../hooks/useCurrentUser";
-import { addFriend, getLiveFriends, removeFriend } from "../data/userData";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { addFriend, getLiveFriends, removeFriend } from "../../data/userData";
 
 type Props = {
   uid: string;
@@ -60,11 +60,11 @@ export default function FriendButton(props: Props) {
     <>
       {currentUser.uid != uid &&
         (isFriends ? (
-          <IconButton onClick={() => setOpen(true)}>
+          <IconButton onClick={() => setOpen(true)} role="add-friend">
             <PersonRemoveIcon />
           </IconButton>
         ) : (
-          <IconButton onClick={handleAddFriend}>
+          <IconButton onClick={handleAddFriend} role="add-friend">
             <PersonAddIcon />
           </IconButton>
         ))}
