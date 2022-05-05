@@ -1,87 +1,108 @@
-import { UserInterface } from "../types/authentication";
-import {getUserByUserId} from "../data/userData";
-import {ProfileInterface} from "../types/appTypes";
-import React, { useState } from "react";
-import { User } from '@firebase/auth';
+import React from "react";
 import {
   List,
-  ListItem,
-  TextField,
-  Button,
+  ListItemButton,
   ListItemText,
+  Container,
+  Grid,
+  TextField,
+  Box,
+  Button
 } from "@mui/material";
+import ErrorsDisplay from "./ErrorsDisplay";
 import { Link } from "react-router-dom";
-import { AppUserInterface } from "../types/authentication";
-import { data } from "@tensorflow/tfjs";
-import { firestore } from "../firebaseSetup";
-import {
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  getDocsFromServer,
-} from "firebase/firestore";
-import "firebase/storage";
-import { query, where } from "firebase/firestore";
+import { updateBio, updateDisplayName } from "../data/userData"
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
-const bodyStyle: React.CSSProperties = {
-	fontFamily: 'Roboto',
-	fontSize: 8
+const HootUserSettings: React.FC = () => {
+  const [updatedDisplayName, setUpdatedDisplayName] = React.useState<string>("");
+  const [updatedBio, setUpdatedBio] = React.useState<string>("");
+  const [errors, setErrors] = React.useState<string[]>([]);
+  const user = useCurrentUser();
+  const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
+
+  const sanitizeDisplayName = (displayName: string) => {
+    return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
+  };
+
+  const handleDisplayNameSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await updateDisplayName(user.uid, updatedDisplayName);
+    setUpdatedDisplayName("");
+  }
+
+  const handleBioSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    if (updatedBio.length < 10 || updatedBio.length > 140) {
+      setErrors(["Bio must be between 10 and 140 characters"]);
+      return;
+    }
+
+    await updateBio(user.uid, updatedBio);
+    setUpdatedBio("");
+  }
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box>
+            <ErrorsDisplay errors={errors} />
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <List>
+            <ListItemButton component={Link} to="/terms-of-service" role="terms-of-service">
+              <ListItemText primary="Terms of Service" />
+            </ListItemButton>
+            <ListItemButton component={Link} to="/privacy" role="privacy-policy">
+              <ListItemText primary="Privacy Policy" />
+            </ListItemButton>
+          </List>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            onChange={(event) => setUpdatedDisplayName(sanitizeDisplayName(event.target.value))}
+            value={updatedDisplayName}
+            fullWidth
+            name="NewDisplayName"
+            label="Enter New Display Name"
+            id="UpdatedDisplayName"
+            autoComplete="display-name"
+          />
+          <Button
+            fullWidth
+            color="primary"
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleDisplayNameSubmit}
+          >Update Display Name</Button>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            onChange={(event) => setUpdatedBio(event.target.value)}
+            value={updatedBio}
+            fullWidth
+            name="NewUserBio"
+            label="Enter Updated Bio"
+            id="UpdatedBio"
+            autoComplete="bio"
+          />
+          <Button
+            fullWidth
+            color="primary"
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleBioSubmit}
+          >Update Bio</Button>
+        </Grid>
+      </Grid>
+    </Container>
+  );
 }
 
-export default function updateProfile(GetUserByUserId: {User: AppUserInterface}) { //= async (event: React.MouseEvent<HTMLButtonElement>) => {
-  const [bio, setBio] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  
-  const updateProfile = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    const userRef = doc(firestore, "users", userId);
-    const docSnap = await getDoc(userRef);
-    const data = docSnap.data();
-    event.preventDefault();
-    const user: AppUserInterface = {
-        displayName: updatedDisplayName,
-        bio: updatedBio,
-        uid: data.uid,
-        username: data.username,
-        first: data.first,
-        last: data.last,
-        email: data.email,
-        likes: data.likes,
-        friends: data.friends,
-        interests: data.interests,
-    };
-      return user;
-    };
-  } 
-  return(
-    <>
-    <List>
-      <ListItem button component={Link} to="/about/terms-of-service" role="terms-of-service">
-      <ListItemText primary="Terms of Service" />
-      <ListItemText style={bodyStyle} primary="Terms of Service" />
-      </ListItem>
-      <ListItem button component={Link} to="/about/privacy" role="privacy-policy">
-      <ListItemText primary="Privacy Policy" />
-      <ListItemText style={bodyStyle} primary="Privacy Policy" />
-      </ListItem>
-      <TextField
-	      fullWidth
-	      name="NewDisplayName"
-	      label="Enter New Display Name"
-      	id="UpdatedDisplayName"
-       />
-      <TextField 
-	     fullWidth
-	     name="NewUserBio"
-	     label="Enter Updated Bio"
-	     id="UpdatedBio"
-      />
-     
-       <Button style={bodyStyle} color="primary" variant="contained" onClick={() => updateProfile}>
-	      Update User Settings
-       </Button>
-       </List>
-       </>
+export default HootUserSettings;
 
   );
 };
