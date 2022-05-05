@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
-import "@tensorflow/tfjs-core";
+import React, {useEffect, useState, useRef, useContext} from "react";
+import "@tensorflow/tfjs";
 import "@tensorflow/tfjs-converter";
 import "@tensorflow/tfjs-backend-webgl";
 import * as mobilenet from "@tensorflow-models/mobilenet";
@@ -22,7 +22,6 @@ import {
   ImageClassificationType,
   UserInterestsType,
 } from "../../types/interests";
-// import { User } from "firebase/auth";
 import { AuthContext } from "../../context/AuthContext";
 import { fabPostCallback } from "../../data/photoData";
 
@@ -34,8 +33,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
-  // const user: User | null = useContext(AuthContext);
-  const { user } = useContext(AuthContext);
+  const { user} = useContext(AuthContext);
   const imageRef = useRef<any>();
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     setDescription(event.target.value);
@@ -67,8 +65,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
     }
   };
 
-  const identify = async () =>
-    new Promise<ImageClassificationType>((resolve) => {
+  const identify = async () => new Promise<ImageClassificationType>((resolve) => {
       if (model !== null) {
         const results = model.classify(imageRef.current);
         return resolve(results);
@@ -105,17 +102,22 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
         isPrivate,
         user,
         fileToUpload
-      );
-      handleClose();
-      setFileToUpload(undefined);
-      setDescription("");
-      setIsPrivate(false);
-      setErrors([]);
-      setImageUrl("");
-    } else {
-      setErrors(["Error uploading image"]);
+      ).then(() => {
+        handleClose();
+        setFileToUpload(undefined);
+        setDescription("");
+        setIsPrivate(false);
+        setErrors([]);
+        setImageUrl("");
+      }).catch((error) => {
+        console.error(error);
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          "Error Uploading Image"
+        ]);
+      });
     }
-  };
+  }
 
   useEffect(() => {
     (async () => {
@@ -169,7 +171,6 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
               id="add-image-for-upload"
               type="file"
               accept="image/*"
-              capture="environment"
               hidden={true}
               onChange={uploadImage}
             />

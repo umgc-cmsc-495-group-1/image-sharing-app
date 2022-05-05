@@ -3,6 +3,7 @@ import { createUser, deleteUserDoc } from "./userData";
 import {
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   UserCredential,
@@ -10,11 +11,11 @@ import {
   updateEmail,
   deleteUser,
   updateProfile,
+  getRedirectResult
 } from "firebase/auth";
 import {
   UserInterface,
   GoogleUserType,
-  UserCheckInterface,
 } from "../types/authentication";
 import { deleteAllPosts, deleteProfileImg } from "./photoData";
 const PASSWORD_REGEX =
@@ -35,7 +36,7 @@ const PASSWORD_REGEX =
 /******************************** MIDDLEWARE *****************************************************/
 
 const checkEmptyValues = (user: UserInterface): boolean => {
-  return user.username === "" || user.email === "" || user.password === "";
+  return user.email === "" || user.password === "";
 };
 
 /******************************** CREATE / REGISTER  *****************************************************/
@@ -45,44 +46,53 @@ const checkEmptyValues = (user: UserInterface): boolean => {
  * @param user : UserInterface
  * @returns
  */
-const signup = async (user: UserInterface) => {
-  let res: UserCredential;
-  let result: UserCheckInterface | undefined;
+const signup = async (user: UserInterface) : Promise<UserCredential | undefined> => {
+  let res;
   // data is empty, do not create user
   if (checkEmptyValues(user)) {
-    result = {
-      status: 400,
-      user: null,
-      message: "Required items are missing",
-    };
-    return Promise.reject(result);
-    // TODO: write custom error to throw during creation to trigger during Promise
+    return Promise.reject("Required items are missing");
   } else if (!PASSWORD_REGEX.test(user.password)) {
-    result = {
-      status: 400,
-      user: null,
-      message:
-        "Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #",
-    };
-    return Promise.reject(result);
+    return Promise.reject("Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #");
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
-    res = await createUserWithEmailAndPassword(auth, user.email, user.password);
+    res = await createUserWithEmailAndPassword(auth, user.email, user.password)
+      .then(userCredential => {
+        return Promise.resolve(userCredential);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
     await createUser(res.user, user);
-    updateName(user.displayName);
-    result = {
-      status: 201,
-      user: res.user,
-      message: "User successfully created",
+    await updateName(user.displayName);
+  }
+  return res;
+};
+
+/**
+ * Google Redirect Sign Up / Sign In (needs work if to be used)
+ * requires a new sign-in form ?
+ */
+const signInGoogleRedirect = async () => {
+  let googleUserInfo: GoogleUserType;
+
+  const provider = new GoogleAuthProvider();
+  provider.addScope('profile');
+  provider.addScope('email');
+  provider.setCustomParameters({
+    prompt: "select_account",
+  });
+
+  await signInWithRedirect(auth, provider);
+  const result = await getRedirectResult(auth);
+  if (result) {
+    const user = result.user;
+    googleUserInfo = {
+      displayName: user.displayName || "",
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      isVerified: user.emailVerified || false,
     };
-    return Promise.resolve(result);
-  } else {
-    result = {
-      status: 400,
-      user: null,
-      message: "Unknown issues, please try again",
-    };
-    return Promise.reject(result);
+    await createUser(user, googleUserInfo);
   }
 };
 
@@ -93,33 +103,27 @@ const signup = async (user: UserInterface) => {
  *  be created
  */
 const signInGooglePopup = async () => {
-  let user: GoogleUserType;
-  let addedUser: UserCredential["user"];
+  let googleUserInfo: GoogleUserType;
 
   const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
+  provider.addScope('profile');
+  provider.addScope('email');
+  provider.setCustomParameters({
+    prompt: "select_account",
+  });
+  await signInWithPopup(auth, provider)
     .then((result) => {
+      const user = result.user;
       // This gives you a Google Access Token. You can use it to access the Google API.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      if (credential) {
-        // const token = credential.accessToken;
-      }
-      // The signed-in user info.
-      addedUser = result.user;
+      googleUserInfo = {
+        displayName: user.displayName || "",
+        email: user.email || "",
+        photoURL: user.photoURL || "",
+        isVerified: user.emailVerified || false,
+      };
+      createUser(user, googleUserInfo);
 
-      // FirebaseUserMetadata metadata = auth.currentUser.getMetadata();
-      if (
-        addedUser.metadata.creationTime == addedUser.metadata.lastSignInTime
-      ) {
-        user = {
-          displayName: addedUser.displayName || "",
-          email: addedUser.email || "",
-        };
-
-        createUser(addedUser, user);
-        updateName(user.displayName);
-      }
-      return Promise.resolve(addedUser);
+      return Promise.resolve(googleUserInfo);
     })
     .catch((error) => {
       // Handle Errors here.
@@ -143,7 +147,10 @@ const login = async (email: string, password: string) => {
       return Promise.resolve(result);
     })
     .catch((error) => {
-      return Promise.reject(error);
+      return Promise.reject({
+        status: error.code,
+        message: error.message
+      });
     });
 };
 
@@ -184,20 +191,14 @@ const changeEmail = (newEmail: string) => {
  * called with auth.currentUser.displayName
  * @param displayName
  */
-const updateName = (displayName: string) => {
+const updateName = async (displayName: string) => {
   const user = auth.currentUser;
   if (user) {
-    updateProfile(user, {
-      displayName: displayName,
+    await updateProfile(user, {
+      displayName: displayName
     })
-      .then(() => {
-        // Profile updated!
-      })
-      .catch((error) => {
-        // An error occurred
-        console.error(error);
-      });
   }
+  return Promise.resolve(user);
 };
 
 /**
@@ -263,4 +264,5 @@ export {
   updateName,
   passwordResetEmail,
   deleteAccount,
+  signInGoogleRedirect
 };

@@ -171,6 +171,32 @@ exports[`Renders correctly 1`] = `
       >
         Login
       </button>
+      <p
+        className="MuiTypography-root MuiTypography-body1 css-1uwgr7b-MuiTypography-root"
+      >
+        - or -
+      </p>
+      <button
+        className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-fullWidth MuiButtonBase-root  css-1vhaqj4-MuiButtonBase-root-MuiButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onContextMenu={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        type="button"
+      >
+        Sign In With Google
+      </button>
       <div
         className="MuiGrid-root MuiGrid-container css-16g5rpk-MuiGrid-root"
       >

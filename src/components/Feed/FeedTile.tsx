@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   CommentType,
   FeedPostInterface,
@@ -27,7 +27,6 @@ import {
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-// import {useNavigate} from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import SendIcon from "@mui/icons-material/Send";
 import {
@@ -39,7 +38,7 @@ import {
   removePostLikes,
 } from "../../data/photoData";
 import { getUserByUserId } from "../../data/userData";
-import { AppUserInterface } from "../../types/authentication";
+// import { AppUserInterface } from "../../types/authentication";
 import FriendButton from "../FriendButton";
 import PrivateButton from "../PrivateButton";
 import DeleteButton from "../DeleteButton";
@@ -114,17 +113,29 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   const [isLiked, setIsLiked] = useState<boolean>(
     currentLikes.includes(user.uid)
   );
-  const [tileUser, setTileUser] = useState<AppUserInterface | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    async function retrieveUser() {
-      const inUser = await getUserByUserId(uid);
-      setTileUser(inUser);
+  // const [tileUser, setTileUser] = useState<AppUserInterface | undefined>(
+  //   undefined
+  // );
+  const [currentAvatar, setCurrentAvatar] = useState<string>("");
+  const [encodedEmail, setEncodedEmail] = useState("");
+  (async () => {
+    if (post !== undefined) {
+      const user = await getUserByUserId(post.uid);
+      let currentEmail = user.email;
+      currentEmail = encodeURIComponent(currentEmail);
+      currentEmail = currentEmail.replace(".", "-");
+      setCurrentAvatar(user.avatarImage)
+      setEncodedEmail(currentEmail);
     }
-    retrieveUser();
-  }, [uid]);
+  })()
+
+  // useEffect(() => {
+  //   async function retrieveUser() {
+  //     const inUser = await getUserByUserId(uid);
+  //     setTileUser(inUser);
+  //   }
+  //   retrieveUser();
+  // }, [uid]);
 
   async function determineIfLiked() {
     // check if the user has liked anything
@@ -194,14 +205,10 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
       }}
     >
       <CardHeader
+        avatar={<Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>}
+        title={post.username}
         component={Link}
-        href={`user/${tileUser?.email}`}
-        avatar={
-          <Avatar sx={{ bgcolor: "primary.main" }}>
-            {tileUser?.displayName.charAt(0)}
-          </Avatar>
-        }
-        title={tileUser?.displayName}
+        href={`user/${encodedEmail}`}
       />
       <CardMedia component="img" image={post.imageUrl} />
       <CardContent>
@@ -219,7 +226,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
         <Typography>{post.postText}</Typography>
       </CardContent>
       <CardActions>
-        <IconButton aria-label="like" onClick={handleLike}>
+        <IconButton role="like-button" aria-label="like" onClick={handleLike}>
           <LikeIcon isLiked={isLiked} />
         </IconButton>
         <Typography>{numberOfLikes}</Typography>
@@ -227,6 +234,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show comments"
+          role="comment-button"
         >
           <CommentIcon />
         </IconButton>

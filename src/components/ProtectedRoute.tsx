@@ -1,28 +1,20 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React from "react";
 import HootLogin from "./HootLogin";
-import { LoadingBackdrop } from "../components/UploadFab/LoadingBackdrop";
+import {AuthContext} from "../context/AuthContext";
 
 interface Props {
   component: React.ComponentType;
-  // fallback?: React.ComponentType;
   path?: string;
 }
 
 export const ProtectedRoute: React.FC<Props> = ({
   component: RouteComponent
 }) => {
-  const {isLoading, user} = useContext(AuthContext);
-  // if (!FallbackComponent) FallbackComponent = HootLogin;
+  const {user} = React.useContext(AuthContext);
 
   if (user) {
-    if (isLoading) {
-      return <LoadingBackdrop />;
-    } else {
-      return <RouteComponent />;
-    }
+    return <RouteComponent />;
   }
 
-  return <HootLogin />;
-
+  return <HootLogin />
 };
