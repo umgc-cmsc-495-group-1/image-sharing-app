@@ -194,45 +194,16 @@ const updateProfile = async (
   // return docRef.update(user);
 };
 
-// /**
-//  * @description adds friend and update user
-//  * @param newFriend
-//  * @param userAdding
-//  */
-// <<<<<<< HEAD
-// const getAllUsers = async () => {
-//   const totalUsers: AppUserInterface[] = [];
-//   const querySnapshot = await getDocs(collection(firestore, "users"));
-//   await querySnapshot.forEach((doc) => {
-//     totalUsers.push({
-//       uid: doc.id,
-//       displayName: doc.data().displayName,
-//       email: doc.data().email,
-//       avatarImage: doc.data().avatarImage,
-//       isVerified: doc.data().isVerified,
-//       photoURL: doc.data().photoURL,
-//       bio: doc.data().bio,
-//       friends: doc.data().friends,
-//       likes: doc.data().likes,
-//       interests: doc.data().interests,
-//     });
-//     // doc.data() is never undefined for query doc snapshots
-//   });
-//   return Promise.resolve(totalUsers)
-// };
-//
-// // todo: shouldnt need this method anymore
-// // const getTotalUsernames = async () => {
-// //   const totalUsernames: string[] = [];
-// //   const querySnapshot = await getDocs(collection(firestore, "users"));
-// //   await querySnapshot.forEach((doc) => {
-// //     totalUsernames.push(doc.data().username);
-// //   });
-// //   return Promise.resolve(totalUsernames);
-// // }
-//
-// =======
-// >>>>>>> dev
+const updateBio = async (userId: string, bio: string) => {
+  const docRef = doc(firestore, "users", `${userId}`);
+  await updateDoc(docRef, { bio: bio });
+}
+
+const updateDisplayName = async (userId: string, displayName: string) => {
+  const docRef = doc(firestore, "users", `${userId}`);
+  await updateDoc(docRef, { displayName: displayName });
+}
+
 const addFriend = async (newFriend: string, userAdding: string) => {
   const friendsRef = doc(firestore, "users", userAdding);
 
@@ -269,5 +240,6 @@ export {
   deleteUserDoc,
   addFriend,
   removeFriend,
-  // getFriends,
+  updateBio,
+  updateDisplayName
 };
