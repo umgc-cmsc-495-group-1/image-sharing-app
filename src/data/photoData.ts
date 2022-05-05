@@ -1,11 +1,11 @@
 import {
   ref,
   getDownloadURL,
-  uploadBytesResumable,
   StorageReference,
   deleteObject,
+  uploadBytes,
 } from "firebase/storage";
-import { storage, auth, firestore } from "../firebaseSetup";
+import { storage, firestore } from "../firebaseSetup";
 import { v4 as uuidv4 } from "uuid";
 import {
   arrayUnion,
@@ -20,12 +20,19 @@ import {
   where,
   serverTimestamp,
   deleteDoc,
+  arrayRemove,
+  onSnapshot,
 } from "firebase/firestore";
 import { CommentType, FeedPostType } from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
-import { User } from "firebase/auth";
+import { updateProfile, User } from "firebase/auth";
+import {
+  WhereFilterOp,
+  FieldPath,
+  OrderByDirection,
+} from "@firebase/firestore-types";
 
 /************************************************************
  *
@@ -43,22 +50,13 @@ import { User } from "firebase/auth";
 
 /*
 // Firebase cannot get photo urls or display post photos without a path
-// may try to use this function to fix issue as sort of an constant variable
 // firebase also needs the path to delete the posts
-const postCloudPath = (uid: string, pid: string, name: string) => {
-  return `photos/${uid}/${pid}/${name}`;
+const profileUrl = (uid: string, pid: string, name: string) => {
+  return `photos/${uid}/${pid}`;
 }
 */
 
-/**
- * @description Replaces user profile image
- * @param userId
- * @param file
- */
-const updateProfileImg = async (userId: string, file: File) => {
-  const path = `profile-imgs/${userId}/profile-image`;
-  await uploadImageFile(file, path);
-};
+/******************************** CREATE *****************************************************/
 
 /**
  * @description Uploads image file to firebase storage
@@ -80,160 +78,86 @@ const fabPostCallback = async (
     const pid = uuidv4();
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
-    const firestoreRef = doc(firestore, firestorePath);
-    const currentPost: FeedPostType = {
-      uid: uid,
-      username: user.displayName,
-      pid: pid,
-      postText: description,
-      numberLikes: 0,
-      numberComments: 0,
-      comments: [],
-      classification: classification,
-      path: cloudPath,
-      timestamp: serverTimestamp(),
-    };
+    const photoRef = ref(storage, cloudPath);
+    // const firestoreRef = doc(firestore, firestorePath);
     // Write to firestore db
     try {
       // set document data
-      await uploadImageFile(currentFile, cloudPath);
-      await setDoc(firestoreRef, currentPost);
-      // Add public URL to post data document
-      await updatePublicUrl(firestorePath, cloudPath);
+      await uploadBytes(photoRef, currentFile);
+      setTimeout(async () => {
+        await getDownloadURL(photoRef).then((url) => {
+          const currentPost: FeedPostType = {
+            uid: uid,
+            username: user.displayName,
+            pid: pid,
+            postText: description,
+            likes: [],
+            comments: [],
+            isPrivate: isPrivate,
+            classification: classification,
+            imageUrl: url,
+            path: cloudPath,
+            timestamp: serverTimestamp(),
+          };
+          setDoc(doc(firestore, firestorePath), currentPost);
+        });
+      }, 800);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 };
 
-/**
- * @description Upload new photo post
- * uploads new photo to storage
- * and photo data to firestore db
- * @param userId
- * @param caption
- * @param photoFile
- */
-const createNewPost = async (
-  userId: string,
-  caption: string,
-  photoFile: File,
-  classification: UserInterestsType
+const uploadProfileImg = async (
+  user: User | null,
+  currentFile: File | undefined
 ) => {
-  // Create a new UID for the photo
-  const imgUid = uuidv4();
-  // get ext from file let extension = filename.split(".").pop();
-  // imgName = imgUid + . + ext
-  const cloudPath = `photos/${userId}/${imgUid}`;
-
-  // Check for valid user
-  const user = auth.currentUser;
-  // check for username
-  const username =
-    auth.currentUser !== null
-      ? auth.currentUser.displayName
-      : "Chicken Sandwich";
-  // Get reference to subcollection path
-  // (photos collection->doc w/userId key->posts collection->post data doc)
-  const firestorePath = `posts/${imgUid}`;
-  const firestoreRef = doc(firestore, firestorePath);
-  if (user) {
-    // Post related data to save to firestore collection
-    const newPostData: FeedPostType = {
-      uid: userId,
-      username: username,
-      pid: imgUid,
-      postText: caption || "",
-      numberLikes: 0,
-      numberComments: 0,
-      imageUrl: "",
-      comments: [],
-      classification: classification,
-      path: cloudPath,
-      timestamp: serverTimestamp(), // a timestamp makes it possible to easily get feed posts in chronological order
-    };
-    // Write to firestore db
+  if (user !== null && currentFile !== undefined) {
+    const uid = user.uid;
+    const pid = uuidv4();
+    const cloudPath = `profile-imgs/${pid}`;
+    const uploadRef = ref(storage, cloudPath);
+    const usersRef = collection(firestore, "users");
     try {
-      // set document data
-      await uploadImageFile(photoFile, cloudPath);
-      await setDoc(firestoreRef, newPostData);
-      // Add public URL to post data document
-      await updatePublicUrl(firestorePath, cloudPath);
+      // upload the photo to storage
+      await uploadBytes(uploadRef, currentFile);
+      setTimeout(async () => {
+        await getDownloadURL(uploadRef).then((url) => {
+          setDoc(doc(usersRef, uid), {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            bio: "",
+            friends: [],
+            likes: [],
+            avatarImage: url,
+          });
+          updateProfile(user, { photoURL: url });
+        });
+      }, 800);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 };
 
-/**
- * @description Save image file (.png, .jpg) to Cloud Storage path
- * @param file
- * @param path
- */
 const uploadImageFile = async (file: File, path: string) => {
-  // example storage file path: const path = `users/${userId}/profile-img`;
-  // TODO: make this match photo extension? does this allow png upload?
-  const metadata = {
-    contentType: file.type,
-  };
-  // Get reference to the storage location & upload file
+  const resizedImage = await resizeImage(file);
   const storageRef = ref(storage, path);
-  // const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-  const imgForUpload: File = await resizeImage(file);
-  const uploadTask = uploadBytesResumable(storageRef, imgForUpload, metadata);
-
-  // Listen for state changes, errors, and completion of the upload.
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log("Upload is " + progress + "% done");
-      switch (snapshot.state) {
-        case "paused":
-          console.log("Upload is paused");
-          break;
-        case "running":
-          console.log("Upload is running");
-          break;
-      }
-    },
-    (error) => {
-      // TODO: handle errors
-      // A full list of error codes is available at
-      // https://firebase.google.com/docs/storage/web/handle-errors
-      switch (error.code) {
-        case "storage/unauthorized":
-          alert("User doesn't have permission to access the object");
-          break;
-        case "storage/canceled":
-          alert("Upload cancelled");
-          break;
-
-        case "storage/unknown":
-          alert("Unknown error occurred, inspect error.serverResponse");
-          break;
-      }
-    },
-    () => {
-      // Upload completed successfully, now we can get the download URL
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        console.log("File available at", downloadURL);
-        // get downloadURL here if needed
-      });
-    }
-  );
+  await uploadBytes(storageRef, resizedImage);
 };
 
+/******************************** MIDDLEWARE for fabPostCallback ******************************************/
+
 /**
- * Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
+ * @description Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
  * @param source Source file object
  * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
  */
 const resizeImage = async (source: File) =>
   new Promise<File>((resolve) => {
-    const resolution = 100;
-    if (source.size > 8000000) {
+    const resolution = 70;
+    if (source.size > 5242880) {
       Resizer.imageFileResizer(
         source,
         1280,
@@ -245,11 +169,12 @@ const resizeImage = async (source: File) =>
         "base64"
       );
       // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
-      //   console.log(uri)
       // }, "base64")
     }
     resolve(source);
   });
+
+/******************************** RETRIEVE *****************************************************/
 
 /**
  * Get URL for profile image
@@ -260,7 +185,6 @@ const resizeImage = async (source: File) =>
 const getProfileUrl = async (userId: string) => {
   const filePath = `profile-imgs/${userId}/profile-image`;
   const fileRef = ref(storage, filePath);
-  console.log("url: ", getDownloadURL(fileRef));
   return await getDownloadURL(fileRef);
 };
 
@@ -276,23 +200,38 @@ const getPhotoUrl = async (path: string) => {
   try {
     url = await getDownloadURL(fileRef);
   } catch (e) {
-    console.log(`couldn't get url for photo at ${path}`);
+    console.error(`couldn't get url for photo at ${path} ` + e);
   }
   return Promise.resolve(url);
 };
 
 /**
- * @description Get Post data from firestore
- * @param postId
- * @returns : post data doc: Promise<FeedPostType | undefined>
+ * @description Get live post by id
+ * @param postId : string
+ * @param callback : function
+ * @returns unsubscribe function
  */
-
-const postComment = async (postId: string, comment: CommentType) => {
-  const postRef = doc(firestore, "posts", postId);
-
-  await updateDoc(postRef, {
-    comments: arrayUnion(comment),
+const getLivePost = async (
+  postId: string,
+  // eslint-disable-next-line no-unused-vars
+  callback: (_post: FeedPostType) => void
+) => {
+  const unsubscribe = onSnapshot(doc(firestore, "posts", postId), (doc) => {
+    const gotPost: FeedPostType = {
+      uid: doc.data()?.uid,
+      imageUrl: doc.data()?.imageUrl,
+      username: doc.data()?.username,
+      pid: doc.data()?.pid,
+      postText: doc.data()?.postText,
+      likes: doc.data()?.likes,
+      isPrivate: doc.data()?.isPrivate,
+      comments: doc.data()?.comments,
+      classification: doc.data()?.classification,
+      timestamp: doc.data()?.timestamp,
+    };
+    callback(gotPost);
   });
+  return unsubscribe;
 };
 
 const getOnePost = async (postId: string) => {
@@ -302,7 +241,6 @@ const getOnePost = async (postId: string) => {
   const docSnap = await getDoc(postRef);
 
   if (!docSnap.exists()) {
-    console.log("No photo document found");
     return;
   }
   const data = docSnap.data();
@@ -311,27 +249,68 @@ const getOnePost = async (postId: string) => {
     uid: data.uid,
     username: data.username,
     postText: data.postText || "",
-    numberLikes: data.numberLikes,
+    // numberLikes: data.numberLikes,
     comments: data.comments,
-    numberComments: data.numberComments,
+    likes: data.likes,
+    isPrivate: data.isPrivate,
+    // numberComments: data.numberComments,
     classification: data.classification,
     path: data.path,
     timestamp: data.timestamp,
     // tags: data.tags,
     imageUrl: data.imageUrl,
   };
-  console.log(JSON.stringify(postData));
-  // const url = await getPhotoUrl(imgData.path);
 
   return Promise.resolve(postData);
 };
 
 /**
+ * @description Get live userposts by id
+ * @param userId : string
+ * @param callback : function
+ * @returns unsubcribe function
+ */
+const getLiveUserPostData = async (
+  userId: string,
+  // eslint-disable-next-line no-unused-vars
+  callback: (_feedPosts: FeedPostType[]) => void
+) => {
+  const collectionRef = collection(firestore, "posts");
+  const q = query(
+    collectionRef,
+    where("uid", "==", userId),
+    orderBy("timestamp", "desc")
+  );
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const feedPosts: FeedPostType[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const imgData: FeedPostType = {
+        pid: data.pid,
+        uid: data.uid,
+        username: data.username,
+        postText: data.postText || "",
+        comments: data.comments,
+        likes: data.likes,
+        isPrivate: data.isPrivate,
+        classification: data.classification,
+        path: data.path,
+        timestamp: data.timestamp,
+        imageUrl: data.imageUrl,
+      };
+      feedPosts.push(imgData);
+    });
+    callback(feedPosts);
+  });
+  return unsubscribe;
+};
+
+/**
+<<<<<<< HEAD
  * @description Get all of user's photo data docs from firebase
  * @param userId : string
  * @returns
  */
-
 const getAllPostData = async (userId: string) => {
   const userPosts: FeedPostType[] = [];
   const collectionRef = collection(firestore, "posts");
@@ -350,10 +329,12 @@ const getAllPostData = async (userId: string) => {
       uid: data.userId,
       username: data.userId,
       postText: data.caption || "",
-      numberLikes: data.numberLikes,
+      // numberLikes: data.numberLikes,
       comments: data.comments,
+      likes: data.likes,
+      isPrivate: data.isPrivate,
       classification: data.classification,
-      numberComments: data.comments,
+      // numberComments: data.comments,
       path: data.path,
       timestamp: data.timestamp,
       imageUrl: data.imageUrl,
@@ -364,24 +345,161 @@ const getAllPostData = async (userId: string) => {
 };
 
 /**
- * @description adds the public url, used to create new post
- * @param docPath
- * @param filePath
+=======
+>>>>>>> dev
+ * @description Get all photos of friends, sort by timestamp
+ * @param user
+ * @returns
  */
-const updatePublicUrl = async (docPath: string, filePath: string) => {
-  try {
-    const fileRef = ref(storage, filePath);
-    const docRef = doc(firestore, docPath);
-    await getDownloadURL(fileRef).then((url) => {
-      const res = updateDoc(docRef, { imageUrl: url });
-      return Promise.resolve(res);
-    });
-  } catch (error) {
-    console.error(
-      "There was an error uploading a file to Cloud Storage:",
-      error
-    );
+const getFriendsFeedData = async (user: AppUserInterface) => {
+  const userPosts: FeedPostType[] = [];
+
+  if (!user.friends.length) {
+    return [];
   }
+
+  await populateFeedPosts(
+    userPosts,
+    "uid",
+    "in",
+    user.friends,
+    true,
+    "timestamp",
+    "desc"
+  );
+  return Promise.resolve(userPosts);
+};
+
+const getPublicFeedData = async () => {
+  const userPosts: FeedPostType[] = [];
+  await populateFeedPosts(
+    userPosts,
+    "isPrivate",
+    "==",
+    false,
+    true,
+    "timestamp",
+    "desc"
+  );
+  return Promise.resolve(userPosts);
+};
+
+/**
+ * Get all the photos depending on the query parameters
+ * @param userPosts {FeedPostType[]} Array of photos
+ * @param fieldPath {string} Field to sort by
+ * @param opString {string} Operator to sort by
+ * @param value {any} Value to sort by
+ * @param isOrderBy {boolean} Whether to sort by orderBy or orderByKey
+ * @param fieldPathOrderBy {string} Field to sort by
+ * @param directionStr {string} Direction to sort by
+ */
+
+async function populateFeedPosts(
+  userPosts: FeedPostType[],
+  fieldPath: string,
+  opString: WhereFilterOp,
+  value: string[] | boolean,
+  isOrderBy: boolean,
+  fieldPathOrderBy: string | FieldPath,
+  directionStr: OrderByDirection
+) {
+  const collectionRef = collection(firestore, "posts");
+  let q;
+  if (isOrderBy) {
+    q = query(
+      collectionRef,
+      where(`${fieldPath}`, `${opString}`, value),
+      orderBy(`${fieldPathOrderBy}`, `${directionStr}`)
+    );
+  } else {
+    q = query(collectionRef, where(`${fieldPath}`, `${opString}`, value));
+  }
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    const data = doc.data();
+    const imgData: FeedPostType = {
+      pid: data.pid,
+      uid: data.uid,
+      username: data.username,
+      postText: data.postText || "",
+      comments: data.comments,
+      isPrivate: data.isPrivate,
+      likes: data.likes,
+      classification: data.classification,
+      path: data.path,
+      timestamp: data.timestamp,
+      imageUrl: data.imageUrl,
+    };
+    userPosts.push(imgData);
+  });
+}
+
+/******************************** UPDATE *****************************************************/
+
+/**
+ * @description Replaces user profile image
+ * @param userId
+ * @param file
+ */
+const updateProfileImg = async (userId: string, file: File) => {
+  const path = `profile-imgs/${userId}/profile-image`;
+  await uploadImageFile(file, path);
+};
+
+/**
+ * @description Get Post data from firestore
+ * @param postId - postId
+ * @param comment - CommentType
+ * @returns : post data doc: Promise<FeedPostType | undefined>
+ */
+
+const postComment = async (postId: string, comment: CommentType) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    comments: arrayUnion(comment),
+  });
+};
+
+const updateIsPrivate = async (postId: string, isPrivate: boolean) => {
+  const postRef = doc(firestore, "posts", postId);
+  await updateDoc(postRef, {
+    isPrivate: isPrivate,
+  });
+};
+
+const addUserLikes = async (userId: string, postId: string) => {
+  const postRef = doc(firestore, "users", userId);
+
+  await updateDoc(postRef, {
+    likes: arrayUnion(postId),
+  });
+};
+
+const addPostLikes = async (postId: string, userId: string) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    likes: arrayUnion(userId),
+  });
+};
+
+const removeUserLikes = async (userId: string, postId: string) => {
+  const postRef = doc(firestore, "users", userId);
+
+  await updateDoc(postRef, {
+    likes: arrayRemove(postId),
+  });
+};
+
+const removePostLikes = async (postId: string, userId: string) => {
+  const postRef = doc(firestore, "posts", postId);
+
+  await updateDoc(postRef, {
+    likes: arrayRemove(userId),
+  });
 };
 
 /**
@@ -397,45 +515,55 @@ const incrementLikes = async (likeNum: number, pid: string) => {
 };
 
 /**
- * @description Get all photos of friends, sort by timestamp
- * @param user
- * @returns
+ * @description adds the public url, used to create new post
+ * @param docPath
+ * @param filePath
  */
-const getAllFeedData = async (user: AppUserInterface) => {
-  const userPosts: FeedPostType[] = [];
-  // const path = `/posts/${photoId}`;
-  const collectionRef = collection(firestore, "posts");
-
-  if (!user.friends.length) {
-    return [];
+const updatePublicUrl = async (docPath: string, filePath: string) => {
+  try {
+    const fileRef = ref(storage, filePath);
+    const docRef = doc(firestore, docPath);
+    await getDownloadURL(fileRef).then((url) => {
+      // const res = updateDoc(docRef, { imageUrl: url });
+      // return Promise.resolve(res);
+      Promise.resolve(updateDoc(docRef, { imageUrl: url }));
+      // return Promise.resolve(res);
+    });
+  } catch (error) {
+    console.error(
+      "There was an error uploading a file to Cloud Storage:",
+      error
+    );
   }
+};
 
+/**
+ * @description updates username field on all user's posts
+ * @param userId
+ * @param newUsername
+ */
+const updateAllPosts = async (userId: string, newUsername: string) => {
+  const postIDs: string[] = [];
+  const collectionRef = collection(firestore, "posts");
+  // Get all posts where uid == userId, in order by time posted
   const q = query(
     collectionRef,
-    where("uid", "in", user.friends),
+    where("uid", "==", userId),
     orderBy("timestamp", "desc")
   );
   const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
+  querySnapshot.forEach(async (doc) => {
     // doc.data() is never undefined for query doc snapshots
     const data = doc.data();
-    const imgData: FeedPostType = {
-      pid: data.pid,
-      uid: data.uid,
-      username: data.username,
-      postText: data.postText || "",
-      numberLikes: data.numberLikes,
-      comments: data.comments,
-      numberComments: data.numberComments,
-      classification: data.classification,
-      path: data.path,
-      timestamp: data.timestamp,
-      imageUrl: data.imageUrl,
-    };
-    userPosts.push(imgData);
+    postIDs.push(data.pid);
   });
-  return Promise.resolve(userPosts);
+  postIDs.forEach(async (pid) => {
+    const docRef = doc(firestore, "posts", pid);
+    await updateDoc(docRef, { username: newUsername });
+  });
 };
+
+/******************************** DELETE *****************************************************/
 
 /**
  * @description Delete all of user's photo data docs from firebase
@@ -468,11 +596,10 @@ const deleteAllPosts = async (userId: string) => {
     await deleteObject(photo)
       .then(() => {
         // File deleted successfully
-        console.log("image file deleted");
       })
       .catch((error) => {
         // Uh-oh, an error occurred!
-        console.log(error);
+        console.error(error);
       });
   });
 };
@@ -488,47 +615,53 @@ const deleteProfileImg = async (uid: string) => {
   await deleteObject(photoRef)
     .then(() => {
       // File deleted successfully
-      console.log("image file deleted");
     })
     .catch((error) => {
       // Uh-oh, an error occurred!
-      console.log(error);
+      console.error(error);
     });
 };
 
 /**
  * @description Deletes a single post
  * @param pid photo post's unique id
- * @param path location path of file in
- * Cloud Storage
  */
-const deletePostByPid = async (pid: string, path: string) => {
-  await deleteDoc(doc(firestore, "posts", pid));
-
-  const photoRef = ref(storage, path);
-  await deleteObject(photoRef)
-    .then(() => {
-      // File deleted successfully
-      console.log("image file deleted");
-    })
-    .catch((error) => {
-      // Uh-oh, an error occurred!
-      console.log(error);
+const deletePostByPid = async (pid: string) => {
+  const post = await getOnePost(pid).catch((error) => {
+    console.error(error);
+  });
+  if (post) {
+    const path = post.path;
+    await deleteDoc(doc(firestore, "posts", pid));
+    const photoRef = ref(storage, path);
+    await deleteObject(photoRef).catch((error) => {
+      console.error(error);
     });
+  }
 };
 
 export {
+  fabPostCallback,
+  getLiveUserPostData,
   updateProfileImg,
-  createNewPost,
   getAllPostData,
-  getAllFeedData,
+  getFriendsFeedData,
+  getPublicFeedData,
   postComment,
+  uploadProfileImg,
+  getLivePost,
   getOnePost,
   getProfileUrl,
   getPhotoUrl,
   incrementLikes,
+  addUserLikes,
+  removeUserLikes,
+  addPostLikes,
+  removePostLikes,
+  updateAllPosts,
+  updateIsPrivate,
   deleteAllPosts,
   deletePostByPid,
   deleteProfileImg,
-  fabPostCallback,
+  updatePublicUrl,
 };

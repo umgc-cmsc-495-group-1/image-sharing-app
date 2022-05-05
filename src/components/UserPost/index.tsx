@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  PostDetails,
-} from '../Feed/MetaDataBar';
+import { PostDetails } from './PostDetails';
 import { Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { getPostData } from '../../tests/test_data';

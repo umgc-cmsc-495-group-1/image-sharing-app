@@ -12,32 +12,53 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { login, signInGooglePopup } from "../data/authFunctions";
+import ErrorsDisplay from "./ErrorsDisplay";
 
 export default function HootLogin() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const handleErrors = () => {
+    if (email === "" || password === "") {
+      setErrors(["Email and password are required"]);
+      return false;
+    }
+    setErrors([]);
+    return true;
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!handleErrors()) return;
+
     await login(email, password)
-      .then((res) => {
-        console.log(res);
-        navigate("/");
+      .then(() => {
+        setErrors([]);
+        navigate("/feed");
       })
       .catch((err) => {
-        console.log(err);
+        setErrors({
+          ...errors,
+          [err.message]: err.message,
+        });
+        console.error(err);
       });
   };
 
   const handleGoogleSignin = async () => {
     await signInGooglePopup()
       .then(() => {
-        navigate("/auth-loading");
+        setErrors([]);
+        navigate("/explore");
       })
       .catch((err) => {
-        console.log(err);
+        setErrors({
+          ...errors,
+          [err.code]: err.message,
+        });
       });
   };
 
@@ -63,6 +84,11 @@ export default function HootLogin() {
           role="login-form"
         >
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box>
+                <ErrorsDisplay errors={errors} />
+              </Box>
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
