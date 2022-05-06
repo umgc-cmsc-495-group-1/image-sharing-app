@@ -177,6 +177,8 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
           </Button>
           <TextField
             multiline
+            minRows={1}
+            maxRows={4}
             fullWidth
             inputProps={{
               maxLength: 140,

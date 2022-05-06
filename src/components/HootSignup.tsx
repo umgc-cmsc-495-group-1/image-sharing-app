@@ -124,6 +124,17 @@ export default function HootSignup() {
         })
         .catch((err) => {
           console.error([err.code] + `: ${err.message}`);
+          if (err.code === "auth/email-already-in-use") {
+            setErrors((errors) => [...errors, "Email is already in use!"]);
+          } else if (err.code === "auth/invalid-email") {
+            setErrors((errors) => [...errors, "Email is not valid!"]);
+          } else if (err.code === "auth/weak-password") {
+            setErrors((errors) => [...errors, err.message]);
+          } else if (err.code === "auth/empty-values") {
+            setErrors((errors) => [...errors, "All fields are required!"]);
+          } else {
+            setErrors((errors) => [...errors, "Something went wrong!"]);
+          }
         });
     } catch (error) {
       console.error(error);

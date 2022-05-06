@@ -50,9 +50,15 @@ const signup = async (user: UserInterface) : Promise<UserCredential | undefined>
   let res;
   // data is empty, do not create user
   if (checkEmptyValues(user)) {
-    return Promise.reject("Required items are missing");
+    return Promise.reject({
+      code: "auth/empty-values",
+      message: "Required items are missing"
+    });
   } else if (!PASSWORD_REGEX.test(user.password)) {
-    return Promise.reject("Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #");
+    return Promise.reject({
+      code: "auth/weak-password",
+      message: "Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #"
+    });
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
     res = await createUserWithEmailAndPassword(auth, user.email, user.password)
@@ -148,7 +154,7 @@ const login = async (email: string, password: string) => {
     })
     .catch((error) => {
       return Promise.reject({
-        status: error.code,
+        code: error.code,
         message: error.message
       });
     });

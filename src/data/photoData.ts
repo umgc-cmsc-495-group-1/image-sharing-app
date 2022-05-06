@@ -25,7 +25,7 @@ import {
 } from "firebase/firestore";
 import { CommentType, FeedPostType } from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
-import Resizer from "react-image-file-resizer";
+// import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
 import { updateProfile, User } from "firebase/auth";
 import {
@@ -33,6 +33,7 @@ import {
   FieldPath,
   OrderByDirection,
 } from "@firebase/firestore-types";
+// const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 /************************************************************
  *
@@ -114,12 +115,10 @@ const uploadProfileImg = async (
 ) => {
   if (user !== null && currentFile !== undefined) {
     const uid = user.uid;
-    const pid = uuidv4();
-    const cloudPath = `profile-imgs/${pid}`;
+    const cloudPath = `profile-imgs/${uid}`;
     const uploadRef = ref(storage, cloudPath);
     const usersRef = collection(firestore, "users");
     try {
-      // upload the photo to storage
       await uploadBytes(uploadRef, currentFile);
       setTimeout(async () => {
         await getDownloadURL(uploadRef).then((url) => {
@@ -141,11 +140,11 @@ const uploadProfileImg = async (
   }
 };
 
-const uploadImageFile = async (file: File, path: string) => {
-  const resizedImage = await resizeImage(file);
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, resizedImage);
-};
+// const uploadImageFile = async (file: File, path: string) => {
+//   const resizedImage = await resizeImage(file);
+//   const storageRef = ref(storage, path);
+//   await uploadBytes(storageRef, resizedImage);
+// };
 
 /******************************** MIDDLEWARE for fabPostCallback ******************************************/
 
@@ -154,25 +153,25 @@ const uploadImageFile = async (file: File, path: string) => {
  * @param source Source file object
  * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
  */
-const resizeImage = async (source: File) =>
-  new Promise<File>((resolve) => {
-    const resolution = 70;
-    if (source.size > 5242880) {
-      Resizer.imageFileResizer(
-        source,
-        1280,
-        1024,
-        "JPEG",
-        resolution,
-        0,
-        (uri) => uri,
-        "base64"
-      );
-      // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
-      // }, "base64")
-    }
-    resolve(source);
-  });
+// const resizeImage = async (source: File) =>
+//   new Promise<File>((resolve) => {
+//     const resolution = 70;
+//     if (source.size > MAX_FILE_SIZE) {
+//       Resizer.imageFileResizer(
+//         source,
+//         1280,
+//         1024,
+//         "JPEG",
+//         resolution,
+//         0,
+//         (uri) => uri,
+//         "base64"
+//       );
+//       // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
+//       // }, "base64")
+//     }
+//     resolve(source);
+//   });
 
 /******************************** RETRIEVE *****************************************************/
 
@@ -306,7 +305,6 @@ const getLiveUserPostData = async (
 };
 
 /**
-<<<<<<< HEAD
  * @description Get all of user's photo data docs from firebase
  * @param userId : string
  * @returns
@@ -345,8 +343,6 @@ const getAllPostData = async (userId: string) => {
 };
 
 /**
-=======
->>>>>>> dev
  * @description Get all photos of friends, sort by timestamp
  * @param user
  * @returns
@@ -438,15 +434,21 @@ async function populateFeedPosts(
 
 /******************************** UPDATE *****************************************************/
 
-/**
- * @description Replaces user profile image
- * @param userId
- * @param file
- */
-const updateProfileImg = async (userId: string, file: File) => {
-  const path = `profile-imgs/${userId}/profile-image`;
-  await uploadImageFile(file, path);
-};
+const updateProfilePicture = async (
+  user: User | null,
+  currentFile: File | undefined
+) => {
+  if (user !== null && currentFile !== undefined) {
+    const uid = user.uid;
+    const cloudPath = `profile-imgs/${uid}`;
+    const uploadRef = ref(storage, cloudPath);
+    await deleteObject(uploadRef).then(() => {
+      uploadProfileImg(user, currentFile)
+    }).catch(err => {
+      console.error(err);
+    });
+  }
+}
 
 /**
  * @description Get Post data from firestore
@@ -643,7 +645,6 @@ const deletePostByPid = async (pid: string) => {
 export {
   fabPostCallback,
   getLiveUserPostData,
-  updateProfileImg,
   getAllPostData,
   getFriendsFeedData,
   getPublicFeedData,
@@ -653,6 +654,7 @@ export {
   getOnePost,
   getProfileUrl,
   getPhotoUrl,
+  updateProfilePicture,
   incrementLikes,
   addUserLikes,
   removeUserLikes,

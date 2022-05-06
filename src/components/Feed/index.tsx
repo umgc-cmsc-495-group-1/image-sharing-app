@@ -15,6 +15,7 @@ const Feed: React.FC = (): JSX.Element => {
         alignItems: "center",
         width: "100%",
       }}
+      role="feed-container"
     >
       <Box maxWidth="md">
         {feed.map((item: FeedPostType) => (

@@ -16,6 +16,7 @@ import HootDefaultImage from "../../assets/logo/png/simple-192x192.png"
 import { getLiveUserPostData } from "../../data/photoData";
 import FriendButton from "../Buttons/FriendButton";
 import { useNavigate, useParams } from "react-router-dom";
+import {decodeEmailAddress} from "../../utils/middleware";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -25,9 +26,10 @@ export default function Profile() {
     if (!email) {
       return;
     }
-    let temp = email;
-    temp = decodeURIComponent(temp);
-    temp = temp.replace("-", ".");
+    const temp = decodeEmailAddress(email);
+    // let temp = email;
+    // temp = decodeURIComponent(temp);
+    // temp = temp.replace("-", ".");
     setCurrentEmail(temp);
   }, [email]);
   const [profile, setProfile] = useState<ProfileInterface>({

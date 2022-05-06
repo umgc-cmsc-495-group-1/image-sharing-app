@@ -42,6 +42,7 @@ import { getUserByUserId } from "../../data/userData";
 import FriendButton from "../Buttons/FriendButton";
 import PrivateButton from "../Buttons/PrivateButton";
 import DeleteButton from "../Buttons/DeleteButton";
+import {encodeEmailAddress} from "../../utils/middleware";
 // todo: remove this component as it is not being used anymore
 const LikeIcon: React.FC<LikeIconProps> = ({ isLiked }): JSX.Element => {
   let Icon: JSX.Element = (
@@ -121,9 +122,10 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   (async () => {
     if (post !== undefined) {
       const user = await getUserByUserId(post.uid);
-      let currentEmail = user.email;
-      currentEmail = encodeURIComponent(currentEmail);
-      currentEmail = currentEmail.replace(".", "-");
+      const currentEmail = encodeEmailAddress(user);
+      // let currentEmail = user.email;
+      // currentEmail = encodeURIComponent(currentEmail);
+      // currentEmail = currentEmail.replace(".", "-");
       setCurrentAvatar(user.avatarImage)
       setEncodedEmail(currentEmail);
     }

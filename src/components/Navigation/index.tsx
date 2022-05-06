@@ -14,6 +14,7 @@ import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
 import { AuthContext } from "../../context/AuthContext";
 import {getUserByUserId} from "../../data/userData";
+import {encodeEmailAddress} from "../../utils/middleware";
 
 const Navigation: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -23,9 +24,10 @@ const Navigation: React.FC = () => {
     (async () => {
       if (user) {
         const userData = await getUserByUserId(user.uid);
-        let currentEmail = userData.email;
-        currentEmail = encodeURIComponent(currentEmail);
-        currentEmail = currentEmail.replace(".", "-");
+        const currentEmail = encodeEmailAddress(userData);
+        // let currentEmail = userData.email;
+        // currentEmail = encodeURIComponent(currentEmail);
+        // currentEmail = currentEmail.replace(".", "-");
         setEncodedEmail(currentEmail);
       }
     })();

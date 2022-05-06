@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 import {
   List,
   ListItemButton,
@@ -9,26 +9,63 @@ import {
   Box,
   Button
 } from "@mui/material";
+import SuccessDisplay from "./SuccessDisplay";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { Link } from "react-router-dom";
 import { updateBio, updateDisplayName } from "../data/userData"
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import {updateProfilePicture} from "../data/photoData";
+import {AuthContext} from "../context/AuthContext";
 
 const HootUserSettings: React.FC = () => {
   const [updatedDisplayName, setUpdatedDisplayName] = React.useState<string>("");
   const [updatedBio, setUpdatedBio] = React.useState<string>("");
+  const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+  const [success, setSuccess] = useState<string[]>([]);
   const [errors, setErrors] = React.useState<string[]>([]);
-  const user = useCurrentUser();
+  const { user } = useContext(AuthContext);
+  const currentUser = useCurrentUser();
   const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
+
+  /***************** CHANGE **********************************/
+
+  const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files !== null && files.length > 0) {
+      setFileToUpload(files[0]);
+    } else {
+      setFileToUpload(undefined);
+    }
+  };
 
   const sanitizeDisplayName = (displayName: string) => {
     return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
   };
 
+  /***************** SUBMIT *****************/
+
+  const handleUpdateProfilePicture = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (fileToUpload === undefined) {
+      setErrors(["No file selected"]);
+      return;
+    }
+    await updateProfilePicture(user, fileToUpload);
+    setFileToUpload(undefined);
+    setSuccess(["Profile picture updated"]);
+    setTimeout(() => {
+      setSuccess([]);
+    }, 3000);
+  }
+
   const handleDisplayNameSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await updateDisplayName(user.uid, updatedDisplayName);
+    await updateDisplayName(currentUser.uid, updatedDisplayName);
     setUpdatedDisplayName("");
+    setSuccess(["Display name updated"]);
+    setTimeout(() => {
+      setSuccess([]);
+    }, 3000);
   }
 
   const handleBioSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,8 +76,12 @@ const HootUserSettings: React.FC = () => {
       return;
     }
 
-    await updateBio(user.uid, updatedBio);
+    await updateBio(currentUser.uid, updatedBio);
     setUpdatedBio("");
+    setSuccess(["Bio updated"]);
+    setTimeout(() => {
+      setSuccess([]);
+    }, 3000);
   }
 
   return (
@@ -48,18 +89,46 @@ const HootUserSettings: React.FC = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box>
+            <SuccessDisplay success={success} />
             <ErrorsDisplay errors={errors} />
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <List>
-            <ListItemButton component={Link} to="/terms-of-service" role="terms-of-service">
-              <ListItemText primary="Terms of Service" />
-            </ListItemButton>
-            <ListItemButton component={Link} to="/privacy" role="privacy-policy">
-              <ListItemText primary="Privacy Policy" />
-            </ListItemButton>
-          </List>
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{
+              mt: 3,
+              mb: 2,
+            }}
+          >
+            <label htmlFor="profile-image">
+              Please select a profile image
+            </label>
+          </Button>
+          <TextField
+            sx={{
+              display: "none",
+            }}
+            required
+            fullWidth
+            id="profile-image"
+            type="file"
+            onChange={uploadProfileImage}
+            inputProps={{
+              accept: "image/*",
+              id: "profile-image",
+              placeholder: "Select Profile Image",
+              style: { display: "none" },
+            }}
+          />
+          <Button
+            fullWidth
+            color="primary"
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleUpdateProfilePicture}
+          >Update Profile Picture</Button>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -96,6 +165,16 @@ const HootUserSettings: React.FC = () => {
             sx={{ mt: 3, mb: 2 }}
             onClick={handleBioSubmit}
           >Update Bio</Button>
+        </Grid>
+        <Grid item xs={12}>
+          <List>
+            <ListItemButton component={Link} to="/terms-of-service" role="terms-of-service">
+              <ListItemText primary="Terms of Service" />
+            </ListItemButton>
+            <ListItemButton component={Link} to="/privacy" role="privacy-policy">
+              <ListItemText primary="Privacy Policy" />
+            </ListItemButton>
+          </List>
         </Grid>
       </Grid>
     </Container>

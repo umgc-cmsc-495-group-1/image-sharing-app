@@ -13,8 +13,8 @@ export default function ErrorsDisplay ({ errors }:{ errors: string[] }) {
     if (errors.length > 0) {
         errorsDisplay = (
             <div className="error--container">
-                <ul className="error--list" style={errorStyles}>
-                    {errors.map((error, i) => <li key={i}>{error}</li>)}
+                <ul className="error--list" style={errorStyles} aria-label="submit-error-container">
+                    {errors.map((error, i) => <li key={i} aria-label="submit-error-item">{error}</li>)}
                 </ul>
             </div>
         );

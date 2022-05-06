@@ -1,8 +1,7 @@
 import {
   CommentInterface,
   FeedPostInterface,
-  FeedPostType,
-  ProfileInterface,
+  FeedPostType
 } from "../types/appTypes";
 // import { UserInterface } from '../types/authentication'
 // import { signup } from '../data/authFunctions'
