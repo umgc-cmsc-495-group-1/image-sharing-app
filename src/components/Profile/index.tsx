@@ -12,11 +12,11 @@ import {
   ImageListItemBar,
   Typography,
 } from "@mui/material";
-import HootDefaultImage from "../../assets/logo/png/simple-192x192.png"
+import HootDefaultImage from "../../assets/logo/png/simple-192x192.png";
 import { getLiveUserPostData } from "../../data/photoData";
 import FriendButton from "../Buttons/FriendButton";
 import { useNavigate, useParams } from "react-router-dom";
-import {decodeEmailAddress} from "../../utils/middleware";
+import { decodeEmailAddress } from "../../utils/middleware";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -91,7 +91,9 @@ export default function Profile() {
                 width: 1,
                 height: 0,
                 paddingBottom: "100%",
-                backgroundImage: `url(${profile.avatarImage ? profile.avatarImage : HootDefaultImage})`,
+                backgroundImage: `url(${
+                  profile.avatarImage ? profile.avatarImage : HootDefaultImage
+                })`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
@@ -101,7 +103,9 @@ export default function Profile() {
         </Grid>
         <Grid item xs={12} md={8}>
           <Box display="flex">
-            <Typography variant="h4" role="display-name">{profile.displayName}</Typography>
+            <Typography variant="h4" role="display-name">
+              {profile.displayName}
+            </Typography>
             <FriendButton uid={profile.uid} />
           </Box>
           <Typography variant="h6">
