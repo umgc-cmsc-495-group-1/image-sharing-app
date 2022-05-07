@@ -1,12 +1,31 @@
-import React from "react";
-import { UploadFab } from "../UploadFab";
+import React, { useCallback, useRef, useState } from "react";
 import { Box, Container } from "@mui/material";
-import { useExplore } from "../../hooks/useExplore";
 import { FeedPostType } from "../../types/appTypes";
+import { UploadFab } from "../UploadFab";
 import Post from "../Profile/Post";
+import { useExplore } from "../../hooks/useExplore";
+import { FieldValue } from "firebase/firestore";
 
-const Explore = () => {
-  const explore = useExplore();
+const Explore: React.FC = (): JSX.Element => {
+  const [nextTimestamp, setNextTimestamp] = useState<FieldValue | undefined>(
+    undefined
+  );
+  const { posts, loading, lastTimestamp } = useExplore(nextTimestamp);
+  const observer = useRef<IntersectionObserver>();
+  const lastPostRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setNextTimestamp(lastTimestamp);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, lastTimestamp]
+  );
+
   return (
     <Container maxWidth="xl">
       <Box
@@ -16,12 +35,24 @@ const Explore = () => {
           alignItems: "center",
           width: "100%",
         }}
-        role="explore-container"
+        role="feed-container"
       >
         <Box maxWidth="sm">
-          {explore.map((item: FeedPostType) => (
-            <Post key={item.pid} pid={item.pid} />
-          ))}
+          {posts.map((item: FeedPostType, index: number) => {
+            if (posts.length == index + 1) {
+              return (
+                <div key={item.pid} ref={lastPostRef}>
+                  <Post pid={item.pid} />
+                </div>
+              );
+            } else {
+              return (
+                <div key={item.pid}>
+                  <Post pid={item.pid} />
+                </div>
+              );
+            }
+          })}
         </Box>
         <Box>
           <UploadFab />
@@ -31,4 +62,4 @@ const Explore = () => {
   );
 };
 
-export { Explore };
+export default Explore;
