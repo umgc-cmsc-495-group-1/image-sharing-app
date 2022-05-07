@@ -8,7 +8,7 @@ import Post from "../Profile/Post";
 const Feed: React.FC = (): JSX.Element => {
   const feed = useFeed();
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="xl">
       <Box
         sx={{
           display: "flex",

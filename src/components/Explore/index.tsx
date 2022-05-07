@@ -8,7 +8,7 @@ import Post from "../Profile/Post";
 const Explore = () => {
   const explore = useExplore();
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="xl">
       <Box
         sx={{
           display: "flex",
