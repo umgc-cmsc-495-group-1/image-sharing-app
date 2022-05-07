@@ -2,7 +2,7 @@ import * as React from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Feed from "./components/Feed";
-import HootHome from "./components/HomePage";
+import HomePage from "./components/HomePage";
 import HootLogin from "./components/HootLogin";
 import { Navigation } from "./components/Navigation";
 import HootSignup from "./components/HootSignup";
@@ -13,7 +13,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { EasterEgg } from "./components/EasterEgg";
 import { Friends } from "./components/Friends";
 import { Explore } from "./components/Explore";
-import {LoadingBackdrop} from "./components/UploadFab/LoadingBackdrop";
+import { LoadingBackdrop } from "./components/UploadFab/LoadingBackdrop";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import PostPage from "./components/Profile/PostPage";
@@ -26,7 +26,7 @@ export default function App() {
       children: [
         {
           index: true,
-          element: <HootHome />,
+          element: <HomePage />,
         },
         {
           path: "/login",
@@ -38,23 +38,23 @@ export default function App() {
         },
         {
           path: "/privacy",
-          element: <PrivacyPolicy />
+          element: <PrivacyPolicy />,
         },
         {
           path: "/terms-of-service",
-          element: <TermsOfService />
+          element: <TermsOfService />,
         },
         {
           path: "/candy-mountain",
-          element: <ProtectedRoute component={EasterEgg}  />,
+          element: <ProtectedRoute component={EasterEgg} />,
         },
         {
           path: "/feed",
-          element: <ProtectedRoute component={Feed}  />,
+          element: <ProtectedRoute component={Feed} />,
         },
         {
           path: "/explore",
-          element: <ProtectedRoute component={Explore}  />,
+          element: <ProtectedRoute component={Explore} />,
         },
         {
           path: "/user",
@@ -64,15 +64,15 @@ export default function App() {
               children: [
                 {
                   index: true,
-                  element: <ProtectedRoute component={Profile}  />,
+                  element: <ProtectedRoute component={Profile} />,
                 },
                 {
                   path: "settings",
-                  element: <ProtectedRoute component={HootUserSettings}  />,
+                  element: <ProtectedRoute component={HootUserSettings} />,
                 },
                 {
                   path: "friends",
-                  element: <ProtectedRoute component={Friends}  />,
+                  element: <ProtectedRoute component={Friends} />,
                 },
               ],
             },
@@ -122,9 +122,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <React.Suspense fallback={<LoadingBackdrop />}>
-        <div className="App">
-          {element}
-        </div>
+        <div className="App">{element}</div>
       </React.Suspense>
     </ThemeProvider>
   );

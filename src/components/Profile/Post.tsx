@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FeedPostType } from "../../types/appTypes";
 import {
   Avatar,
-  Box,
   Card,
   CardActions,
   CardContent,
@@ -10,7 +9,6 @@ import {
   CardMedia,
   Typography,
   Link,
-  Chip,
 } from "@mui/material";
 import { encodeEmailAddress } from "../../utils/middleware";
 // import {Navigate} from "react-router-dom";
@@ -92,29 +90,14 @@ export default function Post(props: Props) {
         }
         title={postUser?.displayName}
         titleTypographyProps={{ variant: "h5", color: "black" }}
-        subheader={postUser?.displayName}
+        subheader={postUser?.email}
         role="post-header"
         sx={{
           textDecoration: "none",
         }}
       />
-      <CardMedia
-        component="img"
-        image={post?.imageUrl}
-      />
+      <CardMedia component="img" image={post?.imageUrl} />
       <CardContent>
-        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          {post?.classification?.classifications.map((item) => (
-            <div key={item.className}>
-              <Chip
-                size="small"
-                label={item.className}
-                color="secondary"
-                sx={{ margin: 0.125 }}
-              />
-            </div>
-          ))}
-        </Box>
         <Typography>{post?.postText}</Typography>
       </CardContent>
       <CardActions>
