@@ -13,12 +13,12 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { signInGooglePopup, signup } from "../data/authFunctions"; // , signup
-import {UserInterface} from "../types/authentication";
+import { UserInterface } from "../types/authentication";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { useNavigate } from "react-router-dom";
 import { uploadProfileImg } from "../data/photoData";
 import imageCompression from "browser-image-compression";
-import {ImageCompressionWorkerInterface} from "../types/appTypes";
+import { ImageCompressionWorkerInterface } from "../types/appTypes";
 
 export default function HootSignup() {
   const [createdUser, setCreatedUser] = useState<UserInterface>({
@@ -33,15 +33,17 @@ export default function HootSignup() {
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
   const [registerDisabled, setRegisterDisabled] = useState<boolean>(true);
-  const [webWorkerData, setWebWorkerData] = useState<ImageCompressionWorkerInterface>({
-    progress: 0,
-    inputSize: "",
-    outputSize: "",
-    inputUrl: "",
-    outputUrl: "",
-  });
-  const EMAIL_REGEX = /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
+  const [webWorkerData, setWebWorkerData] =
+    useState<ImageCompressionWorkerInterface>({
+      progress: 0,
+      inputSize: "",
+      outputSize: "",
+      inputUrl: "",
+      outputUrl: "",
+    });
+  const EMAIL_REGEX =
+    /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const ILLEGAL_CHARACTERS_REGEX = /[^A-Za-z0-9_ ]/gi;
   const navigate = useNavigate();
   const FormControlLabelText: React.ReactNode = (
     <Typography variant="body2" color="textSecondary">
@@ -73,13 +75,13 @@ export default function HootSignup() {
       maxWidthOrHeight: 1280,
       useWebWorker: true,
       onProgress: (p: number) => handleOnProgress(p, true),
-      fileType: fileType
+      fileType: fileType,
     };
     setWebWorkerData({
       ...webWorkerData,
       inputSize: (file.size / 1024 / 1024).toFixed(2),
       inputUrl: URL.createObjectURL(file),
-    })
+    });
     const result = await imageCompression(file, options);
     setWebWorkerData({
       ...webWorkerData,
@@ -94,7 +96,7 @@ export default function HootSignup() {
     if (files !== null && files.length > 0) {
       const url = URL.createObjectURL(files[0]);
       setProfileImage(url);
-      await handleCompressImage(files[0], files[0].type).then(result => {
+      await handleCompressImage(files[0], files[0].type).then((result) => {
         const file = new File([result], result.name, { type: result.type });
         setFileToUpload(file);
       });
@@ -145,7 +147,9 @@ export default function HootSignup() {
     return true;
   };
 
-  const handleCreateUserSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCreateUserSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
     const user: UserInterface = {
       displayName: createdUser.displayName,
@@ -186,7 +190,9 @@ export default function HootSignup() {
     }
   };
 
-  const handleGoogleSignin = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleGoogleSignin = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
 
     if (fileToUpload === undefined) {
@@ -197,7 +203,7 @@ export default function HootSignup() {
     try {
       await signInGooglePopup()
         .then((res) => {
-          console.log(res)
+          console.log(res);
           if (res.cred !== null && !res.exists) {
             uploadProfileImg(res.cred.user, fileToUpload);
             navigate("/explore");
@@ -214,7 +220,7 @@ export default function HootSignup() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <Box
         sx={{
           marginTop: 8,
@@ -234,7 +240,9 @@ export default function HootSignup() {
           // onSubmit={handleSubmit}
           sx={{ mt: 3 }}
           role="signup-form"
-        > {/* todo: change the handleSubmit to the button for createAccount - add separate validation for google */}
+        >
+          {" "}
+          {/* todo: change the handleSubmit to the button for createAccount - add separate validation for google */}
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Box>
@@ -357,7 +365,7 @@ export default function HootSignup() {
                   />
                 }
                 label={FormControlLabelText}
-                labelPlacement='end'
+                labelPlacement="end"
               />
             </Grid>
           </Grid>
