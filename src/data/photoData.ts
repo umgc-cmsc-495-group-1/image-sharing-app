@@ -354,7 +354,7 @@ const getFeed = async (
   lastTimestamp?: FieldValue
 ) => {
   const posts: FeedPostType[] = [];
-  if (!user.friends.length) {
+  if (!user.friends.length && !explore) {
     return { posts, lastTimestamp };
   }
   const collectionRef = collection(firestore, "posts");
