@@ -250,34 +250,36 @@ export default function HootSignup() {
               </Box>
             </Grid>
             <Grid item xs={12}>
+              <Box>
+                {webWorkerData.progress > 0 && (
+                  <span> Compressing {webWorkerData.progress} %</span>
+                )}
+                {profileImage ? (
+                  <>
+                    <img src={profileImage} alt="Image Preview" width="100%" />
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Box>
               <Button
                 fullWidth
+                component="label"
                 variant="contained"
                 sx={{
                   mt: 3,
                   mb: 2,
                 }}
               >
-                <label htmlFor="profile-image">
-                  Please select a profile image
-                </label>
+                Please Select A Profile Image
+                <input
+                  id="add-image-for-upload"
+                  type="file"
+                  accept="image/*"
+                  hidden={true}
+                  onChange={uploadProfileImage}
+                />
               </Button>
-              <TextField
-                sx={{
-                  display: "none",
-                }}
-                required
-                fullWidth
-                id="profile-image"
-                type="file"
-                onChange={uploadProfileImage}
-                inputProps={{
-                  accept: "image/*",
-                  id: "profile-image",
-                  placeholder: "Select Profile Image",
-                  style: { display: "none" },
-                }}
-              />
             </Grid>
             <Grid item xs={12}>
               <TextField
