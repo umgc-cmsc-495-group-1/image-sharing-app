@@ -1,5 +1,5 @@
-import { auth } from "../firebaseSetup";
-import { createUser, deleteUserDoc } from "./userData";
+import {auth} from "../firebaseSetup";
+import {checkIfGoogleUserExists, createUser, deleteUserDoc} from "./userData";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -15,9 +15,11 @@ import {
 } from "firebase/auth";
 import {
   UserInterface,
-  GoogleUserType,
+  GoogleUserType, GoogleResponse,
 } from "../types/authentication";
 import { deleteAllPosts, deleteProfileImg } from "./photoData";
+// import {User} from "@firebase/auth";
+// import {User} from "@firebase/auth";
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
@@ -108,7 +110,8 @@ const signInGoogleRedirect = async () => {
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-const signInGooglePopup = async () => {
+// : Promise<{user: User | null; exists: boolean}>
+const signInGooglePopup = async (): Promise<GoogleResponse> => {
   let googleUserInfo: GoogleUserType;
 
   const provider = new GoogleAuthProvider();
@@ -117,26 +120,26 @@ const signInGooglePopup = async () => {
   provider.setCustomParameters({
     prompt: "select_account",
   });
-  await signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      googleUserInfo = {
-        displayName: user.displayName || "",
-        email: user.email || "",
-        photoURL: user.photoURL || "",
-        isVerified: user.emailVerified || false,
-      };
-      createUser(user, googleUserInfo);
-
-      return Promise.resolve(googleUserInfo);
+  const userCredential = await signInWithPopup(auth, provider);
+  const userExits = await checkIfGoogleUserExists(userCredential);
+  if (userExits.exists) {
+    return Promise.resolve({
+      cred: userCredential,
+      exists: true
     })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`${errorCode}, ${errorMessage}`);
-    });
+  } else {
+    googleUserInfo = {
+      displayName: userCredential.user.displayName || "",
+      email: userCredential.user.email || "",
+      photoURL: userCredential.user.photoURL || "",
+      isVerified: userCredential.user.emailVerified || false,
+    };
+    await createUser(userCredential.user, googleUserInfo);
+    return Promise.resolve({
+      cred: userCredential,
+      exists: false
+    })
+  }
 };
 
 /******************************** LOG IN *****************************************************/

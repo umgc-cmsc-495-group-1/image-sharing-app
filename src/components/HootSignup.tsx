@@ -13,10 +13,12 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { signInGooglePopup, signup } from "../data/authFunctions"; // , signup
-import { UserInterface } from "../types/authentication";
+import {UserInterface} from "../types/authentication";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { useNavigate } from "react-router-dom";
 import { uploadProfileImg } from "../data/photoData";
+import imageCompression from "browser-image-compression";
+import {ImageCompressionWorkerInterface} from "../types/appTypes";
 
 export default function HootSignup() {
   const [createdUser, setCreatedUser] = useState<UserInterface>({
@@ -31,6 +33,13 @@ export default function HootSignup() {
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
   const [registerDisabled, setRegisterDisabled] = useState<boolean>(true);
+  const [webWorkerData, setWebWorkerData] = useState<ImageCompressionWorkerInterface>({
+    progress: 0,
+    inputSize: "",
+    outputSize: "",
+    inputUrl: "",
+    outputUrl: "",
+  });
   const EMAIL_REGEX = /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
   const navigate = useNavigate();
@@ -47,12 +56,48 @@ export default function HootSignup() {
     </Typography>
   );
 
-  const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /***************** COMPRESSION **********************************/
+
+  const handleOnProgress = (progress: number, useWebWorker: boolean) => {
+    if (useWebWorker) {
+      setWebWorkerData({
+        ...webWorkerData,
+        progress,
+      });
+    }
+  };
+
+  const handleCompressImage = async (file: File, fileType: string) => {
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1280,
+      useWebWorker: true,
+      onProgress: (p: number) => handleOnProgress(p, true),
+      fileType: fileType
+    };
+    setWebWorkerData({
+      ...webWorkerData,
+      inputSize: (file.size / 1024 / 1024).toFixed(2),
+      inputUrl: URL.createObjectURL(file),
+    })
+    const result = await imageCompression(file, options);
+    setWebWorkerData({
+      ...webWorkerData,
+      outputSize: (file.size / 1024 / 1024).toFixed(2),
+      outputUrl: URL.createObjectURL(file),
+    });
+    return result;
+  };
+
+  const uploadProfileImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files !== null && files.length > 0) {
       const url = URL.createObjectURL(files[0]);
-      setFileToUpload(files[0]);
       setProfileImage(url);
+      await handleCompressImage(files[0], files[0].type).then(result => {
+        const file = new File([result], result.name, { type: result.type });
+        setFileToUpload(file);
+      });
     } else {
       setFileToUpload(undefined);
       setProfileImage("");
@@ -100,7 +145,7 @@ export default function HootSignup() {
     return true;
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateUserSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const user: UserInterface = {
       displayName: createdUser.displayName,
@@ -141,14 +186,31 @@ export default function HootSignup() {
     }
   };
 
-  const handleGoogleSignin = async () => {
-    await signInGooglePopup()
-      .then(() => {
-        navigate("/explore");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  const handleGoogleSignin = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    if (fileToUpload === undefined) {
+      setErrors((errors) => [...errors, "Please upload a profile image!"]);
+      return;
+    }
+
+    try {
+      await signInGooglePopup()
+        .then((res) => {
+          console.log(res)
+          if (res.cred !== null && !res.exists) {
+            uploadProfileImg(res.cred.user, fileToUpload);
+            navigate("/explore");
+          } else if (res.cred !== null && res.exists) {
+            navigate("/explore");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -169,10 +231,10 @@ export default function HootSignup() {
         <Box
           component="form"
           noValidate
-          onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           sx={{ mt: 3 }}
           role="signup-form"
-        >
+        > {/* todo: change the handleSubmit to the button for createAccount - add separate validation for google */}
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Box>
@@ -303,6 +365,7 @@ export default function HootSignup() {
             type="submit"
             fullWidth
             disabled={registerDisabled}
+            onClick={handleCreateUserSubmit}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >

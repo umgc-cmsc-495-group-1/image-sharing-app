@@ -1,0 +1,20 @@
+{
+  "name": "photos/DUgucQbXugIGUhRHHxObDWXf58Gt/d1e01352-662d-4f0f-a1d7-da298efa7a44",
+  "bucket": "hoot-umgc.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1651874986877,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "e27f15e1-12d6-4312-89e0-2a562fb7c318"
+  ],
+  "etag": "nwLZKuGIyq5wfnzwzXrTq2Fdk6k",
+  "timeCreated": "2022-05-06T22:09:46.876Z",
+  "updated": "2022-05-06T22:09:46.877Z",
+  "size": 195707,
+  "md5Hash": "3ON1hGhOa35WQ16v2FneVg==",
+  "crc32c": "2664575018"
+}

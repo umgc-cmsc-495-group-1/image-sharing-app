@@ -23,9 +23,8 @@ import {
   arrayRemove,
   onSnapshot,
 } from "firebase/firestore";
-import { CommentType, FeedPostType } from "../types/appTypes";
+import {CommentType, FeedPostType} from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
-// import Resizer from "react-image-file-resizer";
 import { UserInterestsType } from "../types/interests";
 import { updateProfile, User } from "firebase/auth";
 import {
@@ -33,7 +32,6 @@ import {
   FieldPath,
   OrderByDirection,
 } from "@firebase/firestore-types";
-// const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 /************************************************************
  *
@@ -80,7 +78,6 @@ const fabPostCallback = async (
     const cloudPath = `photos/${uid}/${pid}`;
     const firestorePath = `posts/${pid}`;
     const photoRef = ref(storage, cloudPath);
-    // const firestoreRef = doc(firestore, firestorePath);
     // Write to firestore db
     try {
       // set document data
@@ -140,52 +137,19 @@ const uploadProfileImg = async (
   }
 };
 
-// const uploadImageFile = async (file: File, path: string) => {
-//   const resizedImage = await resizeImage(file);
-//   const storageRef = ref(storage, path);
-//   await uploadBytes(storageRef, resizedImage);
-// };
-
-/******************************** MIDDLEWARE for fabPostCallback ******************************************/
-
-/**
- * @description Checks if image exceeds 8MB size limit. If so, resizes. If not, passes it back unchanged.
- * @param source Source file object
- * @returns source file compressed to fit image size limit if necessary, or uncompressed if not.
- */
-// const resizeImage = async (source: File) =>
-//   new Promise<File>((resolve) => {
-//     const resolution = 70;
-//     if (source.size > MAX_FILE_SIZE) {
-//       Resizer.imageFileResizer(
-//         source,
-//         1280,
-//         1024,
-//         "JPEG",
-//         resolution,
-//         0,
-//         (uri) => uri,
-//         "base64"
-//       );
-//       // Resizer.imageFileResizer(source, 1280, 1024, "JPEG", resolution, 0, (uri) => {
-//       // }, "base64")
-//     }
-//     resolve(source);
-//   });
-
 /******************************** RETRIEVE *****************************************************/
 
-/**
- * Get URL for profile image
- * @description Get URL for profile image
- * @param userId
- * @returns
- */
-const getProfileUrl = async (userId: string) => {
-  const filePath = `profile-imgs/${userId}/profile-image`;
-  const fileRef = ref(storage, filePath);
-  return await getDownloadURL(fileRef);
-};
+// /**
+//  * Get URL for profile image
+//  * @description Get URL for profile image
+//  * @param userId
+//  * @returns
+//  */
+// const getProfileUrl = async (userId: string) => {
+//   const filePath = `profile-imgs/${userId}/profile-image`;
+//   const fileRef = ref(storage, filePath);
+//   return await getDownloadURL(fileRef);
+// };
 
 /**
  * @description Supposed to get url of photo for setting <img src>
@@ -442,8 +406,30 @@ const updateProfilePicture = async (
     const uid = user.uid;
     const cloudPath = `profile-imgs/${uid}`;
     const uploadRef = ref(storage, cloudPath);
+    const userCollection = collection(firestore, "users");
+    const userRef = doc(firestore, "users", uid);
+    const docSnap = await getDoc(userRef);
+    if (!docSnap.exists()) {
+      return Promise.reject("User does not exist");
+    }
     await deleteObject(uploadRef).then(() => {
-      uploadProfileImg(user, currentFile)
+      // uploadProfileImg(user, currentFile)
+      uploadBytes(uploadRef, currentFile);
+      setTimeout(async () => {
+        await getDownloadURL(uploadRef).then((url) => {
+          const data = docSnap.data();
+          setDoc(doc(userCollection, uid), {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            bio: data.bio,
+            friends: data.friends,
+            likes: data.likes,
+            avatarImage: url,
+          });
+          updateProfile(user, { photoURL: url });
+        });
+      }, 800);
     }).catch(err => {
       console.error(err);
     });
@@ -652,7 +638,7 @@ export {
   uploadProfileImg,
   getLivePost,
   getOnePost,
-  getProfileUrl,
+  // getProfileUrl,
   getPhotoUrl,
   updateProfilePicture,
   incrementLikes,

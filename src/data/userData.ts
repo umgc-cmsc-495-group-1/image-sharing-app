@@ -10,11 +10,12 @@ import { firestore } from "../firebaseSetup";
 import {
   GoogleUserType,
   UserInterface,
-  AppUserInterface,
+  AppUserInterface, GoogleResponse,
 } from "../types/authentication";
-import { ProfileInterface, ProfileUpdateInterface } from "../types/appTypes";
-import { updateName, changeEmail } from "./authFunctions";
-import { updateAllPosts } from "../data/photoData";
+import { ProfileInterface } from "../types/appTypes"; // , ProfileUpdateInterface
+// import { updateName, changeEmail } from "./authFunctions";
+// import { updateAllPosts } from "../data/photoData";
+import {updateProfile, UserCredential} from "firebase/auth";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -89,6 +90,24 @@ const getUserByUserId = async (userId: string) => {
     return Promise.resolve(user);
   }
 };
+
+const checkIfGoogleUserExists = async (credential: UserCredential) => {
+  let res: GoogleResponse;
+  const userRef = doc(firestore, "users", credential.user.uid);
+  const docSnap = await getDoc(userRef);
+  if (docSnap.exists()) {
+    res = {
+      cred: credential,
+      exists: true,
+    };
+  } else {
+    res = {
+      cred: credential,
+      exists: false,
+    }
+  }
+  return res;
+}
 
 /**
  * @description Get single user with Email value
@@ -169,39 +188,45 @@ const getLiveFriends = async (
 /******************************** UPDATE *****************************************************/
 
 //update functions must incorporate db and auth functions
-/**
- * @description Update user profile information not in auth.currentUser
- * @param userId: string
- * @param profileData: ProfileInterface
- */
-const updateProfile = async (
-  userId: string,
-  profileData: ProfileUpdateInterface
-) => {
-  // const docSnap = await getDoc(docRef);
-  const docRef = doc(firestore, "users", `${userId}`);
-  const displayName = profileData.displayName;
-  const email = profileData.email;
-  const bio = profileData.bio;
-  if (displayName !== "" || displayName !== null) {
-    updateName(displayName);
-  }
-  if (email !== "" || email !== null) {
-    changeEmail(email);
-    await updateAllPosts(userId, email);
-  }
-  await updateDoc(docRef, { displayName: displayName, email: email, bio: bio });
-  // return docRef.update(user);
-};
+// /**
+//  * @description Update user profile information not in auth.currentUser
+//  * @param userId: string
+//  * @param profileData: ProfileInterface
+//  */
+// const updateProfile = async (
+//   userId: string,
+//   profileData: ProfileUpdateInterface
+// ) => {
+//   // const docSnap = await getDoc(docRef);
+//   const docRef = doc(firestore, "users", `${userId}`);
+//   const displayName = profileData.displayName;
+//   const email = profileData.email;
+//   const bio = profileData.bio;
+//   if (displayName !== "" || displayName !== null) {
+//     updateName(displayName);
+//   }
+//   if (email !== "" || email !== null) {
+//     changeEmail(email);
+//     await updateAllPosts(userId, email);
+//   }
+//   await updateDoc(docRef, { displayName: displayName, email: email, bio: bio });
+//   // return docRef.update(user);
+// };
 
-const updateBio = async (userId: string, bio: string) => {
-  const docRef = doc(firestore, "users", `${userId}`);
-  await updateDoc(docRef, { bio: bio });
+const updateBio = async (user: User | null, bio: string) => {
+  if (user !== null) {
+    const docRef = doc(firestore, "users", `${user.uid}`);
+    await updateDoc(docRef, { bio: bio });
+  }
 }
 
-const updateDisplayName = async (userId: string, displayName: string) => {
-  const docRef = doc(firestore, "users", `${userId}`);
-  await updateDoc(docRef, { displayName: displayName });
+const updateDisplayName = async (user: User | null, displayName: string) => {
+  if (user !== null) {
+    const docRef = doc(firestore, "users", `${user.uid}`);
+    await updateDoc(docRef, { displayName: displayName }).then(() => {
+      updateProfile(user, { displayName: displayName });
+    });
+  }
 }
 
 const addFriend = async (newFriend: string, userAdding: string) => {
@@ -236,7 +261,8 @@ export {
   getLiveFriends,
   getUserByUserId,
   getUserByEmail,
-  updateProfile,
+  checkIfGoogleUserExists,
+  // updateProfile,
   deleteUserDoc,
   addFriend,
   removeFriend,

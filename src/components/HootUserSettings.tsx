@@ -13,26 +13,69 @@ import SuccessDisplay from "./SuccessDisplay";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { Link } from "react-router-dom";
 import { updateBio, updateDisplayName } from "../data/userData"
-import { useCurrentUser } from "../hooks/useCurrentUser";
 import {updateProfilePicture} from "../data/photoData";
 import {AuthContext} from "../context/AuthContext";
+import {ImageCompressionWorkerInterface} from "../types/appTypes";
+import imageCompression from "browser-image-compression";
 
 const HootUserSettings: React.FC = () => {
   const [updatedDisplayName, setUpdatedDisplayName] = React.useState<string>("");
   const [updatedBio, setUpdatedBio] = React.useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [success, setSuccess] = useState<string[]>([]);
+  const [webWorkerData, setWebWorkerData] = useState<ImageCompressionWorkerInterface>({
+    progress: 0,
+    inputSize: "",
+    outputSize: "",
+    inputUrl: "",
+    outputUrl: "",
+  });
   const [errors, setErrors] = React.useState<string[]>([]);
   const { user } = useContext(AuthContext);
-  const currentUser = useCurrentUser();
   const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
+
+  /***************** COMPRESSION **********************************/
+
+  const handleOnProgress = (progress: number, useWebWorker: boolean) => {
+    if (useWebWorker) {
+      setWebWorkerData({
+        ...webWorkerData,
+        progress,
+      });
+    }
+  };
+
+  const handleCompressImage = async (file: File, fileType: string) => {
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1280,
+      useWebWorker: true,
+      onProgress: (p: number) => handleOnProgress(p, true),
+      fileType: fileType
+    };
+    setWebWorkerData({
+      ...webWorkerData,
+      inputSize: (file.size / 1024 / 1024).toFixed(2),
+      inputUrl: URL.createObjectURL(file),
+    })
+    const result = await imageCompression(file, options);
+    setWebWorkerData({
+      ...webWorkerData,
+      outputSize: (file.size / 1024 / 1024).toFixed(2),
+      outputUrl: URL.createObjectURL(file),
+    });
+    return result;
+  };
 
   /***************** CHANGE **********************************/
 
-  const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadProfileImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files !== null && files.length > 0) {
-      setFileToUpload(files[0]);
+      await handleCompressImage(files[0], files[0].type).then(result => {
+        const file = new File([result], result.name, { type: result.type });
+        setFileToUpload(file);
+      });
     } else {
       setFileToUpload(undefined);
     }
@@ -52,6 +95,13 @@ const HootUserSettings: React.FC = () => {
     }
     await updateProfilePicture(user, fileToUpload);
     setFileToUpload(undefined);
+    setWebWorkerData({
+      progress: 0,
+      inputSize: "",
+      outputSize: "",
+      inputUrl: "",
+      outputUrl: "",
+    });
     setSuccess(["Profile picture updated"]);
     setTimeout(() => {
       setSuccess([]);
@@ -60,7 +110,7 @@ const HootUserSettings: React.FC = () => {
 
   const handleDisplayNameSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await updateDisplayName(currentUser.uid, updatedDisplayName);
+    await updateDisplayName(user, updatedDisplayName);
     setUpdatedDisplayName("");
     setSuccess(["Display name updated"]);
     setTimeout(() => {
@@ -76,7 +126,7 @@ const HootUserSettings: React.FC = () => {
       return;
     }
 
-    await updateBio(currentUser.uid, updatedBio);
+    await updateBio(user, updatedBio);
     setUpdatedBio("");
     setSuccess(["Bio updated"]);
     setTimeout(() => {
