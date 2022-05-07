@@ -12,6 +12,7 @@ import {
   Link,
   Chip,
 } from "@mui/material";
+import { encodeEmailAddress } from "../../utils/middleware";
 // import {Navigate} from "react-router-dom";
 import { getUserByUserId } from "../../data/userData";
 import { AppUserInterface } from "../../types/authentication";
@@ -41,9 +42,10 @@ export default function Post(props: Props) {
   (async () => {
     if (post?.pid !== undefined) {
       const user = await getUserByUserId(post.uid);
-      let currentEmail = user.email;
-      currentEmail = encodeURIComponent(currentEmail);
-      currentEmail = currentEmail.replace(".", "-");
+      const currentEmail = encodeEmailAddress(user);
+      // let currentEmail = user.email;
+      // currentEmail = encodeURIComponent(currentEmail);
+      // currentEmail = currentEmail.replace(".", "-");
       setCurrentAvatar(user.avatarImage);
       setEncodedEmail(currentEmail);
     }
@@ -52,7 +54,7 @@ export default function Post(props: Props) {
   useEffect(() => {
     const unsubscribe = getLivePost(pid, setPost);
     return () => {
-      unsubscribe;
+      unsubscribe.then((unsub) => unsub());
     };
   }, [pid]);
 
@@ -62,7 +64,11 @@ export default function Post(props: Props) {
       if (post) inUser = await getUserByUserId(post.uid);
       if (inUser) setPostUser(inUser);
     };
-    if (post?.pid) getPostUser();
+    if (post?.pid) {
+      (async () => {
+        await getPostUser();
+      })();
+    }
   }, [post]);
 
   return (
@@ -76,6 +82,7 @@ export default function Post(props: Props) {
         maxWidth: "lg",
         width: "100%",
       }}
+      role="post-card-container"
     >
       <CardHeader
         component={Link}
@@ -91,7 +98,10 @@ export default function Post(props: Props) {
           textDecoration: "none",
         }}
       />
-      <CardMedia component="img" image={post?.imageUrl} />
+      <CardMedia
+        component="img"
+        image={post?.imageUrl}
+      />
       <CardContent>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           {post?.classification?.classifications.map((item) => (

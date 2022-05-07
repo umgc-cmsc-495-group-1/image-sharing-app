@@ -15,16 +15,16 @@ export const useFriends = () => {
 
   useEffect(() => {
     async function getFriendList() {
-      // let friendList: AppUserInterface[];
       try {
         await getLiveFriends(user.uid, setFriendsList)
       } catch (e) {
-        //friendList = [];
         console.error(e);
       }
       // setFriends(friendList);
     }
-    getFriendList();
+    (async () => {
+      await getFriendList();
+    })();
   }, [user]);
 
   return friendsList;

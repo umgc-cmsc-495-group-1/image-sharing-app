@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { red } from "@mui/material/colors";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import {encodeEmailAddress} from "../../utils/middleware";
 
 type Props = {
   pid: string;
@@ -36,8 +37,14 @@ export default function DeleteButton(props: Props) {
         handleClose();
       })
       .then(() => {
-        if (location.pathname.includes("/post")) {
-          navigate(-1);
+        if (location.pathname.includes("/explore")) {
+          navigate('/explore')
+          window.location.reload();
+        } else if (location.pathname.includes("/post")) {
+          const email = encodeEmailAddress(user);
+          location.pathname = `/user/${email}`;
+          navigate(location.pathname);
+          window.location.reload();
         }
       });
   };

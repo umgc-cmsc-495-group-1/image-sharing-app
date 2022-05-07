@@ -3,6 +3,7 @@ import "@tensorflow/tfjs";
 import "@tensorflow/tfjs-converter";
 import "@tensorflow/tfjs-backend-webgl";
 import * as mobilenet from "@tensorflow-models/mobilenet";
+import imageCompression from "browser-image-compression";
 import {
   Box,
   Typography,
@@ -17,6 +18,7 @@ import {
 import ImageIcon from "@mui/icons-material/Image";
 import { LoadingBackdrop } from "./LoadingBackdrop";
 import ErrorsDisplay from "../ErrorsDisplay";
+import {ImageCompressionWorkerInterface} from "../../types/appTypes";
 import {
   CreatePostInterface,
   ImageClassificationType,
@@ -32,13 +34,48 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   const [description, setDescription] = useState<string>("");
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+  const [webWorkerData, setWebWorkerData] = useState<ImageCompressionWorkerInterface>({
+    progress: 0,
+    inputSize: "",
+    outputSize: "",
+    inputUrl: "",
+    outputUrl: "",
+  });
   const [errors, setErrors] = useState<string[]>([]);
   const { user} = useContext(AuthContext);
   const imageRef = useRef<any>();
-  const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
-    setDescription(event.target.value);
-  const handleIsPrivate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPrivate(event.target.checked);
+  const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);
+  const handleIsPrivate = (event: React.ChangeEvent<HTMLInputElement>) => setIsPrivate(event.target.checked);
+
+  const handleOnProgress = (progress: number, useWebWorker: boolean) => {
+    if (useWebWorker) {
+      setWebWorkerData({
+        ...webWorkerData,
+        progress,
+      });
+    }
+  };
+
+  const handleCompressImage = async (file: File, fileType: string) => {
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1280,
+      useWebWorker: true,
+      onProgress: (p: number) => handleOnProgress(p, true),
+      fileType: fileType
+    };
+    setWebWorkerData({
+      ...webWorkerData,
+      inputSize: (file.size / 1024 / 1024).toFixed(2),
+      inputUrl: URL.createObjectURL(file),
+    })
+    const result = await imageCompression(file, options);
+    setWebWorkerData({
+      ...webWorkerData,
+      outputSize: (file.size / 1024 / 1024).toFixed(2),
+      outputUrl: URL.createObjectURL(file),
+    });
+    return result;
   };
 
   const loadModel = async () => {
@@ -53,15 +90,26 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
     }
   };
 
-  const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files !== null && files.length > 0) {
       const url = URL.createObjectURL(files[0]);
-      setFileToUpload(files[0]);
+      await handleCompressImage(files[0], files[0].type).then(result => {
+        const file = new File([result], result.name, { type: result.type });
+        setFileToUpload(file);
+      });
+      // setFileToUpload(files[0]);
       setImageUrl(url);
     } else {
       setImageUrl(undefined);
       setFileToUpload(undefined);
+      setWebWorkerData({
+        progress: 0,
+        inputSize: "",
+        outputSize: "",
+        inputUrl: "",
+        outputUrl: "",
+      });
     }
   };
 
@@ -141,6 +189,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
           }}
         >
           <Box className="post-preview image-holder">
+            {(webWorkerData.progress > 0) && <span> Compressing {webWorkerData.progress} %</span>}
             {imageUrl ? (
               <>
                 <img
@@ -177,6 +226,8 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
           </Button>
           <TextField
             multiline
+            minRows={1}
+            maxRows={4}
             fullWidth
             inputProps={{
               maxLength: 140,
