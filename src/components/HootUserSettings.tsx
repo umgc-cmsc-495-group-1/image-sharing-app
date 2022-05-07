@@ -22,6 +22,7 @@ const HootUserSettings: React.FC = () => {
   const [updatedDisplayName, setUpdatedDisplayName] =
     React.useState<string>("");
   const [updatedBio, setUpdatedBio] = React.useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [success, setSuccess] = useState<string[]>([]);
   const [webWorkerData, setWebWorkerData] =
@@ -34,7 +35,7 @@ const HootUserSettings: React.FC = () => {
     });
   const [errors, setErrors] = React.useState<string[]>([]);
   const { user } = useContext(AuthContext);
-  const ILLEGAL_CHARACTERS_REGEX = /[^a-zA-Z0-9_ ]/gi;
+  const ILLEGAL_CHARACTERS_REGEX = /[^a-zA-Z0-9_\- ]/gi;
 
   /***************** COMPRESSION **********************************/
 
@@ -74,6 +75,8 @@ const HootUserSettings: React.FC = () => {
   const uploadProfileImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files !== null && files.length > 0) {
+      const url = URL.createObjectURL(files[0]);
+      setProfileImage(url);
       await handleCompressImage(files[0], files[0].type).then((result) => {
         const file = new File([result], result.name, { type: result.type });
         setFileToUpload(file);
@@ -152,32 +155,36 @@ const HootUserSettings: React.FC = () => {
           </Box>
         </Grid>
         <Grid item xs={12}>
+          <Box>
+            {webWorkerData.progress > 0 && (
+              <span> Compressing {webWorkerData.progress} %</span>
+            )}
+            {profileImage ? (
+              <>
+                <img src={profileImage} alt="Image Preview" width="100%" />
+              </>
+            ) : (
+              <></>
+            )}
+          </Box>
           <Button
             fullWidth
+            component="label"
             variant="outlined"
             sx={{
               mt: 3,
               mb: 2,
             }}
           >
-            <label htmlFor="profile-image">Please select a profile image</label>
+            Update Profile Image
+            <input
+              id="profile-image"
+              type="file"
+              accept="image/*"
+              hidden={true}
+              onChange={uploadProfileImage}
+            />
           </Button>
-          <TextField
-            sx={{
-              display: "none",
-            }}
-            required
-            fullWidth
-            id="profile-image"
-            type="file"
-            onChange={uploadProfileImage}
-            inputProps={{
-              accept: "image/*",
-              id: "profile-image",
-              placeholder: "Select Profile Image",
-              style: { display: "none" },
-            }}
-          />
           <Button
             fullWidth
             color="primary"
