@@ -27,7 +27,7 @@ class Node<T> {
   }
 }
 
-class Graph<T> {
+export class Graph<T> {
   nodes: Node<T>[] = []
   // eslint-disable-next-line no-unused-vars
   comparator: (user: T, post: T) => number;
@@ -136,7 +136,7 @@ class Graph<T> {
   }
 }
 
-const comparator = ({user, post}:{user: AppUserInterface, post: FeedPostInterface}): number => {
+export const comparator = ({user, post}:{user: AppUserInterface, post: FeedPostInterface}): number => {
   const currentInterests: string[] = [];
   if (post.likes.includes(user.uid)) {
     post.classification.classifications.forEach(item => {
@@ -161,5 +161,5 @@ const comparator = ({user, post}:{user: AppUserInterface, post: FeedPostInterfac
 
 }
 
-export const graph: Graph<{ user: AppUserInterface; post: FeedPostInterface }> = new Graph(comparator);
+// export const graph: Graph<{ user: AppUserInterface; post: FeedPostInterface }> = new Graph(comparator);
 

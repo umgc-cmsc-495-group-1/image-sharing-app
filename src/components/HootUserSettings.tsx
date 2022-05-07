@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import {
   List,
   ListItemButton,
@@ -7,7 +7,7 @@ import {
   Grid,
   TextField,
   Box,
-  Button
+  Button,
 } from "@mui/material";
 import SuccessDisplay from "./SuccessDisplay";
 import ErrorsDisplay from "./ErrorsDisplay";
@@ -20,20 +20,22 @@ import {ImageCompressionWorkerInterface} from "../types/appTypes";
 import imageCompression from "browser-image-compression";
 
 const HootUserSettings: React.FC = () => {
-  const [updatedDisplayName, setUpdatedDisplayName] = React.useState<string>("");
+  const [updatedDisplayName, setUpdatedDisplayName] =
+    React.useState<string>("");
   const [updatedBio, setUpdatedBio] = React.useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [success, setSuccess] = useState<string[]>([]);
-  const [webWorkerData, setWebWorkerData] = useState<ImageCompressionWorkerInterface>({
-    progress: 0,
-    inputSize: "",
-    outputSize: "",
-    inputUrl: "",
-    outputUrl: "",
-  });
+  const [webWorkerData, setWebWorkerData] =
+    useState<ImageCompressionWorkerInterface>({
+      progress: 0,
+      inputSize: "",
+      outputSize: "",
+      inputUrl: "",
+      outputUrl: "",
+    });
   const [errors, setErrors] = React.useState<string[]>([]);
   const { user } = useContext(AuthContext);
-  // const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
 
   /***************** COMPRESSION **********************************/
 
@@ -52,13 +54,13 @@ const HootUserSettings: React.FC = () => {
       maxWidthOrHeight: 1280,
       useWebWorker: true,
       onProgress: (p: number) => handleOnProgress(p, true),
-      fileType: fileType
+      fileType: fileType,
     };
     setWebWorkerData({
       ...webWorkerData,
       inputSize: (file.size / 1024 / 1024).toFixed(2),
       inputUrl: URL.createObjectURL(file),
-    })
+    });
     const result = await imageCompression(file, options);
     setWebWorkerData({
       ...webWorkerData,
@@ -73,7 +75,9 @@ const HootUserSettings: React.FC = () => {
   const uploadProfileImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files !== null && files.length > 0) {
-      await handleCompressImage(files[0], files[0].type).then(result => {
+      const url = URL.createObjectURL(files[0]);
+      setProfileImage(url);
+      await handleCompressImage(files[0], files[0].type).then((result) => {
         const file = new File([result], result.name, { type: result.type });
         setFileToUpload(file);
       });
@@ -82,13 +86,11 @@ const HootUserSettings: React.FC = () => {
     }
   };
 
-  // const sanitizeDisplayName = (displayName: string) => {
-  //   return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
-  // };
-
   /***************** SUBMIT *****************/
 
-  const handleUpdateProfilePicture = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleUpdateProfilePicture = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
     if (fileToUpload === undefined) {
       setErrors(["No file selected"]);
@@ -107,9 +109,11 @@ const HootUserSettings: React.FC = () => {
     setTimeout(() => {
       setSuccess([]);
     }, 3000);
-  }
+  };
 
-  const handleDisplayNameSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDisplayNameSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
     await updateDisplayName(user, updatedDisplayName);
     setUpdatedDisplayName("");
@@ -117,9 +121,11 @@ const HootUserSettings: React.FC = () => {
     setTimeout(() => {
       setSuccess([]);
     }, 3000);
-  }
+  };
 
-  const handleBioSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBioSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
 
     if (updatedBio.length < 10 || updatedBio.length > 140) {
@@ -133,7 +139,7 @@ const HootUserSettings: React.FC = () => {
     setTimeout(() => {
       setSuccess([]);
     }, 3000);
-  }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -145,45 +151,51 @@ const HootUserSettings: React.FC = () => {
           </Box>
         </Grid>
         <Grid item xs={12}>
+          <Box>
+            {webWorkerData.progress > 0 && (
+              <span> Compressing {webWorkerData.progress} %</span>
+            )}
+            {profileImage ? (
+              <>
+                <img src={profileImage} alt="Image Preview" width="100%" />
+              </>
+            ) : (
+              <></>
+            )}
+          </Box>
           <Button
             fullWidth
+            component="label"
             variant="outlined"
             sx={{
               mt: 3,
               mb: 2,
             }}
           >
-            <label htmlFor="profile-image">
-              Please select a profile image
-            </label>
+            Update Profile Image
+            <input
+              id="profile-image"
+              type="file"
+              accept="image/*"
+              hidden={true}
+              onChange={uploadProfileImage}
+            />
           </Button>
-          <TextField
-            sx={{
-              display: "none",
-            }}
-            required
-            fullWidth
-            id="profile-image"
-            type="file"
-            onChange={uploadProfileImage}
-            inputProps={{
-              accept: "image/*",
-              id: "profile-image",
-              placeholder: "Select Profile Image",
-              style: { display: "none" },
-            }}
-          />
           <Button
             fullWidth
             color="primary"
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleUpdateProfilePicture}
-          >Update Profile Picture</Button>
+          >
+            Update Profile Picture
+          </Button>
         </Grid>
         <Grid item xs={12}>
           <TextField
-            onChange={(event) => setUpdatedDisplayName(sanitizeDisplayName(event.target.value))}
+            onChange={(event) =>
+              setUpdatedDisplayName(sanitizeDisplayName(event.target.value))
+            }
             value={updatedDisplayName}
             fullWidth
             name="NewDisplayName"
@@ -197,7 +209,9 @@ const HootUserSettings: React.FC = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleDisplayNameSubmit}
-          >Update Display Name</Button>
+          >
+            Update Display Name
+          </Button>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -215,14 +229,24 @@ const HootUserSettings: React.FC = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleBioSubmit}
-          >Update Bio</Button>
+          >
+            Update Bio
+          </Button>
         </Grid>
         <Grid item xs={12}>
           <List>
-            <ListItemButton component={Link} to="/terms-of-service" role="terms-of-service">
+            <ListItemButton
+              component={Link}
+              to="/terms-of-service"
+              role="terms-of-service"
+            >
               <ListItemText primary="Terms of Service" />
             </ListItemButton>
-            <ListItemButton component={Link} to="/privacy" role="privacy-policy">
+            <ListItemButton
+              component={Link}
+              to="/privacy"
+              role="privacy-policy"
+            >
               <ListItemText primary="Privacy Policy" />
             </ListItemButton>
           </List>
@@ -230,6 +254,6 @@ const HootUserSettings: React.FC = () => {
       </Grid>
     </Container>
   );
-}
+};
 
 export default HootUserSettings;

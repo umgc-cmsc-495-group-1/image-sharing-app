@@ -28,9 +28,3 @@ export function decodeEmailAddress(email: string){
   temp = temp.replace("-", ".");
   return temp;
 }
-
-// export {
-//   mapUserPhotos,
-//   encodeEmailAddress,
-//   decodeEmailAddress
-// };

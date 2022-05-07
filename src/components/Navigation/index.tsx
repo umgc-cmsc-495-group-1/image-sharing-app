@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   AppBar,
@@ -13,8 +13,8 @@ import { Outlet } from "react-router-dom";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
 import { AuthContext } from "../../context/AuthContext";
-import {getUserByUserId} from "../../data/userData";
-import {encodeEmailAddress} from "../../utils/middleware";
+import { getUserByUserId } from "../../data/userData";
+import { encodeEmailAddress } from "../../utils/middleware";
 
 const Navigation: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -73,7 +73,9 @@ const Navigation: React.FC = () => {
           role="presentation"
           onClick={() => setIsOpen(false)}
         >
-          <List>{user ? <LoggedIn email={encodedEmail} /> : <NotLoggedIn />}</List>
+          <List>
+            {user ? <LoggedIn email={encodedEmail} /> : <NotLoggedIn />}
+          </List>
         </Box>
       </Drawer>
       <Outlet />

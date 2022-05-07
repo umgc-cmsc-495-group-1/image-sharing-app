@@ -54,10 +54,6 @@ export default function DeleteButton(props: Props) {
       const unsubscribe = await getLivePost(pid, setPost);
       return unsubscribe;
     })();
-    // const unsubscribe = getLivePost(pid, setPost);
-    // return () => {
-    //   unsubscribe;
-    // };
   }, [pid]);
 
   return (
