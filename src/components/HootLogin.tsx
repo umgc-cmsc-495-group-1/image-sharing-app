@@ -45,7 +45,7 @@ export default function HootLogin() {
         if (err.code === "auth/user-not-found") {
           setErrors(["User not found"]);
         } else if (err.code === "auth/wrong-password") {
-          setErrors(["Wrong password"]);
+          setErrors(["Correct Email and Password are required"]);
         } else {
           setErrors([err.message]);
         }
@@ -55,9 +55,11 @@ export default function HootLogin() {
 
   const handleGoogleSignin = async () => {
     await signInGooglePopup()
-      .then(() => {
-        setErrors([]);
-        navigate("/explore");
+      .then((res) => {
+        if (res.cred !== null && res.exists) {
+          setErrors([]);
+          navigate("/explore");
+        }
       })
       .catch((err) => {
         setErrors({

@@ -4,8 +4,11 @@ import { Box } from "@mui/material";
 import { useExplore } from "../../hooks/useExplore";
 import { FeedPostType } from "../../types/appTypes";
 import Post from "../Profile/Post";
+// import {graph} from "../../engine/Engine";
+// import {useCurrentUser} from "../../hooks/useCurrentUser";
 
 const Explore = () => {
+  // const user = useCurrentUser();
   const explore = useExplore();
   return (
     <Box
@@ -17,9 +20,14 @@ const Explore = () => {
       }}
     >
       <Box maxWidth="md">
-        {explore.map((item: FeedPostType) => (
-          <Post key={item.pid} pid={item.pid} />
-        ))}
+        {explore.map((item: FeedPostType) => {
+          return (
+              <Post key={item.pid} pid={item.pid} />
+          )
+        })}
+        {/*{explore.map((item: FeedPostType) => (*/}
+        {/*  <Post key={item.pid} pid={item.pid} />*/}
+        {/*))}*/}
       </Box>
       <Box>
         <UploadFab />

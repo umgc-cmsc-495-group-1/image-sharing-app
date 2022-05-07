@@ -27,9 +27,6 @@ export default function Profile() {
       return;
     }
     const temp = decodeEmailAddress(email);
-    // let temp = email;
-    // temp = decodeURIComponent(temp);
-    // temp = temp.replace("-", ".");
     setCurrentEmail(temp);
   }, [email]);
   const [profile, setProfile] = useState<ProfileInterface>({

@@ -1,5 +1,5 @@
 import {auth} from "../firebaseSetup";
-import {checkIfGoogleUserExists, createUser, deleteUserDoc} from "./userData";
+import {createUser, deleteUserDoc} from "./userData";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -18,10 +18,9 @@ import {
   GoogleUserType, GoogleResponse,
 } from "../types/authentication";
 import { deleteAllPosts, deleteProfileImg } from "./photoData";
-// import {User} from "@firebase/auth";
-// import {User} from "@firebase/auth";
-const PASSWORD_REGEX =
-  /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
+import {PASSWORD_REGEX, sanitizeDisplayName} from "../utils/middleware";
+// const PASSWORD_REGEX =
+//   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
  *
@@ -110,7 +109,6 @@ const signInGoogleRedirect = async () => {
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-// : Promise<{user: User | null; exists: boolean}>
 const signInGooglePopup = async (): Promise<GoogleResponse> => {
   let googleUserInfo: GoogleUserType;
 
@@ -121,20 +119,23 @@ const signInGooglePopup = async (): Promise<GoogleResponse> => {
     prompt: "select_account",
   });
   const userCredential = await signInWithPopup(auth, provider);
-  const userExits = await checkIfGoogleUserExists(userCredential);
-  if (userExits.exists) {
+  const userExists = userCredential.user.metadata.lastSignInTime === userCredential.user.metadata.creationTime;
+  if (!userExists) {
     return Promise.resolve({
       cred: userCredential,
       exists: true
     })
   } else {
     googleUserInfo = {
-      displayName: userCredential.user.displayName || "",
+      displayName: sanitizeDisplayName((userCredential.user.displayName !== null) ? userCredential.user.displayName : ""),
       email: userCredential.user.email || "",
       photoURL: userCredential.user.photoURL || "",
       isVerified: userCredential.user.emailVerified || false,
     };
     await createUser(userCredential.user, googleUserInfo);
+    await updateProfile(userCredential.user, {
+      displayName: sanitizeDisplayName((userCredential.user.displayName !== null) ? userCredential.user.displayName : "")
+    });
     return Promise.resolve({
       cred: userCredential,
       exists: false

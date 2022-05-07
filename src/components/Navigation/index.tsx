@@ -25,9 +25,6 @@ const Navigation: React.FC = () => {
       if (user) {
         const userData = await getUserByUserId(user.uid);
         const currentEmail = encodeEmailAddress(userData);
-        // let currentEmail = userData.email;
-        // currentEmail = encodeURIComponent(currentEmail);
-        // currentEmail = currentEmail.replace(".", "-");
         setEncodedEmail(currentEmail);
       }
     })();
@@ -58,7 +55,7 @@ const Navigation: React.FC = () => {
               src={require("../../assets/logo/png/simple-72x72.png")}
             />
             <Typography variant="h6">
-              {user ? user.email + " - Hoot!" : "Hoot!"}
+              {user ? user.displayName + " - Hoot!" : "Hoot!"}
             </Typography>
           </Toolbar>
         </AppBar>

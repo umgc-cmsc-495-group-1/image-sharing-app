@@ -43,9 +43,6 @@ export default function Post(props: Props) {
     if (post?.pid !== undefined) {
       const user = await getUserByUserId(post.uid);
       const currentEmail = encodeEmailAddress(user);
-      // let currentEmail = user.email;
-      // currentEmail = encodeURIComponent(currentEmail);
-      // currentEmail = currentEmail.replace(".", "-");
       setCurrentAvatar(user.avatarImage);
       setEncodedEmail(currentEmail);
     }
@@ -92,7 +89,6 @@ export default function Post(props: Props) {
         }
         title={postUser?.displayName}
         titleTypographyProps={{ variant: "h5", color: "black" }}
-        subheader={postUser?.displayName}
         role="post-header"
         sx={{
           textDecoration: "none",

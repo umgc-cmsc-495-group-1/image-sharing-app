@@ -1,3 +1,6 @@
+import {AppUserInterface} from "./authentication";
+import {FeedPostInterface} from "./appTypes";
+
 export interface ImageClassificationInterface {
   className: string;
   probability: number;
@@ -18,4 +21,9 @@ export interface CreatePostInterface {
   open: boolean;
   handleClose: () => void
 }
+
+// export interface GraphSortInterface {
+//   user: AppUserInterface;
+//   post: FeedPostInterface;
+// }
 

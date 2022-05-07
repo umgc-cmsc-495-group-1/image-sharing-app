@@ -4,7 +4,7 @@ import { getPublicFeedData } from "../data/photoData";
 import { AppUserInterface } from "../types/authentication";
 import { useCurrentUser } from "./useCurrentUser";
 import { mapUserPhotos } from "../utils/middleware";
-// import {graph} from "../engine/Engine";
+import {graph} from "../engine/Engine";
 
 /**
  * React Hook to get all photos in a collection
@@ -19,19 +19,25 @@ export const useExplore = () => {
   // Load user's photo collection from Firestore db
   useEffect(() => {
     async function getPhotos() {
-      let usersPhotos: FeedPostType[] = await getPublicFeedData();
-      try {
-        mapUserPhotos(usersPhotos);
-      } catch (e) {
-        usersPhotos = [];
-        console.error(e);
+      if (user.uid !== "") {
+        await getPublicFeedData().then(photos => {
+          mapUserPhotos(photos);
+          // setPosts(photos);
+          const formattedPosts: FeedPostType[] = [];
+          photos.forEach((post, index) => {
+            graph.addNode({user: user, post: photos[index]})
+          })
+          graph.sort();
+          console.log(graph.nodes)
+          graph.nodes.forEach(node => formattedPosts.push(node.data.post))
+          setPosts(formattedPosts);
+        });
       }
-      setPosts(usersPhotos);
     }
     (async () => {
       await getPhotos();
     })();
   }, [user]);
-  // console.log(posts)
+  console.log(posts)
   return posts;
 };

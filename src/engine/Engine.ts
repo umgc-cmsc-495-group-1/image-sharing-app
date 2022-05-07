@@ -1,11 +1,14 @@
+import {AppUserInterface} from "../types/authentication";
+import {FeedPostInterface} from "../types/appTypes";
+
 class Node<T> {
   data: T;
   adjacent: Node<T>[];
   // eslint-disable-next-line no-unused-vars
-  comparator: (a: T, b: T) => number;
+  comparator: (user: T, post: T) => number;
 
   // eslint-disable-next-line no-unused-vars
-  constructor(data: T, comparator: (a: T, b: T) => number) {
+  constructor(data: T, comparator: (user: T, post: T) => number) {
     this.data = data;
     this.adjacent = [];
     this.comparator = comparator;
@@ -16,7 +19,6 @@ class Node<T> {
   }
 
   removeAdjacent(data: T): Node<T> | null {
-    // this.adjacent = this.adjacent.filter(n => n !== node);
     const index = this.adjacent.findIndex(n => this.comparator(n.data, data) === 0);
     if (index === -1) {
       return null;
@@ -25,14 +27,27 @@ class Node<T> {
   }
 }
 
-export class Graph<T> {
-  nodes: Map<T, Node<T>> = new Map();
+class Graph<T> {
+  nodes: Node<T>[] = []
   // eslint-disable-next-line no-unused-vars
-  comparator: (a: T, b: T) => number;
+  comparator: (user: T, post: T) => number;
 
   // eslint-disable-next-line no-unused-vars
-  constructor(comparator: (a: T, b: T) => number) {
+  constructor(comparator: (user: T, post: T) => number) {
     this.comparator = comparator;
+  }
+
+  /**
+   * Sorts the nodes in the graph by the comparator function
+   */
+  sort() {
+    const sorted: Node<T>[] = [];
+    this.nodes.forEach(node => sorted.push(node));
+    sorted.sort((a, b) => {
+      const diff = this.comparator(a.data, b.data)
+      return diff > 0 ? 1 : -1;
+    });
+    this.nodes = sorted;
   }
 
   /**
@@ -41,11 +56,8 @@ export class Graph<T> {
    * @returns {Node<T>}
    */
   addNode(data: T): Node<T> {
-    let node = this.nodes.get(data);
-    if (node) return node;
-
-    node = new Node(data, this.comparator);
-    this.nodes.set(data, node);
+    const node: Node<T> = new Node(data, this.comparator);
+    this.nodes.push(node);
 
     return node;
   }
@@ -56,11 +68,12 @@ export class Graph<T> {
    * @returns {Node<T> | null}
    */
   removeNode(data: T): Node<T> | null {
-    const node = this.nodes.get(data);
+    const nodeIndex = this.nodes.indexOf(new Node<T>(data, this.comparator));
+    const node = this.nodes[nodeIndex];
     if (!node) return null;
 
     this.nodes.forEach(n => n.removeAdjacent(node.data));
-    this.nodes.delete(data);
+    this.nodes.splice(nodeIndex, 1);
 
     return node;
   }
@@ -82,8 +95,10 @@ export class Graph<T> {
    * @param {T} to
    */
   removeEdge(from: T, to: T) {
-    const fromNode = this.nodes.get(from);
-    const toNode = this.nodes.get(to);
+    const fromIndex = this.nodes.indexOf(new Node<T>(from, this.comparator));
+    const toIndex = this.nodes.indexOf(new Node<T>(to, this.comparator));
+    const fromNode = this.nodes[fromIndex];
+    const toNode = this.nodes[toIndex];
     if (!fromNode || !toNode) return;
 
     fromNode.removeAdjacent(toNode.data);
@@ -121,13 +136,30 @@ export class Graph<T> {
   }
 }
 
-function comparator(a: number, b: number) {
-  if (a < b) return -1;
+const comparator = ({user, post}:{user: AppUserInterface, post: FeedPostInterface}): number => {
+  const currentInterests: string[] = [];
+  if (post.likes.includes(user.uid)) {
+    post.classification.classifications.forEach(item => {
+      currentInterests.push(item.className);
+    })
+  }
 
-  if (a > b) return 1;
+  if (user.likes.includes(post.pid) && post.uid !== user.uid) {
+    post.classification.classifications.forEach(classification => {
+      if (currentInterests.includes(classification.className)) {
+        return 0;
+      }
+    })
+  }
 
-  return 0;
+  if (!user.likes.includes(post.pid)) return 1;
+
+
+  if (!post.likes.includes(user.uid)) return -1;
+
+  return -1;
+
 }
 
-export const graph = new Graph(comparator);
+export const graph: Graph<{ user: AppUserInterface; post: FeedPostInterface }> = new Graph(comparator);
 

@@ -1,7 +1,6 @@
 import { FieldValue } from "firebase/firestore";
 import {UserInterestsType} from "./interests";
 import {AppUserInterface} from "./authentication"
-import React from "react";
 
 /**
  * @description - User Images Base Interface

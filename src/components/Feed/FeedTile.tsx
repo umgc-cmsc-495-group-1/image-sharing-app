@@ -123,9 +123,6 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
     if (post !== undefined) {
       const user = await getUserByUserId(post.uid);
       const currentEmail = encodeEmailAddress(user);
-      // let currentEmail = user.email;
-      // currentEmail = encodeURIComponent(currentEmail);
-      // currentEmail = currentEmail.replace(".", "-");
       setCurrentAvatar(user.avatarImage)
       setEncodedEmail(currentEmail);
     }

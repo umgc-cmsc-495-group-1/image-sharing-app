@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { updateBio, updateDisplayName } from "../data/userData"
 import {updateProfilePicture} from "../data/photoData";
 import {AuthContext} from "../context/AuthContext";
+import {sanitizeDisplayName} from "../utils/middleware";
 import {ImageCompressionWorkerInterface} from "../types/appTypes";
 import imageCompression from "browser-image-compression";
 
@@ -32,7 +33,7 @@ const HootUserSettings: React.FC = () => {
   });
   const [errors, setErrors] = React.useState<string[]>([]);
   const { user } = useContext(AuthContext);
-  const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
+  // const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
 
   /***************** COMPRESSION **********************************/
 
@@ -81,9 +82,9 @@ const HootUserSettings: React.FC = () => {
     }
   };
 
-  const sanitizeDisplayName = (displayName: string) => {
-    return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
-  };
+  // const sanitizeDisplayName = (displayName: string) => {
+  //   return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
+  // };
 
   /***************** SUBMIT *****************/
 
