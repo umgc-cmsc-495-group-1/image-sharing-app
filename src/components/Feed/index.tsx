@@ -11,7 +11,6 @@ const Feed: React.FC = (): JSX.Element => {
     undefined
   );
   const { posts, loading, lastTimestamp } = useFeed(nextTimestamp);
-  console.log(posts);
   const observer = useRef<IntersectionObserver>();
   const lastPostRef = useCallback(
     (node: HTMLDivElement) => {
