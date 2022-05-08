@@ -1,9 +1,23 @@
-rules_version = "2";
+rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /profile-imgs/{userID}/{allPaths=**} {
-      allow read: if true;
-      allow write: if request.resource.size < 3 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+    match /profile-imgs/{userId}/{allPaths=**} {
+      allow get: if true;
+      allow delete: if request.auth.uid == userId;
+      allow update: if true;
+      allow create: if true
+        && isValidContentType(request.resource)
+        && isValidFileExtension(request.resource.name)
+        && isValidFileSize(request.resource);
     }
+  }
+  function isValidContentType(data) {
+    return data.contentType in ['image/png'] || data.contentType in ['image/jpeg'] || data.contentType in ['image/jpg'];
+  }
+  function isValidFileExtension(fileName) {
+    return fileName.matches('(?i:.*[.]png)') || fileName.matches('(?i:.*[.]jpeg)') || fileName.matches('(?i:.*[.]jpg)');
+  }
+  function isValidFileSize(data) {
+    return data.size < 2 * 1024 * 1024
   }
 }
