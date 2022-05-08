@@ -1,9 +1,9 @@
 import {useState, useEffect} from "react";
-import {FeedPostType} from "../types/appTypes";
-import { getPublicFeedData } from "../data/photoData";
+import { FeedPostType } from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import { useCurrentUser } from "./useCurrentUser";
-import { mapUserPhotos } from "../utils/middleware";
+import { getExplore } from "../data/photoData";
+// import { FieldValue } from "firebase/firestore";
 // import {comparator, Graph} from "../engine/Engine";
 
 /**
@@ -13,103 +13,128 @@ import { mapUserPhotos } from "../utils/middleware";
  */
 
 async function getPhotos(user: AppUserInterface) {
-  if (user.uid !== "") {
-    try {
-      const userPhotos: FeedPostType[] = await getPublicFeedData();
-      mapUserPhotos(userPhotos);
-      return userPhotos;
-    } catch (e) {
-      const emptyArray: FeedPostType[] = [];
-      return emptyArray;
-    }
-  }
+  const {totalPosts, size} = await getExplore(user)
+  return {totalPosts, size}
 }
 
 
 // Sets as photoData
-export const useExplore = () => {
-  const [posts, setPosts] = useState<FeedPostType[]>([]);
-  // const [formattedPosts, setFormattedPosts] = useState<FeedPostInterface[]>([]);
-  // const [graph, setGraph] = useState<Graph<{ user: AppUserInterface; post: FeedPostInterface }>>(
-  //   new Graph(comparator)
-  // );
-  // const [unsortedPosts, setUnsortedPosts] = useState<FeedPostType[]>([]);
-  // const [size, setSize] = useState<number>(0);
-  // const [sortedPosts, setSortedPosts] = useState<FeedPostType[]>([]);
+// export const useExplore = (nextTimestamp: FieldValue | undefined) => {
+export const useExplore = (nextIndex: number) => {
+  // const [totalSize, setTotalSize] = useState(0);
+  const [totalPosts, setTotalPosts] = useState<FeedPostType[]>([]);
+  const [totalSize, setTotalSize] = useState(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [error, setError] = useState<{ error: boolean; message: string; }>(
+    {error: false, message: ""});
+  // const [posts, setPosts] = useState<FeedPostType[]>([]);
+  // const [currentIndex, setCurrentIndex] = useState(0);
   const user: AppUserInterface = useCurrentUser();
-  // const userPhotos: FeedPostType[] = [];
-  // const formattedPosts: FeedPostType[] = [];
-  // const graph: Graph<{ user: AppUserInterface; post: FeedPostInterface }> = new Graph(comparator);
-  // Load user's photo collection from Firestore db
 
-  // const getSortedPosts = useMemo(() => async function sortedPosts() {
-  //   const photos = await getPhotos(user);
-  //   let currentPosts: FeedPostInterface[] = [];
-  //   if (photos !== undefined) {
-  //     // setUnsortedPosts(photos);
-  //     // setSize(photos.length);
-  //     photos.forEach((post, index) => {
-  //       graph.addNode({user: user, post: photos[index]})
-  //     })
-  //     graph.sort();
-  //     graph.nodes.forEach(node => currentPosts.push(node.data.post))
-  //     setFormattedPosts(currentPosts);
-  //     console.log(currentPosts);
-  //     currentPosts = [];
-  //     setGraph(new Graph(comparator));
-  //   }
-  //   setPosts(formattedPosts);
-  // }, [user]);
+  // const getPostsByIndex = useCallback((from: number, to: number) => {
+  //       return totalPosts.slice(from, to);
+  //     }, [totalPosts]);
+
+  // useEffect(() => {
+  //   setTotalPosts([]);
+  // }, [totalPosts]);
 
   useEffect(() => {
-    (async () => {
-      const photos = await getPhotos(user);
-      if (photos !== undefined) {
-        setPosts(photos);
+    console.log(nextIndex);
+    setLoading(true);
+    setError({error: false, message: ""});
+    getPhotos(user).then(photos => {
+      setTotalSize(photos.size);
+      if (nextIndex > 2){
+        // setTotalSize(photos.size);
+        setTotalPosts(prevPosts => {
+          return [...prevPosts, ...photos.totalPosts.slice(currentIndex, nextIndex)];
+        });
+        setCurrentIndex(nextIndex);
+        setHasMore(photos.totalPosts.length > totalSize);
+        // setCurrentIndex(nextIndex);
+        // setHasMore(photos.totalPosts.length > totalSize);
+        // setLoading(false);
+      } else {
+        setTotalPosts(() => {
+          return [...photos.totalPosts.slice(currentIndex, nextIndex)];
+        });
+        setCurrentIndex(nextIndex);
+        setHasMore(photos.totalPosts.length > totalSize);
       }
-    })();
-    // (async () => {
-    //   const photos = await getPhotos(user);
-    //   if (photos !== undefined) {
-    //     // setUnsortedPosts(photos);
-    //     // setSize(photos.length);
-    //     photos.forEach((post, index) => {
-    //       graph.addNode({user: user, post: photos[index]})
-    //     })
-    //     graph.sort();
-    //     graph.nodes.forEach(node => formattedPosts.push(node.data.post))
-    //   }
-    //   setPosts(formattedPosts);
-    // })();
-  }, [user]);
-  // if (unsortedPosts.length > 0) {
-  //   unsortedPosts.forEach((post) => graph.addNode({user: user, post: post}))
-  // }
-  // unsortedPosts.forEach((post, index) => {
-  //   // if (unsortedPosts.length - 1 >= index) {
-  //   if (index < unsortedPosts.length) {
-  //     graph.addNode({user: user, post: unsortedPosts[index]})
-  //   }
-  // })
-  // console.log(graph.nodes);
-  // graph.sort();
-  // graph.nodes.forEach((node, index) => {
-  //   if (graph.nodes.length - 1 >= index) {
-  //     formattedPosts.push(node.data.post)
-  //   }
-  // })
-  // console.log(formattedPosts)
-  return posts;
 
-  // const getSortedPosts = useCallback(() => {
-  //   const formattedPosts: FeedPostType[] = [];
-  //   if (unsortedPosts.length > 0) {
-  //     unsortedPosts.forEach((post) => graph.addNode({user: user, post: post}))
-  //   }
-  //   graph.sort();
-  //   graph.nodes.forEach(node => formattedPosts.push(node.data.post))
-  //   setSortedPosts(formattedPosts);
-  //   return sortedPosts;
-  // }, [unsortedPosts, user]);
+      // setHasMore(photos.totalPosts.length > totalSize);
+      setLoading(false);
+    }).catch(err => {
+      console.log(err);
+      setError({error: true, message: err.message});
+    })
+  }, [user, currentIndex, nextIndex, totalSize]);
 
+  return {loading, hasMore, totalPosts, error};
 };
+
+
+
+
+// Load user's photo collection from Firestore db
+// useEffect(() => {
+//   const fetch = async () => {
+//     // console.log("next index", nextIndex)
+//     const {currentPosts} = await getPhotos(user);
+//     setTotalPosts(currentPosts);
+//     // setTotalSize(currentPosts.length);
+//     // if (nextIndex < totalSize) {
+//     //   setCurrentIndex(nextIndex + 2);
+//     //   // const {currentPosts, totalPosts} = await getPostsByIndex(nextIndex, nextIndex + 2);
+//     //   let pieces: FeedPostType[] = [];
+//     //   if (nextIndex === 2) {
+//     //     pieces = getPostsByIndex(0, 2);
+//     //     console.log("pieces top", pieces)
+//     //   } else {
+//     //     pieces = getPostsByIndex(nextIndex, nextIndex + 2);
+//     //     console.log("pieces bottom", pieces)
+//     //   }
+//     //   setPosts((prevPosts) => [...prevPosts, ...pieces]);
+//     // }
+//     // else {
+//     //   console.log("not two")
+//     //   const {currentPosts, totalPosts} = await getPostsByIndex(nextIndex - 2, nextIndex);
+//     //   setTotalSize(totalPosts);
+//     //   setPosts(currentPosts);
+//     // }
+//   }
+//   fetch();
+//   // (async () => {
+//   //   await fetch();
+//   // })();
+// }, [user]);
+// console.log(posts);
+// return totalPosts;
+// return { loading, posts, lastTimestamp };
+
+//   if (nextIndex > currentIndex) {
+//     await getExplore(user).then((res) => {
+//       setPosts((prevPosts) => {
+//         return [...prevPosts, ...res.posts.slice(currentIndex, nextIndex)];
+//       });
+//       // setLastTimestamp(res.lastTimestamp);
+//       setCurrentIndex(nextIndex);
+//       // setCurrentIndex((currentIndex === (currentIndex - 2)) ? currentIndex + 2 : currentIndex);
+//       setLoading(false);
+//     });
+//   } else {
+//     await getExplore(user).then((res) => {
+//       console.log(res);
+//       setPosts(() => {
+//         return [...res.posts.slice(currentIndex, 2)];
+//       });
+//       // setLastTimestamp(res.lastTimestamp);
+//       setCurrentIndex(nextIndex);
+//       // setCurrentIndex((currentIndex === 0) ? currentIndex + 2 : currentIndex);
+//       setLoading(false);
+//     });
+//   }
+// };

@@ -12,7 +12,7 @@ import Profile from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { EasterEgg } from "./components/EasterEgg";
 import { Friends } from "./components/Friends";
-import { Explore } from "./components/Explore";
+import Explore from "./components/Explore";
 import { LoadingBackdrop } from "./components/UploadFab/LoadingBackdrop";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
