@@ -103,7 +103,7 @@ const fabPostCallback = async (
           };
           setDoc(doc(firestore, firestorePath), currentPost);
         });
-      }, 800);
+      }, 1200);
     } catch (error) {
       console.error(error);
     }
@@ -134,7 +134,7 @@ const uploadProfileImg = async (
           });
           updateProfile(user, { photoURL: url });
         });
-      }, 800);
+      }, 1200);
     } catch (error) {
       console.error(error);
     }
@@ -522,7 +522,7 @@ const updateProfilePicture = async (
             });
             updateProfile(user, { photoURL: url });
           });
-        }, 800);
+        }, 1200);
       })
       .catch((err) => {
         console.error(err);
