@@ -4,7 +4,7 @@ import {
   getDoc, getDocsFromServer,
   arrayUnion, arrayRemove,
   updateDoc, query,
-  where, onSnapshot
+  where, onSnapshot,
 } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
 import {
@@ -102,7 +102,6 @@ const getUserByEmail = async (email: string) => {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     data = doc.data();
-    console.log(data);
   });
   if (data !== null) {
     const profile: ProfileInterface = {
@@ -133,46 +132,11 @@ const getLiveFriends = async (
 ) => {
   const collectionRef = collection(firestore, "users");
   const q = query(collectionRef, where("uid", "==", userId));
-  const unsubcribe = onSnapshot(q, (querySnapshot) => {
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const friendList: string[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       friendList.push(...data.friends);
-    });
-    callback(friendList);
-  });
-  return unsubcribe;
-};
-
-/**
- * @description Returns an array of the user's friends
- * @param friends : string[]
- * @returns : UserInterface[]
- */
-const getFriends = async (
-  friends: string[],
-  // eslint-disable-next-line no-unused-vars
-  callback: (_friendList: AppUserInterface[]) => void
-) => {
-  const usersRef = collection(firestore, "users");
-  const q = query(usersRef, where("uid", "in", friends));
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    const friendList: AppUserInterface[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const friend: AppUserInterface = {
-        uid: data.uid,
-        displayName: data.displayName,
-        email: data.email,
-        isVerified: data.isVerified,
-        photoURL: data.photoURL,
-        avatarImage: data.avatarImage,
-        bio: data.bio,
-        friends: data.friends,
-        likes: data.likes,
-        interests: data.interests,
-      };
-      friendList.push(friend);
     });
     callback(friendList);
   });
@@ -253,7 +217,6 @@ const updateProfile = async (
 //       interests: doc.data().interests,
 //     });
 //     // doc.data() is never undefined for query doc snapshots
-//     // console.log(doc.id, ' => ', doc.data());
 //   });
 //   return Promise.resolve(totalUsers)
 // };
@@ -262,9 +225,7 @@ const updateProfile = async (
 // // const getTotalUsernames = async () => {
 // //   const totalUsernames: string[] = [];
 // //   const querySnapshot = await getDocs(collection(firestore, "users"));
-// //   console.log(querySnapshot);
 // //   await querySnapshot.forEach((doc) => {
-// //     console.log(doc.data().username)
 // //     totalUsernames.push(doc.data().username);
 // //   });
 // //   return Promise.resolve(totalUsernames);
@@ -308,5 +269,5 @@ export {
   deleteUserDoc,
   addFriend,
   removeFriend,
-  getFriends,
+  // getFriends,
 };

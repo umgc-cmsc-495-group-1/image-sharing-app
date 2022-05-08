@@ -52,7 +52,7 @@ export default function HootLogin() {
     await signInGooglePopup()
       .then(() => {
         setErrors([]);
-        navigate("/auth-loading");
+        navigate("/explore");
       })
       .catch((err) => {
         setErrors({

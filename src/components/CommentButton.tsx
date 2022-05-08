@@ -36,7 +36,7 @@ function CommentButton(props: CommentButtonProps) {
   }, [pid]);
 
   useEffect(() => {
-    if (post) {
+    if (post?.pid) {
       setNumComments(post.comments.length);
     }
   }, [post]);
@@ -92,7 +92,7 @@ function CommentSection(props: CommentSectionProps) {
     <Collapse in={expanded} timeout="auto" unmountOnExit>
       <CardContent>
         <List>
-          {post?.comments.map((item, index) => (
+          {post?.comments?.map((item, index) => (
             <ListItem key={item.username + item.comment}>
               <ListItemText primary={item.comment} secondary={item.username} />
               {index < post.comments.length - 1 && <Divider />}

@@ -171,7 +171,6 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
               id="add-image-for-upload"
               type="file"
               accept="image/*"
-              capture="environment"
               hidden={true}
               onChange={uploadImage}
             />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   CommentType,
   FeedPostInterface,
@@ -38,7 +38,7 @@ import {
   removePostLikes,
 } from "../../data/photoData";
 import { getUserByUserId } from "../../data/userData";
-import { AppUserInterface } from "../../types/authentication";
+// import { AppUserInterface } from "../../types/authentication";
 import FriendButton from "../FriendButton";
 import PrivateButton from "../PrivateButton";
 import DeleteButton from "../DeleteButton";
@@ -113,22 +113,29 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
   const [isLiked, setIsLiked] = useState<boolean>(
     currentLikes.includes(user.uid)
   );
-  const [tileUser, setTileUser] = useState<AppUserInterface | undefined>(
-    undefined
-  );
+  // const [tileUser, setTileUser] = useState<AppUserInterface | undefined>(
+  //   undefined
+  // );
   const [currentAvatar, setCurrentAvatar] = useState<string>("");
+  const [encodedEmail, setEncodedEmail] = useState("");
   (async () => {
-    const user = await getUserByUserId(uid);
-    setCurrentAvatar(user.avatarImage);
+    if (post !== undefined) {
+      const user = await getUserByUserId(post.uid);
+      let currentEmail = user.email;
+      currentEmail = encodeURIComponent(currentEmail);
+      currentEmail = currentEmail.replace(".", "-");
+      setCurrentAvatar(user.avatarImage)
+      setEncodedEmail(currentEmail);
+    }
   })()
 
-  useEffect(() => {
-    async function retrieveUser() {
-      const inUser = await getUserByUserId(uid);
-      setTileUser(inUser);
-    }
-    retrieveUser();
-  }, [uid]);
+  // useEffect(() => {
+  //   async function retrieveUser() {
+  //     const inUser = await getUserByUserId(uid);
+  //     setTileUser(inUser);
+  //   }
+  //   retrieveUser();
+  // }, [uid]);
 
   async function determineIfLiked() {
     // check if the user has liked anything
@@ -201,7 +208,7 @@ const FeedTile: React.FC<FeedPostWithUserInterface> = ({
         avatar={<Avatar sx={{ bgcolor: "primary.main" }} src={currentAvatar}></Avatar>}
         title={post.username}
         component={Link}
-        href={`user/${tileUser?.email}`}
+        href={`user/${encodedEmail}`}
       />
       <CardMedia component="img" image={post.imageUrl} />
       <CardContent>

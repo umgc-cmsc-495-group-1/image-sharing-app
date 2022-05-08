@@ -24,25 +24,32 @@ export default function FriendButton(props: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = getLiveFriends(currentUser.uid, setFriendsList);
-    return () => {
-      unsubscribe;
-    };
+    (async () => {
+      const unsubscribe = await getLiveFriends(currentUser.uid, setFriendsList);
+      return unsubscribe;
+    })()
+    // const unsubscribe = getLiveFriends(currentUser.uid, setFriendsList);
+    // return () => {
+    //   unsubscribe;
+    // };
   }, [currentUser]);
 
   useEffect(() => {
     setIsFriends(friendsList.indexOf(uid) >= 0);
   }, [friendsList, uid]);
 
-  const handleAddFriend = () => {
-    addFriend(uid, currentUser.uid);
-    setIsFriends(true);
+  const handleAddFriend = async () => {
+    await addFriend(uid, currentUser.uid).then(() => {
+      setIsFriends(true);
+    });
+
   };
 
-  const handleRemoveFriend = () => {
-    removeFriend(uid, currentUser.uid);
-    setIsFriends(false);
-    handleClose();
+  const handleRemoveFriend = async () => {
+    await removeFriend(uid, currentUser.uid).then(() => {
+      setIsFriends(false);
+      handleClose();
+    });
   };
 
   const handleClose = () => {

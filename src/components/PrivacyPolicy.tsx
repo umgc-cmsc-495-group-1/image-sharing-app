@@ -12,10 +12,15 @@ const headingStyle: React.CSSProperties = {
 	fontSize: 12
 }
 
-export default function HootPrivacy() {
+export default function PrivacyPolicy() {
   return (
 		<Container component="main" maxWidth="xs">
-			<Grid item xs={12}>
+			<Grid
+				item xs={12}
+				sx={{
+					marginBottom: 5
+				}}
+			>
 				<h1 style={headingStyle}>Hoot! Privacy Policy</h1>
 				<p style={bodyStyle}>HOOT! (the “Company”) is committed to maintaining robust privacy protections for its users.  Our Privacy Policy (“Privacy Policy”) is designed to help you understand how we collect, use and safeguard the information you provide to us and to assist you in making informed decisions when using our Service.
 

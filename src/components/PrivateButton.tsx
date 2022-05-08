@@ -33,22 +33,27 @@ export default function PrivateButton(props: Props) {
     }
   };
 
-  const handleMakePrivate = () => {
+  const handleMakePrivate = async () => {
     if (user.uid == post?.uid) {
-      updateIsPrivate(pid, true);
+      await updateIsPrivate(pid, true);
     }
   };
 
-  const handleMakePublic = () => {
-    updateIsPrivate(pid, false);
-    handleClose();
+  const handleMakePublic = async () => {
+    await updateIsPrivate(pid, false).then(() => {
+      handleClose();
+    });
   };
 
   useEffect(() => {
-    const unsubscribe = getLivePost(pid, setPost);
-    return () => {
-      unsubscribe;
-    };
+    (async () => {
+      const unsubscribe = await getLivePost(pid, setPost);
+      return unsubscribe;
+    })()
+    // const unsubscribe = getLivePost(pid, setPost);
+    // return () => {
+    //   unsubscribe;
+    // };
   }, [pid]);
 
   return (

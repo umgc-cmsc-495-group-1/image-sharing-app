@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
@@ -8,13 +8,15 @@ import {
   Link,
   TextField,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import {signInGooglePopup, signup} from "../data/authFunctions"; // , signup
+import { signInGooglePopup, signup } from "../data/authFunctions"; // , signup
 import { UserInterface } from "../types/authentication";
 import ErrorsDisplay from "./ErrorsDisplay";
-import {useNavigate} from "react-router-dom";
-import {uploadProfileImg} from "../data/photoData";
+import { useNavigate } from "react-router-dom";
+import { uploadProfileImg } from "../data/photoData";
 
 export default function HootSignup() {
   const [createdUser, setCreatedUser] = useState<UserInterface>({
@@ -28,9 +30,22 @@ export default function HootSignup() {
   const [profileImage, setProfileImage] = useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
+  const [registerDisabled, setRegisterDisabled] = useState<boolean>(true);
   const EMAIL_REGEX = /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const ILLEGAL_CHARACTERS_REGEX = /\W/gi;
   const navigate = useNavigate();
+  const FormControlLabelText: React.ReactNode = (
+    <Typography variant="body2" color="textSecondary">
+      By signing up, you agree to our{" "}
+      <Link href="/terms-of-service" color="inherit">
+        Terms of Service
+      </Link>{" "}
+      and{" "}
+      <Link href="/privacy" color="inherit">
+        Privacy Policy
+      </Link>
+    </Typography>
+  );
 
   const uploadProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -63,10 +78,14 @@ export default function HootSignup() {
       setErrors((errors) => [...errors, "Passwords do not match!"]);
       return false;
     }
-    console.log(createdUser.displayName.length)
-    console.log(createdUser.displayName)
-    if (createdUser.displayName.length < 6 || createdUser.displayName.length > 20) {
-      setErrors((errors) => [...errors, "Display name must be between 6 and 20 characters!"]);
+    if (
+      createdUser.displayName.length < 6 ||
+      createdUser.displayName.length > 20
+    ) {
+      setErrors((errors) => [
+        ...errors,
+        "Display name must be between 6 and 20 characters!",
+      ]);
       return false;
     }
     if (!EMAIL_REGEX.test(createdUser.email)) {
@@ -79,11 +98,9 @@ export default function HootSignup() {
     }
 
     return true;
-  }
-
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log(event)
     event.preventDefault();
     const user: UserInterface = {
       displayName: createdUser.displayName,
@@ -95,13 +112,12 @@ export default function HootSignup() {
     };
     // prevent form submission if there are errors
     if (!checkEmptyValues()) return;
-    console.log(user)
 
     try {
       // sign up the user
       await signup(user)
         .then((res) => {
-          if (res !== undefined){
+          if (res !== undefined) {
             uploadProfileImg(res.user, fileToUpload);
             navigate("/explore");
           }
@@ -112,7 +128,6 @@ export default function HootSignup() {
     } catch (error) {
       console.error(error);
     }
-
   };
 
   const handleGoogleSignin = async () => {
@@ -153,38 +168,41 @@ export default function HootSignup() {
               </Box>
             </Grid>
             <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    mt: 3, mb: 2
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  mt: 3,
+                  mb: 2,
                 }}
-                >
-                  <label htmlFor="profile-image">Please select a profile image</label>
-                </Button>
-                <TextField
-                  sx={{
-                    display: "none",
-                  }}
-                  required
-                  fullWidth
-                  id="profile-image"
-                  type="file"
-                  onChange={uploadProfileImage}
-                  inputProps={{
-                    accept: "image/*",
-                    id: "profile-image",
-                    placeholder: "Select Profile Image",
-                    style: { display: "none" },
-                  }}
-                />
+              >
+                <label htmlFor="profile-image">
+                  Please select a profile image
+                </label>
+              </Button>
+              <TextField
+                sx={{
+                  display: "none",
+                }}
+                required
+                fullWidth
+                id="profile-image"
+                type="file"
+                onChange={uploadProfileImage}
+                inputProps={{
+                  accept: "image/*",
+                  id: "profile-image",
+                  placeholder: "Select Profile Image",
+                  style: { display: "none" },
+                }}
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 onChange={(event) => {
                   setCreatedUser({
                     ...createdUser,
-                    displayName: sanitizeDisplayName(event.target.value)
+                    displayName: sanitizeDisplayName(event.target.value),
                   });
                 }}
                 value={createdUser.displayName}
@@ -202,7 +220,7 @@ export default function HootSignup() {
                 onChange={(event) => {
                   setCreatedUser({
                     ...createdUser,
-                    email: event.target.value
+                    email: event.target.value,
                   });
                 }}
                 value={createdUser.email}
@@ -220,7 +238,7 @@ export default function HootSignup() {
                 onChange={(event) => {
                   setCreatedUser({
                     ...createdUser,
-                    password: event.target.value
+                    password: event.target.value,
                   });
                 }}
                 value={createdUser.password}
@@ -239,7 +257,7 @@ export default function HootSignup() {
                 onChange={(event) => {
                   setCreatedUser({
                     ...createdUser,
-                    verifyPassword: event.target.value
+                    verifyPassword: event.target.value,
                   });
                 }}
                 value={createdUser.verifyPassword}
@@ -253,10 +271,27 @@ export default function HootSignup() {
                 role="verify-password-input"
               />
             </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!registerDisabled}
+                    onChange={(event) => {
+                      setRegisterDisabled(!event.target.checked);
+                    }}
+                    inputProps={{"aria-label": "submit-checkbox-agreement"}}
+                  />
+                }
+                label={FormControlLabelText}
+                labelPlacement='end'
+              />
+            </Grid>
           </Grid>
           <Button
             type="submit"
+            data-testid='submit-input'
             fullWidth
+            disabled={registerDisabled}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
@@ -265,6 +300,7 @@ export default function HootSignup() {
           <Typography textAlign="center"> - or -</Typography>
           <Button
             fullWidth
+            disabled={registerDisabled}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleGoogleSignin}

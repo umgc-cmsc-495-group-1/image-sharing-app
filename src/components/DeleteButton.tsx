@@ -12,12 +12,15 @@ import {
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { red } from "@mui/material/colors";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
   pid: string;
 };
 
 export default function DeleteButton(props: Props) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { pid } = props;
   const [open, setOpen] = useState(false);
   const user = useCurrentUser();
@@ -27,16 +30,27 @@ export default function DeleteButton(props: Props) {
     setOpen(false);
   };
 
-  const handleDelete = () => {
-    deletePostByPid(pid);
-    handleClose();
+  const handleDelete = async () => {
+    await deletePostByPid(pid)
+      .then(() => {
+        handleClose();
+      })
+      .then(() => {
+        if (location.pathname.includes("/post")) {
+          navigate(-1);
+        }
+      });
   };
 
   useEffect(() => {
-    const unsubscribe = getLivePost(pid, setPost);
-    return () => {
-      unsubscribe;
-    };
+    (async () => {
+      const unsubscribe = await getLivePost(pid, setPost);
+      return unsubscribe;
+    })();
+    // const unsubscribe = getLivePost(pid, setPost);
+    // return () => {
+    //   unsubscribe;
+    // };
   }, [pid]);
 
   return (
