@@ -43,7 +43,6 @@ export default function Profile() {
   });
 
   const [posts, setPosts] = useState<Array<FeedPostInterface>>([]);
-  // const [profileImage, setProfileImage] = useState<string>("");
   useEffect(() => {
     decodeEmail();
     const fetchProfile = async () => await getUserByEmail(currentEmail);

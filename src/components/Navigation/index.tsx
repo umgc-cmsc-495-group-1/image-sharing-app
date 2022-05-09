@@ -13,22 +13,20 @@ import { Outlet } from "react-router-dom";
 import { LoggedIn } from "./LoggedIn";
 import { NotLoggedIn } from "./NotLoggedIn";
 import { AuthContext } from "../../context/AuthContext";
-import { getUserByUserId } from "../../data/userData";
 import { encodeEmailAddress } from "../../utils/middleware";
 
 const Navigation: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const { appUser } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const [encodedEmail, setEncodedEmail] = useState("");
   useEffect(() => {
     (async () => {
-      if (user) {
-        const userData = await getUserByUserId(user.uid);
-        const currentEmail = encodeEmailAddress(userData);
+      if (appUser) {
+        const currentEmail = encodeEmailAddress(appUser);
         setEncodedEmail(currentEmail);
       }
     })();
-  }, [user]);
+  }, [appUser]);
 
   return (
     <div className="class.navigation">
@@ -55,7 +53,7 @@ const Navigation: React.FC = () => {
               src={require("../../assets/logo/png/simple-72x72.png")}
             />
             <Typography variant="h6">
-              {user ? user.displayName + " - Hoot!" : "Hoot!"}
+              {appUser ? appUser.displayName + " - Hoot!" : "Hoot!"}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -74,7 +72,7 @@ const Navigation: React.FC = () => {
           onClick={() => setIsOpen(false)}
         >
           <List>
-            {user ? <LoggedIn email={encodedEmail} /> : <NotLoggedIn />}
+            {appUser ? <LoggedIn email={encodedEmail} /> : <NotLoggedIn />}
           </List>
         </Box>
       </Drawer>

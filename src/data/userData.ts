@@ -1,21 +1,28 @@
 import {
-  collection, doc,
-  setDoc, deleteDoc,
-  getDoc, getDocsFromServer,
-  arrayUnion, arrayRemove,
-  updateDoc, query,
-  where, onSnapshot,
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDoc,
+  getDocsFromServer,
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
+  query,
+  where,
+  onSnapshot,
+  Unsubscribe,
 } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
 import {
   GoogleUserType,
   UserInterface,
-  AppUserInterface
+  AppUserInterface,
 } from "../types/authentication";
 import { ProfileInterface } from "../types/appTypes"; // , ProfileUpdateInterface
 // import { updateName, changeEmail } from "./authFunctions";
 // import { updateAllPosts } from "../data/photoData";
-import {updateProfile} from "firebase/auth";
+import { updateProfile } from "firebase/auth";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -139,6 +146,35 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
+const getLiveUser = async (
+  user: User,
+  // eslint-disable-next-line no-unused-vars
+  callback: (_user: AppUserInterface) => void
+) => {
+  const unsubscribe: Unsubscribe = onSnapshot(
+    doc(firestore, "users", user.uid),
+    (doc) => {
+      const data = doc.data();
+      if (data) {
+        const newUser: AppUserInterface = {
+          avatarImage: data["avatarImage"],
+          bio: data["bio"],
+          displayName: data["displayName"],
+          email: data["email"],
+          friends: data["friends"],
+          likes: data["likes"],
+          uid: data["uid"],
+          interests: [],
+          photoURL: user.photoURL || "",
+          isVerified: true,
+        };
+        callback(newUser);
+      }
+      return unsubscribe;
+    }
+  );
+};
+
 /**
  * @description Live updating friends list
  * @param userId
@@ -218,7 +254,7 @@ const updateBio = async (user: User | null, bio: string) => {
     const docRef = doc(firestore, "users", `${user.uid}`);
     await updateDoc(docRef, { bio: bio });
   }
-}
+};
 
 const updateDisplayName = async (user: User | null, displayName: string) => {
   if (user !== null) {
@@ -227,7 +263,7 @@ const updateDisplayName = async (user: User | null, displayName: string) => {
       updateProfile(user, { displayName: displayName });
     });
   }
-}
+};
 
 const addFriend = async (newFriend: string, userAdding: string) => {
   const friendsRef = doc(firestore, "users", userAdding);
@@ -259,6 +295,7 @@ const deleteUserDoc = async (userId: string) => {
 export {
   createUser,
   getLiveFriends,
+  getLiveUser,
   getUserByUserId,
   getUserByEmail,
   // checkIfGoogleUserExists,
@@ -267,5 +304,5 @@ export {
   addFriend,
   removeFriend,
   updateBio,
-  updateDisplayName
+  updateDisplayName,
 };
