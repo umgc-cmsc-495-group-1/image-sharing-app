@@ -248,6 +248,7 @@ export default function HootSignup() {
                 label="Password"
                 type="password"
                 id="password"
+                inputProps={{ "data-testid": "password-input" }}
                 autoComplete="new-password"
                 role="password-input"
               />
@@ -290,7 +291,7 @@ export default function HootSignup() {
           </Grid>
           <Button
             type="submit"
-            data-testid='submit-input'
+            id="submit"
             fullWidth
             disabled={registerDisabled}
             variant="contained"
