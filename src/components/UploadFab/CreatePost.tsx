@@ -42,7 +42,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
     outputUrl: "",
   });
   const [errors, setErrors] = useState<string[]>([]);
-  const { user} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   // eslint-disable-next-line
   const imageRef = useRef<any>();
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);

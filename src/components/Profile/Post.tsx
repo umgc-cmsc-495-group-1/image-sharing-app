@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FeedPostType } from "../../types/appTypes";
 import {
   Avatar,
@@ -19,7 +19,7 @@ import DeleteButton from "../Buttons/DeleteButton";
 import LikeButton from "../Buttons/LikeButton";
 import { CommentButton, CommentSection } from "../Buttons/CommentButton";
 import { getLivePost } from "../../data/photoData";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   pid: string;
@@ -32,7 +32,7 @@ export default function Post(props: Props) {
     undefined
   );
   const [expanded, setExpanded] = useState(false);
-  const user = useCurrentUser();
+  const { user } = useContext(AuthContext);
   const [currentAvatar, setCurrentAvatar] = useState<string>("");
   const [encodedEmail, setEncodedEmail] = useState("");
   (async () => {
@@ -97,7 +97,7 @@ export default function Post(props: Props) {
       <CardActions>
         <LikeButton pid={pid} />
         <CommentButton pid={pid} setExpanded={setExpanded} />
-        <FriendButton uid={user.uid} />
+        <FriendButton uid={user?.uid || ""} />
         <PrivateButton pid={pid} />
         <DeleteButton pid={pid} />
       </CardActions>
