@@ -54,7 +54,7 @@ export default function Post(props: Props) {
   useEffect(() => {
     const getPostUser = async () => {
       let inUser;
-      if (post) inUser = await getUserByUserId(post.uid);
+      if (post?.uid) inUser = await getUserByUserId(post.uid);
       if (inUser) setPostUser(inUser);
     };
     if (post?.pid) {
@@ -62,8 +62,9 @@ export default function Post(props: Props) {
         await getPostUser();
       })();
     }
-  }, [post]);
+  }, [post?.uid, post?.pid]);
 
+  if (!post || !user) return <></>;
   return (
     <Card
       raised={true}
@@ -90,18 +91,18 @@ export default function Post(props: Props) {
           textDecoration: "none",
         }}
       />
-      <CardMedia component="img" image={post?.imageUrl} />
+      <CardMedia component="img" image={post.imageUrl} />
       <CardContent>
         <Typography>{post?.postText}</Typography>
       </CardContent>
       <CardActions>
-        <LikeButton pid={pid} />
-        <CommentButton pid={pid} setExpanded={setExpanded} />
+        <LikeButton post={post} />
+        <CommentButton post={post} setExpanded={setExpanded} />
         <FriendButton uid={user?.uid || ""} />
-        <PrivateButton pid={pid} />
-        <DeleteButton pid={pid} />
+        <PrivateButton post={post} />
+        <DeleteButton post={post} />
       </CardActions>
-      <CommentSection pid={pid} expanded={expanded} />
+      <CommentSection post={post} expanded={expanded} />
     </Card>
   );
 }
