@@ -14,12 +14,13 @@ export const useExplore = () => {
   const { appUser } = useContext(AuthContext);
 
   useEffect(() => {
-    return () => {
+    const fetch = async () => {
       if (!appUser) return;
       getPhotos(appUser).then((photos) => {
         setPosts(photos.totalPosts);
       });
     };
+    fetch();
   }, [appUser]);
 
   return posts;
