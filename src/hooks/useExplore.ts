@@ -20,7 +20,7 @@ export const useExplore = () => {
         setPosts(photos.totalPosts);
       });
     };
-  }, [posts, appUser]);
+  }, [appUser]);
 
   return posts;
 };
