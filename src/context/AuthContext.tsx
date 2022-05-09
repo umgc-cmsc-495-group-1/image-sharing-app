@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         setIsLoading(true);
         setUser(null);
+        setAppUser(null);
       }
       return unsubscribe;
     });
