@@ -25,7 +25,7 @@ const Friends: React.FC = () => {
 
   return (
     <Container maxWidth="sm">
-      <Card raised sx={{ width: "100%" }}>
+      <Card raised sx={{ width: "100%" }} role="friends">
         <CardHeader title="Friends" />
         {friendsListData.length > 0 ? (
           friendsListData.map((friend: AppUserInterface, index: number) => (

@@ -275,6 +275,7 @@ export default function HootSignup() {
               <FormControlLabel
                 control={
                   <Checkbox
+                  role="check-box"
                     checked={!registerDisabled}
                     onChange={(event) => {
                       setRegisterDisabled(!event.target.checked);

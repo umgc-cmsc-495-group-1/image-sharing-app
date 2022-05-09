@@ -98,10 +98,10 @@ export default function Profile() {
         </Grid>
         <Grid item xs={12} md={8}>
           <Box display="flex">
-            <Typography variant="h4">{profile.displayName}</Typography>
+            <Typography variant="h4" role="displayname" >{profile.displayName}</Typography>
             <FriendButton uid={profile.uid} />
           </Box>
-          <Typography variant="h6">
+          <Typography variant="h6" role="length-friends">
             {posts.length} Posts | {profile.friends.length} Friends{" "}
           </Typography>
           <Typography>{profile.bio}</Typography>
