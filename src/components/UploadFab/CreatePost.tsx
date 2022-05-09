@@ -26,6 +26,7 @@ import {
 } from "../../types/interests";
 import { AuthContext } from "../../context/AuthContext";
 import { fabPostCallback } from "../../data/photoData";
+import {validateImageType} from "../../utils/middleware";
 
 const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   const [isModelLoading, setIsModelLoading] = useState(false);
@@ -130,6 +131,11 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
         ...prevErrors,
         "Description must be between 10 and 140 characters",
       ]);
+    if (fileToUpload !== undefined) {
+      if (!validateImageType(fileToUpload)) {
+        setErrors((prevErrors) => [...prevErrors, "Valid Uploads are JPEG, PNG, or JPG"]);
+      }
+    }
 
     return errors.length == 0;
   };
@@ -220,7 +226,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
             <input
               id="add-image-for-upload"
               type="file"
-              accept="image/*"
+              accept="image/jpg, image/jpeg, image/png"
               hidden={true}
               onChange={uploadImage}
             />

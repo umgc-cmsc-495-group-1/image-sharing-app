@@ -15,6 +15,11 @@ export function mapUserPhotos(usersPhotos: FeedPostType[]) {
   });
 }
 
+export function validateImageType(file: File): boolean {
+  const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
+  return validImageTypes.includes(file.type);
+}
+
 export function encodeEmailAddress(userData: AppUserInterface){
   let currentEmail = userData.email;
   currentEmail = encodeURIComponent(currentEmail);

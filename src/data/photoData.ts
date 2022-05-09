@@ -3,7 +3,7 @@ import {
   getDownloadURL,
   StorageReference,
   deleteObject,
-  uploadBytes,
+  uploadBytes
 } from "firebase/storage";
 import { storage, firestore } from "../firebaseSetup";
 import { v4 as uuidv4 } from "uuid";
@@ -502,28 +502,50 @@ const updateProfilePicture = async (
     if (!docSnap.exists()) {
       return Promise.reject("User does not exist");
     }
-    await deleteObject(uploadRef)
-      .then(async () => {
-        // uploadProfileImg(user, currentFile)
-        await uploadBytes(uploadRef, currentFile).then(async () => {
-          await getDownloadURL(uploadRef).then((url) => {
-            const data = docSnap.data();
-            setDoc(doc(userCollection, uid), {
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              bio: data.bio,
-              friends: data.friends,
-              likes: data.likes,
-              avatarImage: url,
+    try {
+        await deleteObject(uploadRef)
+          .then(async () => {
+            await uploadBytes(uploadRef, currentFile).then(async () => {
+              await getDownloadURL(uploadRef).then((url) => {
+                const data = docSnap.data();
+                setDoc(doc(userCollection, uid), {
+                  uid: user.uid,
+                  displayName: user.displayName,
+                  email: user.email,
+                  bio: data.bio || "",
+                  friends: data.friends || [],
+                  likes: data.likes || [],
+                  avatarImage: url,
+                });
+                updateProfile(user, {photoURL: url});
+              });
             });
-            updateProfile(user, { photoURL: url });
+          })
+          .catch((err) => {
+            if (err.code === "storage/object-not-found") {
+              uploadBytes(uploadRef, currentFile).then(async () => {
+                await getDownloadURL(uploadRef).then((url) => {
+                  const data = docSnap.data();
+                  if (data !== undefined) {
+                    setDoc(doc(userCollection, uid), {
+                      uid: user.uid,
+                      displayName: user.displayName,
+                      email: user.email,
+                      bio: data.bio || "",
+                      friends: data.friends || [],
+                      likes: data.likes || [],
+                      avatarImage: url,
+                    });
+                  }
+                  updateProfile(user, { photoURL: url });
+                });
+              });
+            }
+            console.error(err);
           });
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 };
 
