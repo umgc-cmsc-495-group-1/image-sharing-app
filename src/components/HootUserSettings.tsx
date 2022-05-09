@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { updateBio, updateDisplayName } from "../data/userData"
 import {updateProfilePicture} from "../data/photoData";
 import {AuthContext} from "../context/AuthContext";
-import {sanitizeDisplayName} from "../utils/middleware";
+import {sanitizeDisplayName, validateImageType} from "../utils/middleware";
 import {ImageCompressionWorkerInterface} from "../types/appTypes";
 import imageCompression from "browser-image-compression";
 
@@ -100,6 +100,12 @@ const HootUserSettings: React.FC = () => {
       setErrors(["No file selected"]);
       return;
     }
+    if (fileToUpload !== undefined) {
+      if (!validateImageType(fileToUpload)) {
+        setErrors( ["Valid Uploads are JPEG, PNG, or JPG"]);
+        return;
+      }
+    }
     await updateProfilePicture(user, fileToUpload);
     setFileToUpload(undefined);
     setWebWorkerData({
@@ -181,7 +187,7 @@ const HootUserSettings: React.FC = () => {
             <input
               id="profile-image"
               type="file"
-              accept="image/*"
+              accept="image/jpg, image/jpeg, image/png"
               hidden={true}
               onChange={uploadProfileImage}
             />

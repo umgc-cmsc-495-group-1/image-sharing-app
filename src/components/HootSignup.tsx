@@ -17,7 +17,7 @@ import { UserInterface } from "../types/authentication";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { useNavigate } from "react-router-dom";
 import { uploadProfileImg } from "../data/photoData";
-import {EMAIL_REGEX, sanitizeDisplayName} from "../utils/middleware";
+import {EMAIL_REGEX, sanitizeDisplayName, validateImageType} from "../utils/middleware";
 import imageCompression from "browser-image-compression";
 import { ImageCompressionWorkerInterface } from "../types/appTypes";
 
@@ -103,10 +103,6 @@ export default function HootSignup() {
     }
   };
 
-  // const sanitizeDisplayName = (displayName: string) => {
-  //   return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
-  // };
-
   const checkEmptyValues = () => {
     setErrors([]);
     if (
@@ -139,6 +135,12 @@ export default function HootSignup() {
     if (fileToUpload === undefined) {
       setErrors((errors) => [...errors, "Please upload a profile image!"]);
       return false;
+    }
+    if (fileToUpload !== undefined) {
+      if (!validateImageType(fileToUpload)) {
+        setErrors((errors) => [...errors, "Valid Uploads are JPEG, PNG, or JPG"]);
+        return false;
+      }
     }
 
     return true;
@@ -195,6 +197,12 @@ export default function HootSignup() {
     if (fileToUpload === undefined) {
       setErrors((errors) => [...errors, "Please upload a profile image!"]);
       return;
+    }
+    if (fileToUpload !== undefined) {
+      if (!validateImageType(fileToUpload)) {
+        setErrors((errors) => [...errors, "Valid Uploads are JPEG, PNG, or JPG"]);
+        return;
+      }
     }
 
     try {
@@ -271,7 +279,7 @@ export default function HootSignup() {
                 <input
                   id="add-image-for-upload"
                   type="file"
-                  accept="image/*"
+                  accept="image/jpg, image/jpeg, image/png"
                   hidden={true}
                   onChange={uploadProfileImage}
                 />
