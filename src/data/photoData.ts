@@ -85,8 +85,7 @@ const fabPostCallback = async (
     // Write to firestore db
     try {
       // set document data
-      await uploadBytes(photoRef, currentFile);
-      setTimeout(async () => {
+      await uploadBytes(photoRef, currentFile).then(async () => {
         await getDownloadURL(photoRef).then((url) => {
           const currentPost: FeedPostType = {
             uid: uid,
@@ -103,7 +102,7 @@ const fabPostCallback = async (
           };
           setDoc(doc(firestore, firestorePath), currentPost);
         });
-      }, 1200);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -120,8 +119,7 @@ const uploadProfileImg = async (
     const uploadRef = ref(storage, cloudPath);
     const usersRef = collection(firestore, "users");
     try {
-      await uploadBytes(uploadRef, currentFile);
-      setTimeout(async () => {
+      await uploadBytes(uploadRef, currentFile).then(async () => {
         await getDownloadURL(uploadRef).then((url) => {
           setDoc(doc(usersRef, uid), {
             uid: user.uid,
@@ -134,7 +132,7 @@ const uploadProfileImg = async (
           });
           updateProfile(user, { photoURL: url });
         });
-      }, 1200);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -505,10 +503,9 @@ const updateProfilePicture = async (
       return Promise.reject("User does not exist");
     }
     await deleteObject(uploadRef)
-      .then(() => {
+      .then(async () => {
         // uploadProfileImg(user, currentFile)
-        uploadBytes(uploadRef, currentFile);
-        setTimeout(async () => {
+        await uploadBytes(uploadRef, currentFile).then(async () => {
           await getDownloadURL(uploadRef).then((url) => {
             const data = docSnap.data();
             setDoc(doc(userCollection, uid), {
@@ -522,7 +519,7 @@ const updateProfilePicture = async (
             });
             updateProfile(user, { photoURL: url });
           });
-        }, 1200);
+        });
       })
       .catch((err) => {
         console.error(err);

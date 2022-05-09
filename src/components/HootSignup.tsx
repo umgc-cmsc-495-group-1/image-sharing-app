@@ -12,7 +12,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { signInGooglePopup, signup } from "../data/authFunctions"; // , signup
+import {signInGooglePopup, signup} from "../data/authFunctions"; // , signup
 import { UserInterface } from "../types/authentication";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { useNavigate } from "react-router-dom";

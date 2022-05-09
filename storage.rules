@@ -1,12 +1,10 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /profile-imgs/{userId}/{allPaths=**} {
-      allow get: if true;
-      allow delete: if request.auth.uid == userId;
-      allow update: if true;
-      allow create: if true
-        && isValidContentType(request.resource)
+    match /{allPaths=**} {
+      allow read, write;
+      allow get, delete;
+      allow create: if isValidContentType(request.resource)
         && isValidFileExtension(request.resource.name)
         && isValidFileSize(request.resource);
     }

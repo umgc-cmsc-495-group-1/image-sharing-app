@@ -36,6 +36,8 @@ const HootUserSettings: React.FC = () => {
     });
   const [errors, setErrors] = React.useState<string[]>([]);
   const { user } = useContext(AuthContext);
+  // eslint-disable-next-line
+  const profileImageRef = React.useRef<any>();
 
   /***************** COMPRESSION **********************************/
 
@@ -77,12 +79,14 @@ const HootUserSettings: React.FC = () => {
     if (files !== null && files.length > 0) {
       const url = URL.createObjectURL(files[0]);
       setProfileImage(url);
+      profileImageRef.current = url;
       await handleCompressImage(files[0], files[0].type).then((result) => {
         const file = new File([result], result.name, { type: result.type });
         setFileToUpload(file);
       });
     } else {
       setFileToUpload(undefined);
+      profileImageRef.current = undefined;
     }
   };
 
@@ -108,6 +112,7 @@ const HootUserSettings: React.FC = () => {
     setSuccess(["Profile picture updated"]);
     setTimeout(() => {
       setSuccess([]);
+      profileImageRef.current = undefined;
     }, 3000);
   };
 
@@ -157,7 +162,7 @@ const HootUserSettings: React.FC = () => {
             )}
             {profileImage ? (
               <>
-                <img src={profileImage} alt="Image Preview" width="100%" />
+                <img src={profileImage} alt="Image Preview" width="100%" ref={profileImageRef} />
               </>
             ) : (
               <></>
