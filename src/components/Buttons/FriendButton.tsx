@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import React, { useEffect, useState } from "react";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import React, { useContext, useEffect, useState } from "react";
 import { addFriend, getLiveFriends, removeFriend } from "../../data/userData";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   uid: string;
@@ -18,35 +18,37 @@ type Props = {
 
 export default function FriendButton(props: Props) {
   const { uid } = props;
-  const currentUser = useCurrentUser();
+  const { appUser } = useContext(AuthContext);
   const [friendsList, setFriendsList] = useState<Array<string>>([]);
   const [isFriends, setIsFriends] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const unsubscribe = await getLiveFriends(currentUser.uid, setFriendsList);
+      if (!appUser) return;
+      const unsubscribe = await getLiveFriends(appUser.uid, setFriendsList);
       return unsubscribe;
-    })()
-    // const unsubscribe = getLiveFriends(currentUser.uid, setFriendsList);
+    })();
+    // const unsubscribe = getLiveFriends(appUser.uid, setFriendsList);
     // return () => {
     //   unsubscribe;
     // };
-  }, [currentUser]);
+  }, [appUser]);
 
   useEffect(() => {
     setIsFriends(friendsList.indexOf(uid) >= 0);
   }, [friendsList, uid]);
 
   const handleAddFriend = async () => {
-    await addFriend(uid, currentUser.uid).then(() => {
+    if (!appUser) return;
+    await addFriend(uid, appUser.uid).then(() => {
       setIsFriends(true);
     });
-
   };
 
   const handleRemoveFriend = async () => {
-    await removeFriend(uid, currentUser.uid).then(() => {
+    if (!appUser) return;
+    await removeFriend(uid, appUser.uid).then(() => {
       setIsFriends(false);
       handleClose();
     });
@@ -58,7 +60,7 @@ export default function FriendButton(props: Props) {
 
   return (
     <>
-      {currentUser.uid != uid &&
+      {appUser?.uid != uid &&
         (isFriends ? (
           <IconButton onClick={() => setOpen(true)} role="add-friend">
             <PersonRemoveIcon />
