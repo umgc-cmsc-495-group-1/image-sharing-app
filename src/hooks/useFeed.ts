@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { FeedPostType } from "../types/appTypes";
 import { getFeed } from "../data/photoData";
-import { AppUserInterface } from "../types/authentication";
-import { useCurrentUser } from "./useCurrentUser";
 import { FieldValue } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 
 /**
  * React Hook to get all photos in a collection
- * using the user's ID and friend list
+ * using the appUser's ID and friend list
  * @returns photos: DocumentData
  */
 
@@ -18,12 +17,13 @@ export const useFeed = (nextTimestamp: FieldValue | undefined) => {
   const [lastTimestamp, setLastTimestamp] = useState<FieldValue | undefined>(
     undefined
   );
-  const user: AppUserInterface = useCurrentUser();
+  const { appUser } = useContext(AuthContext);
 
   useEffect(() => {
     const fetch = async () => {
+      if (!appUser) return;
       if (nextTimestamp) {
-        await getFeed(user, 2, false, nextTimestamp).then((res) => {
+        await getFeed(appUser, 2, false, nextTimestamp).then((res) => {
           setPosts((prevPosts) => {
             return [...prevPosts, ...res.posts];
           });
@@ -31,7 +31,7 @@ export const useFeed = (nextTimestamp: FieldValue | undefined) => {
           setLoading(false);
         });
       } else {
-        await getFeed(user, 2, false).then((res) => {
+        await getFeed(appUser, 2, false).then((res) => {
           setPosts(() => {
             return [...res.posts];
           });
@@ -42,7 +42,7 @@ export const useFeed = (nextTimestamp: FieldValue | undefined) => {
     };
     setLoading(true);
     fetch();
-  }, [user, nextTimestamp]);
+  }, [appUser, nextTimestamp]);
 
   return { loading, posts, lastTimestamp };
 };

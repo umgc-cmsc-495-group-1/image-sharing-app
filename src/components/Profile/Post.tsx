@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FeedPostType } from "../../types/appTypes";
 import {
   Avatar,
@@ -19,7 +19,7 @@ import DeleteButton from "../Buttons/DeleteButton";
 import LikeButton from "../Buttons/LikeButton";
 import { CommentButton, CommentSection } from "../Buttons/CommentButton";
 import { getLivePost } from "../../data/photoData";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   pid: string;
@@ -32,7 +32,7 @@ export default function Post(props: Props) {
     undefined
   );
   const [expanded, setExpanded] = useState(false);
-  const user = useCurrentUser();
+  const { user } = useContext(AuthContext);
   const [currentAvatar, setCurrentAvatar] = useState<string>("");
   const [encodedEmail, setEncodedEmail] = useState("");
   (async () => {
@@ -54,7 +54,7 @@ export default function Post(props: Props) {
   useEffect(() => {
     const getPostUser = async () => {
       let inUser;
-      if (post) inUser = await getUserByUserId(post.uid);
+      if (post?.uid) inUser = await getUserByUserId(post.uid);
       if (inUser) setPostUser(inUser);
     };
     if (post?.pid) {
@@ -62,8 +62,9 @@ export default function Post(props: Props) {
         await getPostUser();
       })();
     }
-  }, [post]);
+  }, [post?.uid, post?.pid]);
 
+  if (!post || !user) return <></>;
   return (
     <Card
       raised={true}
@@ -90,18 +91,18 @@ export default function Post(props: Props) {
           textDecoration: "none",
         }}
       />
-      <CardMedia component="img" image={post?.imageUrl} />
+      <CardMedia component="img" image={post.imageUrl} />
       <CardContent>
         <Typography>{post?.postText}</Typography>
       </CardContent>
       <CardActions>
-        <LikeButton pid={pid} />
-        <CommentButton pid={pid} setExpanded={setExpanded} />
-        <FriendButton uid={user.uid} />
-        <PrivateButton pid={pid} />
-        <DeleteButton pid={pid} />
+        <LikeButton post={post} />
+        <CommentButton post={post} setExpanded={setExpanded} />
+        <FriendButton uid={user?.uid || ""} />
+        <PrivateButton post={post} />
+        <DeleteButton post={post} />
       </CardActions>
-      <CommentSection pid={pid} expanded={expanded} />
+      <CommentSection post={post} expanded={expanded} />
     </Card>
   );
 }

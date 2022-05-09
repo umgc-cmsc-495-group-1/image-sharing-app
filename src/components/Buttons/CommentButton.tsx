@@ -11,29 +11,21 @@ import {
   Typography,
 } from "@mui/material";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getLivePost, postComment } from "../../data/photoData";
+import { postComment } from "../../data/photoData";
 import { CommentType, FeedPostType } from "../../types/appTypes";
 import CommentIcon from "@mui/icons-material/Comment";
 import SendIcon from "@mui/icons-material/Send";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 type CommentButtonProps = {
-  pid: string;
+  post: FeedPostType;
   setExpanded: Dispatch<SetStateAction<boolean>>;
 };
 
 function CommentButton(props: CommentButtonProps) {
-  const { pid, setExpanded } = props;
-  const [post, setPost] = useState<FeedPostType | undefined>(undefined);
+  const { post, setExpanded } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const [numComments, setNumComments] = useState(0);
-
-  useEffect(() => {
-    const unsubscribe = getLivePost(pid, setPost);
-    return () => {
-      unsubscribe;
-    };
-  }, [pid]);
 
   useEffect(() => {
     if (post?.pid) {
@@ -60,22 +52,14 @@ function CommentButton(props: CommentButtonProps) {
 }
 
 type CommentSectionProps = {
-  pid: string;
+  post: FeedPostType;
   expanded: boolean;
 };
 
 function CommentSection(props: CommentSectionProps) {
-  const { pid, expanded } = props;
+  const { post, expanded } = props;
   const user = useCurrentUser();
-  const [post, setPost] = useState<FeedPostType | undefined>(undefined);
   const [userComment, setUserComment] = useState("");
-
-  useEffect(() => {
-    const unsubscribe = getLivePost(pid, setPost);
-    return () => {
-      unsubscribe;
-    };
-  }, [pid]);
 
   const handleComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -84,7 +68,7 @@ function CommentSection(props: CommentSectionProps) {
       username: user.displayName,
       comment: userComment,
     };
-    await postComment(pid, comment);
+    await postComment(post.pid, comment);
     setUserComment("");
   };
 
@@ -117,6 +101,7 @@ function CommentSection(props: CommentSectionProps) {
             name="comment"
             label="Comment"
             id="comment"
+            autoComplete="off"
             sx={{ width: "1" }}
           />
           <IconButton type="submit">
