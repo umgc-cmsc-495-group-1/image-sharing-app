@@ -6,20 +6,19 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { getLivePost, updateIsPrivate } from "../../data/photoData";
+import React, { useState } from "react";
+import { updateIsPrivate } from "../../data/photoData";
 import { FeedPostType } from "../../types/appTypes";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 type Props = {
-  pid: string;
+  post: FeedPostType;
 };
 
 export default function PrivateButton(props: Props) {
-  const { pid } = props;
-  const [post, setPost] = useState<FeedPostType | undefined>(undefined);
+  const { post } = props;
   const [open, setOpen] = useState(false);
   const user = useCurrentUser();
 
@@ -35,26 +34,15 @@ export default function PrivateButton(props: Props) {
 
   const handleMakePrivate = async () => {
     if (user.uid == post?.uid) {
-      await updateIsPrivate(pid, true);
+      await updateIsPrivate(post.pid, true);
     }
   };
 
   const handleMakePublic = async () => {
-    await updateIsPrivate(pid, false).then(() => {
+    await updateIsPrivate(post.pid, false).then(() => {
       handleClose();
     });
   };
-
-  useEffect(() => {
-    (async () => {
-      const unsubscribe = await getLivePost(pid, setPost);
-      return unsubscribe;
-    })()
-    // const unsubscribe = getLivePost(pid, setPost);
-    // return () => {
-    //   unsubscribe;
-    // };
-  }, [pid]);
 
   return (
     <>

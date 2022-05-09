@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FeedPostType } from "../../types/appTypes";
-import { deletePostByPid, getLivePost } from "../../data/photoData";
+import { deletePostByPid } from "../../data/photoData";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import {
   Button,
@@ -13,32 +13,31 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { red } from "@mui/material/colors";
 import { useNavigate, useLocation } from "react-router-dom";
-import {encodeEmailAddress} from "../../utils/middleware";
+import { encodeEmailAddress } from "../../utils/middleware";
 
 type Props = {
-  pid: string;
+  post: FeedPostType;
 };
 
 export default function DeleteButton(props: Props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { pid } = props;
+  const { post } = props;
   const [open, setOpen] = useState(false);
   const user = useCurrentUser();
-  const [post, setPost] = useState<FeedPostType | undefined>(undefined);
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleDelete = async () => {
-    await deletePostByPid(pid)
+    await deletePostByPid(post.pid)
       .then(() => {
         handleClose();
       })
       .then(() => {
         if (location.pathname.includes("/explore")) {
-          navigate('/explore')
+          navigate("/explore");
           window.location.reload();
         } else if (location.pathname.includes("/post")) {
           const email = encodeEmailAddress(user);
@@ -48,13 +47,6 @@ export default function DeleteButton(props: Props) {
         }
       });
   };
-
-  useEffect(() => {
-    (async () => {
-      const unsubscribe = await getLivePost(pid, setPost);
-      return unsubscribe;
-    })();
-  }, [pid]);
 
   return (
     <>

@@ -16,11 +16,14 @@ const Feed: React.FC = (): JSX.Element => {
     (node: HTMLDivElement) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          setNextTimestamp(lastTimestamp);
-        }
-      }, { rootMargin: "0px 0px 200px 0px" });
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setNextTimestamp(lastTimestamp);
+          }
+        },
+        { rootMargin: "0px 0px 200px 0px" }
+      );
       if (node) observer.current.observe(node);
     },
     [loading, lastTimestamp]

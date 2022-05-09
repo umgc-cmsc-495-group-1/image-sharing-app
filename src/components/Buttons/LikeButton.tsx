@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   addPostLikes,
   addUserLikes,
-  getLivePost,
   removePostLikes,
   removeUserLikes,
 } from "../../data/photoData";
@@ -12,22 +11,14 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
-  pid: string;
+  post: FeedPostType;
 };
 
 export default function LikeButton(props: Props) {
-  const { pid } = props;
-  const [post, setPost] = useState<FeedPostType | undefined>(undefined);
+  const { post } = props;
   const [isLiked, setIsLiked] = useState(false);
   const [numLikes, setNumLikes] = useState(0);
   const { user } = useContext(AuthContext);
-
-  useEffect(() => {
-    const unsubscribe = getLivePost(pid, setPost);
-    return () => {
-      unsubscribe;
-    };
-  }, [pid]);
 
   useEffect(() => {
     if (post?.pid) {
@@ -37,13 +28,13 @@ export default function LikeButton(props: Props) {
   }, [post, user]);
 
   const handleUnlike = async () => {
-    await removeUserLikes(user?.uid || "", pid);
-    await removePostLikes(pid, user?.uid || "");
+    await removeUserLikes(user?.uid || "", post.pid);
+    await removePostLikes(post.pid, user?.uid || "");
   };
 
   const handleLike = async () => {
-    await addUserLikes(user?.uid || "", pid);
-    await addPostLikes(pid, user?.uid || "");
+    await addUserLikes(user?.uid || "", post.pid);
+    await addPostLikes(post.pid, user?.uid || "");
   };
 
   return (
