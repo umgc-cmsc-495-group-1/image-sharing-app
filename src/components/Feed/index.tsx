@@ -20,7 +20,7 @@ const Feed: React.FC = (): JSX.Element => {
         if (entries[0].isIntersecting) {
           setNextTimestamp(lastTimestamp);
         }
-      });
+      }, { rootMargin: "0px 0px 200px 0px" });
       if (node) observer.current.observe(node);
     },
     [loading, lastTimestamp]
@@ -38,20 +38,25 @@ const Feed: React.FC = (): JSX.Element => {
         role="feed-container"
       >
         <Box maxWidth="sm">
-          {posts.map((item: FeedPostType, index: number) => {
-            if (posts.length == index + 1) {
-              return (
-                <div key={item.pid} ref={lastPostRef}>
-                  <Post pid={item.pid} />
-                </div>
-              );
-            } else {
-              return (
-                <div key={item.pid}>
-                  <Post pid={item.pid} />
-                </div>
-              );
-            }
+          {posts.map((item: FeedPostType) => {
+            return (
+              <div key={item.pid} ref={lastPostRef}>
+                <Post pid={item.pid} />
+              </div>
+            );
+            // if (posts.length == index + 1) {
+            //   return (
+            //     <div key={item.pid} ref={lastPostRef}>
+            //       <Post pid={item.pid} />
+            //     </div>
+            //   );
+            // } else {
+            //   return (
+            //     <div key={item.pid}>
+            //       <Post pid={item.pid} />
+            //     </div>
+            //   );
+            // }
           })}
         </Box>
         <Box>

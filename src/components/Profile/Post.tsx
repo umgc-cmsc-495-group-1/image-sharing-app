@@ -11,7 +11,6 @@ import {
   Link,
 } from "@mui/material";
 import { encodeEmailAddress } from "../../utils/middleware";
-// import {Navigate} from "react-router-dom";
 import { getUserByUserId } from "../../data/userData";
 import { AppUserInterface } from "../../types/authentication";
 import FriendButton from "../Buttons/FriendButton";
@@ -28,7 +27,6 @@ type Props = {
 
 export default function Post(props: Props) {
   const { pid } = props;
-  // const navigate = useNavigate();
   const [post, setPost] = useState<FeedPostType | undefined>(undefined);
   const [postUser, setPostUser] = useState<AppUserInterface | undefined>(
     undefined
@@ -41,9 +39,6 @@ export default function Post(props: Props) {
     if (post?.pid !== undefined) {
       const user = await getUserByUserId(post.uid);
       const currentEmail = encodeEmailAddress(user);
-      // let currentEmail = user.email;
-      // currentEmail = encodeURIComponent(currentEmail);
-      // currentEmail = currentEmail.replace(".", "-");
       setCurrentAvatar(user.avatarImage);
       setEncodedEmail(currentEmail);
     }
@@ -90,7 +85,6 @@ export default function Post(props: Props) {
         }
         title={postUser?.displayName}
         titleTypographyProps={{ variant: "h5", color: "black" }}
-        subheader={postUser?.email}
         role="post-header"
         sx={{
           textDecoration: "none",

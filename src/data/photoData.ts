@@ -26,7 +26,7 @@ import {
   FieldValue,
   startAfter,
 } from "firebase/firestore";
-import { CommentType, FeedPostType } from "../types/appTypes";
+import {CommentType, FeedPostInterface, FeedPostType} from "../types/appTypes";
 import { AppUserInterface } from "../types/authentication";
 import { UserInterestsType } from "../types/interests";
 import { updateProfile, User } from "firebase/auth";
@@ -35,6 +35,7 @@ import {
   FieldPath,
   OrderByDirection,
 } from "@firebase/firestore-types";
+import {comparator, Graph} from "../engine/Engine";
 
 /************************************************************
  *
@@ -84,8 +85,7 @@ const fabPostCallback = async (
     // Write to firestore db
     try {
       // set document data
-      await uploadBytes(photoRef, currentFile);
-      setTimeout(async () => {
+      await uploadBytes(photoRef, currentFile).then(async () => {
         await getDownloadURL(photoRef).then((url) => {
           const currentPost: FeedPostType = {
             uid: uid,
@@ -102,7 +102,7 @@ const fabPostCallback = async (
           };
           setDoc(doc(firestore, firestorePath), currentPost);
         });
-      }, 800);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -119,8 +119,7 @@ const uploadProfileImg = async (
     const uploadRef = ref(storage, cloudPath);
     const usersRef = collection(firestore, "users");
     try {
-      await uploadBytes(uploadRef, currentFile);
-      setTimeout(async () => {
+      await uploadBytes(uploadRef, currentFile).then(async () => {
         await getDownloadURL(uploadRef).then((url) => {
           setDoc(doc(usersRef, uid), {
             uid: user.uid,
@@ -133,7 +132,7 @@ const uploadProfileImg = async (
           });
           updateProfile(user, { photoURL: url });
         });
-      }, 800);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -376,24 +375,40 @@ const getFeed = async (
         limit(numPosts)
       );
     }
-  } else {
-    if (!lastTimestamp) {
-      q = query(
-        collectionRef,
-        where("isPrivate", "==", false),
-        orderBy("timestamp", "desc"),
-        limit(numPosts)
-      );
-    } else {
-      q = query(
-        collectionRef,
-        where("isPrivate", "==", false),
-        orderBy("timestamp", "desc"),
-        startAfter(lastTimestamp),
-        limit(numPosts)
-      );
-    }
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const imgData: FeedPostType = {
+        pid: data.pid,
+        uid: data.uid,
+        username: data.username,
+        postText: data.postText,
+        isPrivate: data.isPrivate,
+        likes: data.likes,
+        classification: data.classification,
+        path: data.path,
+        timestamp: data.timestamp,
+        imageUrl: data.imageUrl,
+        comments: data.comments,
+      };
+      posts.push(imgData);
+      lastTimestamp = imgData.timestamp;
+    });
   }
+
+  return { posts, lastTimestamp };
+};
+
+const getExplore = async (
+  user: AppUserInterface
+)=> {
+  const collectionRef = collection(firestore, "posts");
+  const q = query(
+    collectionRef,
+    where("isPrivate", "==", false),
+    orderBy("timestamp", "desc")
+  );
+  const graph: Graph<{ user: AppUserInterface; post: FeedPostInterface }> = new Graph(comparator);
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     const data = doc.data();
@@ -410,11 +425,14 @@ const getFeed = async (
       imageUrl: data.imageUrl,
       comments: data.comments,
     };
-    posts.push(imgData);
-    lastTimestamp = imgData.timestamp;
+    graph.addNode({user: user, post: imgData});
   });
-  return { posts, lastTimestamp };
-};
+  // sort graph data and return posts
+  graph.sort();
+  const sortedPosts = graph.nodes.map(node => node.data.post);
+  // console.log(sortedPosts);
+  return { totalPosts: sortedPosts, size: sortedPosts.length };
+}
 
 /**
  * Get all the photos depending on the query parameters
@@ -485,10 +503,9 @@ const updateProfilePicture = async (
       return Promise.reject("User does not exist");
     }
     await deleteObject(uploadRef)
-      .then(() => {
+      .then(async () => {
         // uploadProfileImg(user, currentFile)
-        uploadBytes(uploadRef, currentFile);
-        setTimeout(async () => {
+        await uploadBytes(uploadRef, currentFile).then(async () => {
           await getDownloadURL(uploadRef).then((url) => {
             const data = docSnap.data();
             setDoc(doc(userCollection, uid), {
@@ -502,7 +519,7 @@ const updateProfilePicture = async (
             });
             updateProfile(user, { photoURL: url });
           });
-        }, 800);
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -714,6 +731,7 @@ export {
   getOnePost,
   getFeed,
   // getProfileUrl,
+  getExplore,
   getPhotoUrl,
   updateProfilePicture,
   incrementLikes,

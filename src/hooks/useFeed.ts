@@ -32,8 +32,8 @@ export const useFeed = (nextTimestamp: FieldValue | undefined) => {
         });
       } else {
         await getFeed(user, 2, false).then((res) => {
-          setPosts((prevPosts) => {
-            return [...prevPosts, ...res.posts];
+          setPosts(() => {
+            return [...res.posts];
           });
           setLastTimestamp(res.lastTimestamp);
           setLoading(false);

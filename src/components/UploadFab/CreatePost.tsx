@@ -43,6 +43,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
   });
   const [errors, setErrors] = useState<string[]>([]);
   const { user} = useContext(AuthContext);
+  // eslint-disable-next-line
   const imageRef = useRef<any>();
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);
   const handleIsPrivate = (event: React.ChangeEvent<HTMLInputElement>) => setIsPrivate(event.target.checked);
@@ -98,7 +99,7 @@ const CreatePost: React.FC<CreatePostInterface> = ({ open, handleClose }) => {
         const file = new File([result], result.name, { type: result.type });
         setFileToUpload(file);
       });
-      // setFileToUpload(files[0]);
+      setFileToUpload(files[0]);
       setImageUrl(url);
     } else {
       setImageUrl(undefined);

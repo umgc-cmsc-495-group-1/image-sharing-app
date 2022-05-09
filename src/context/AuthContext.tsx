@@ -15,20 +15,21 @@ export const AuthContext = React.createContext<AuthProviderProps>({
 export const AuthProvider = ({ children }:{children: React.ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const AuthCheck = auth.onAuthStateChanged((firebaseUser) => {
-    if (firebaseUser) {
-      setUser(firebaseUser);
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-      setUser(null);
-    }
-  });
+  // const AuthCheck =
 
   useEffect(() => {
-    AuthCheck();
-    return () => AuthCheck();
-  }, [isLoading, user, AuthCheck]);
+    auth.onAuthStateChanged((firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        setIsLoading(false);
+      } else {
+        setIsLoading(true);
+        setUser(null);
+      }
+    });
+    // AuthCheck();
+    // return () => AuthCheck();
+  }, [isLoading, user]);
 
   return <AuthContext.Provider value={{user}}>{children}</AuthContext.Provider>;
 };

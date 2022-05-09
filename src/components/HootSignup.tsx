@@ -12,11 +12,12 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { signInGooglePopup, signup } from "../data/authFunctions"; // , signup
+import {signInGooglePopup, signup} from "../data/authFunctions"; // , signup
 import { UserInterface } from "../types/authentication";
 import ErrorsDisplay from "./ErrorsDisplay";
 import { useNavigate } from "react-router-dom";
 import { uploadProfileImg } from "../data/photoData";
+import {EMAIL_REGEX, sanitizeDisplayName} from "../utils/middleware";
 import imageCompression from "browser-image-compression";
 import { ImageCompressionWorkerInterface } from "../types/appTypes";
 
@@ -33,17 +34,13 @@ export default function HootSignup() {
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<string[]>([]);
   const [registerDisabled, setRegisterDisabled] = useState<boolean>(true);
-  const [webWorkerData, setWebWorkerData] =
-    useState<ImageCompressionWorkerInterface>({
-      progress: 0,
-      inputSize: "",
-      outputSize: "",
-      inputUrl: "",
-      outputUrl: "",
-    });
-  const EMAIL_REGEX =
-    /^(([^<>()[\]\\.,;!!#$%&*:\s@"]+(\.[^<>()[\]\\.,;!#$%&*:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const ILLEGAL_CHARACTERS_REGEX = /[^A-Za-z0-9_\- ]/gi;
+  const [webWorkerData, setWebWorkerData] = useState<ImageCompressionWorkerInterface>({
+    progress: 0,
+    inputSize: "",
+    outputSize: "",
+    inputUrl: "",
+    outputUrl: "",
+  });
   const navigate = useNavigate();
   const FormControlLabelText: React.ReactNode = (
     <Typography variant="body2" color="textSecondary">
@@ -106,9 +103,9 @@ export default function HootSignup() {
     }
   };
 
-  const sanitizeDisplayName = (displayName: string) => {
-    return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
-  };
+  // const sanitizeDisplayName = (displayName: string) => {
+  //   return displayName.replace(ILLEGAL_CHARACTERS_REGEX, "");
+  // };
 
   const checkEmptyValues = () => {
     setErrors([]);
@@ -203,7 +200,6 @@ export default function HootSignup() {
     try {
       await signInGooglePopup()
         .then((res) => {
-          console.log(res);
           if (res.cred !== null && !res.exists) {
             uploadProfileImg(res.cred.user, fileToUpload);
             navigate("/explore");

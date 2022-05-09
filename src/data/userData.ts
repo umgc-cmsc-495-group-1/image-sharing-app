@@ -10,12 +10,12 @@ import { firestore } from "../firebaseSetup";
 import {
   GoogleUserType,
   UserInterface,
-  AppUserInterface, GoogleResponse,
+  AppUserInterface
 } from "../types/authentication";
 import { ProfileInterface } from "../types/appTypes"; // , ProfileUpdateInterface
 // import { updateName, changeEmail } from "./authFunctions";
 // import { updateAllPosts } from "../data/photoData";
-import {updateProfile, UserCredential} from "firebase/auth";
+import {updateProfile} from "firebase/auth";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -91,23 +91,23 @@ const getUserByUserId = async (userId: string) => {
   }
 };
 
-const checkIfGoogleUserExists = async (credential: UserCredential) => {
-  let res: GoogleResponse;
-  const userRef = doc(firestore, "users", credential.user.uid);
-  const docSnap = await getDoc(userRef);
-  if (docSnap.exists()) {
-    res = {
-      cred: credential,
-      exists: true,
-    };
-  } else {
-    res = {
-      cred: credential,
-      exists: false,
-    }
-  }
-  return res;
-}
+// const checkIfGoogleUserExists = async (credential: UserCredential) => {
+//   let res: GoogleResponse;
+//   const userRef = doc(firestore, "users", credential.user.uid);
+//   const docSnap = await getDoc(userRef);
+//   if (docSnap.exists()) {
+//     res = {
+//       cred: credential,
+//       exists: true,
+//     };
+//   } else {
+//     res = {
+//       cred: credential,
+//       exists: false,
+//     }
+//   }
+//   return res;
+// }
 
 /**
  * @description Get single user with Email value
@@ -261,7 +261,7 @@ export {
   getLiveFriends,
   getUserByUserId,
   getUserByEmail,
-  checkIfGoogleUserExists,
+  // checkIfGoogleUserExists,
   // updateProfile,
   deleteUserDoc,
   addFriend,

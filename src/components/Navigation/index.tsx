@@ -25,9 +25,6 @@ const Navigation: React.FC = () => {
       if (user) {
         const userData = await getUserByUserId(user.uid);
         const currentEmail = encodeEmailAddress(userData);
-        // let currentEmail = userData.email;
-        // currentEmail = encodeURIComponent(currentEmail);
-        // currentEmail = currentEmail.replace(".", "-");
         setEncodedEmail(currentEmail);
       }
     })();
