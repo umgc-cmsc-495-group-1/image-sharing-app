@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { auth } from "../firebaseSetup";
 import { AppUserInterface } from "../types/authentication";
-import { getUserByUserId } from "../data/userData";
+import { getLiveUser } from "../data/userData";
 
 export type AuthProviderProps = {
   user: User | null;
@@ -26,19 +26,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const getUsers = async (inUser: User) => {
       setUser(inUser);
-      await getUserByUserId(inUser.uid).then((res) => {
-        setAppUser(res);
-      });
+      const unsubscribe = getLiveUser(inUser, setAppUser);
+      return unsubscribe;
     };
-    auth.onAuthStateChanged((firebaseUser) => {
+    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+      let unsubscribe;
       if (firebaseUser) {
-        getUsers(firebaseUser);
+        unsubscribe = getUsers(firebaseUser);
         setIsLoading(false);
       } else {
         setIsLoading(true);
         setUser(null);
       }
+      return unsubscribe;
     });
+    return () => {
+      unsubscribe();
+    };
     // AuthCheck();
     // return () => AuthCheck();
   }, [isLoading, user]);
