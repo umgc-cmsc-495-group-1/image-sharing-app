@@ -1,7 +1,7 @@
 import React from "react";
 import { FeedPostType } from "../../types/appTypes";
 import { Grid } from "@mui/material";
-import Post from "../Post";
+import Post from "./Post";
 interface Props {
   item: FeedPostType;
 }

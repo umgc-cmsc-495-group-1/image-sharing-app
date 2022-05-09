@@ -1,8 +1,7 @@
 import {
   CommentInterface,
   FeedPostInterface,
-  FeedPostType,
-  ProfileInterface,
+  FeedPostType
 } from "../types/appTypes";
 // import { UserInterface } from '../types/authentication'
 // import { signup } from '../data/authFunctions'
@@ -41,6 +40,7 @@ import feedImage17 from "../assets/static/images/theaminahmadi-T0WB-E2hcYU-unspl
 import feedImage18 from "../assets/static/images/tommy-bond-UVKEa1foFnA-unsplash.jpg";
 import feedImage19 from "../assets/static/images/yusuf-sabqi-0CPGThabpy8-unsplash.jpg";
 import { serverTimestamp } from "firebase/firestore";
+import {AppUserInterface} from "../types/authentication";
 
 /**
  * Array of test.tsx user names to be used in the feed and profile
@@ -174,30 +174,55 @@ const demoContent = {
  * @description - Generate a random test.tsx user to be used in the feed and profile
  * @returns {ProfileInterface[]}
  */
-function generateRandomUsers(): ProfileInterface[] {
-  const users: ProfileInterface[] = [];
+function generateRandomUsers(): AppUserInterface[] {
+  const users: AppUserInterface[] = [];
   for (let i = 0; i < demoProfilePictures.length; i++) {
-    const user: ProfileInterface = {
+    const user: AppUserInterface = {
+      displayName: demoDisplayNames[i],
+      email: `${demoUsernames[i]}@test.com`,
+      photoURL: demoProfilePictures[i],
+      isVerified: false,
       uid: `${i + 1}`,
-      username: `${demoUsernames[i]}`,
-      posts: Math.floor(Math.random() * 100),
-      displayName: `${demoDisplayNames[i]}`,
-      avatarImage: `${demoProfilePictures[i]}`,
+      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       friends: [],
       likes: [],
-      email: `${demoDisplayNames[i]}@test.com`,
-      // friends: Math.floor(Math.random() * 30),
-      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      imageUrl:
-        demoContent.images[
-          Math.floor(Math.random() * demoContent.profile.length)
-        ],
+      avatarImage: demoProfilePictures[i],
+      interests: []
     };
     users.push(user);
   }
 
   return users;
 }
+
+// /**
+//  * @description - Generate a random test.tsx user to be used in the feed and profile
+//  * @returns {ProfileInterface[]}
+//  */
+// function generateRandomUsers(): ProfileInterface[] {
+//   const users: ProfileInterface[] = [];
+//   for (let i = 0; i < demoProfilePictures.length; i++) {
+//     const user: ProfileInterface = {
+//       uid: `${i + 1}`,
+//       username: `${demoUsernames[i]}`,
+//       posts: Math.floor(Math.random() * 100),
+//       displayName: `${demoDisplayNames[i]}`,
+//       avatarImage: `${demoProfilePictures[i]}`,
+//       friends: [],
+//       likes: [],
+//       email: `${demoDisplayNames[i]}@test.com`,
+//       // friends: Math.floor(Math.random() * 30),
+//       bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+//       imageUrl:
+//         demoContent.images[
+//           Math.floor(Math.random() * demoContent.profile.length)
+//         ],
+//     };
+//     users.push(user);
+//   }
+//
+//   return users;
+// }
 
 // export async function registerRandomUsers(profilePhotos: File[], feedPhotos: File[]) {
 //   const totalUsers = generateRandomUsers();
@@ -268,6 +293,7 @@ function generateRandomFeedProps(): FeedPostType[] {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       likes: [`${i + 1}`],
       isPrivate: false,
+      imageUrl: demoContent.images[i],
       // numberLikes: Math.floor(Math.random() * 100),
       // numberComments: Math.floor(Math.random() * 10),
       comments: generateRandomComments(),
@@ -283,10 +309,6 @@ function generateRandomFeedProps(): FeedPostType[] {
         isCommentedOn: true,
       },
       timestamp: serverTimestamp(),
-      imageUrl:
-        demoContent.images[
-          Math.floor(Math.random() * demoContent.profile.length)
-        ],
     };
     posts.push(post);
   }
@@ -312,14 +334,14 @@ function getPostData(
   )[0];
 }
 
-function getProfileData(userId: string | undefined): ProfileInterface {
-  if (userId === undefined) {
-    userId = "1";
-  }
-  return totalDemoUsers.filter((profile) => profile.uid === userId)[0];
-}
+// function getProfileData(userId: string | undefined): ProfileInterface {
+//   if (userId === undefined) {
+//     userId = "1";
+//   }
+//   return totalDemoUsers.filter((profile) => profile.uid === userId)[0];
+// }
 
-const totalDemoUsers: ProfileInterface[] = generateRandomUsers();
+const totalDemoUsers: AppUserInterface[] = generateRandomUsers();
 const totalFeedPosts: FeedPostInterface[] = generateRandomFeedProps();
 
 export {
@@ -329,5 +351,4 @@ export {
   generateRandomFeedProps,
   generateRandomUsers,
   getPostData,
-  getProfileData,
 };

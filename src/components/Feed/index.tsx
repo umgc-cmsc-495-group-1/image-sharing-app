@@ -1,30 +1,69 @@
-import React from "react";
-import { Box } from "@mui/material";
+import React, { useCallback, useRef, useState } from "react";
+import { Box, Container } from "@mui/material";
 import { FeedPostType } from "../../types/appTypes";
 import { UploadFab } from "../UploadFab";
+import Post from "../Profile/Post";
 import { useFeed } from "../../hooks/useFeed";
-import { Post } from "../Post";
+import { FieldValue } from "firebase/firestore";
 
 const Feed: React.FC = (): JSX.Element => {
-  const feed = useFeed();
+  const [nextTimestamp, setNextTimestamp] = useState<FieldValue | undefined>(
+    undefined
+  );
+  const { posts, loading, lastTimestamp } = useFeed(nextTimestamp);
+  const observer = useRef<IntersectionObserver>();
+  const lastPostRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setNextTimestamp(lastTimestamp);
+        }
+      }, { rootMargin: "0px 0px 200px 0px" });
+      if (node) observer.current.observe(node);
+    },
+    [loading, lastTimestamp]
+  );
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      <Box maxWidth="md">
-        {feed.map((item: FeedPostType) => (
-          <Post key={item.pid} pid={item.pid} />
-        ))}
+    <Container maxWidth="xl">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+        role="feed-container"
+      >
+        <Box maxWidth="sm">
+          {posts.map((item: FeedPostType) => {
+            return (
+              <div key={item.pid} ref={lastPostRef}>
+                <Post pid={item.pid} />
+              </div>
+            );
+            // if (posts.length == index + 1) {
+            //   return (
+            //     <div key={item.pid} ref={lastPostRef}>
+            //       <Post pid={item.pid} />
+            //     </div>
+            //   );
+            // } else {
+            //   return (
+            //     <div key={item.pid}>
+            //       <Post pid={item.pid} />
+            //     </div>
+            //   );
+            // }
+          })}
+        </Box>
+        <Box>
+          <UploadFab />
+        </Box>
       </Box>
-      <Box>
-        <UploadFab />
-      </Box>
-    </Box>
+    </Container>
   );
 };
 

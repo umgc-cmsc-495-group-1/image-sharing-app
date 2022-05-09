@@ -4,17 +4,18 @@ import {
   getDoc, getDocsFromServer,
   arrayUnion, arrayRemove,
   updateDoc, query,
-  where, onSnapshot
+  where, onSnapshot,
 } from "firebase/firestore";
 import { firestore } from "../firebaseSetup";
 import {
   GoogleUserType,
   UserInterface,
-  AppUserInterface,
+  AppUserInterface
 } from "../types/authentication";
-import { ProfileInterface, ProfileUpdateInterface } from "../types/appTypes";
-import { updateName, changeEmail } from "./authFunctions";
-import { updateAllPosts } from "../data/photoData";
+import { ProfileInterface } from "../types/appTypes"; // , ProfileUpdateInterface
+// import { updateName, changeEmail } from "./authFunctions";
+// import { updateAllPosts } from "../data/photoData";
+import {updateProfile} from "firebase/auth";
 import { User } from "@firebase/auth";
 
 /***********************************************************
@@ -90,6 +91,24 @@ const getUserByUserId = async (userId: string) => {
   }
 };
 
+// const checkIfGoogleUserExists = async (credential: UserCredential) => {
+//   let res: GoogleResponse;
+//   const userRef = doc(firestore, "users", credential.user.uid);
+//   const docSnap = await getDoc(userRef);
+//   if (docSnap.exists()) {
+//     res = {
+//       cred: credential,
+//       exists: true,
+//     };
+//   } else {
+//     res = {
+//       cred: credential,
+//       exists: false,
+//     }
+//   }
+//   return res;
+// }
+
 /**
  * @description Get single user with Email value
  * @param email
@@ -102,7 +121,6 @@ const getUserByEmail = async (email: string) => {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     data = doc.data();
-    console.log(data);
   });
   if (data !== null) {
     const profile: ProfileInterface = {
@@ -133,46 +151,11 @@ const getLiveFriends = async (
 ) => {
   const collectionRef = collection(firestore, "users");
   const q = query(collectionRef, where("uid", "==", userId));
-  const unsubcribe = onSnapshot(q, (querySnapshot) => {
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const friendList: string[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       friendList.push(...data.friends);
-    });
-    callback(friendList);
-  });
-  return unsubcribe;
-};
-
-/**
- * @description Returns an array of the user's friends
- * @param friends : string[]
- * @returns : UserInterface[]
- */
-const getFriends = async (
-  friends: string[],
-  // eslint-disable-next-line no-unused-vars
-  callback: (_friendList: AppUserInterface[]) => void
-) => {
-  const usersRef = collection(firestore, "users");
-  const q = query(usersRef, where("uid", "in", friends));
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    const friendList: AppUserInterface[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const friend: AppUserInterface = {
-        uid: data.uid,
-        displayName: data.displayName,
-        email: data.email,
-        isVerified: data.isVerified,
-        photoURL: data.photoURL,
-        avatarImage: data.avatarImage,
-        bio: data.bio,
-        friends: data.friends,
-        likes: data.likes,
-        interests: data.interests,
-      };
-      friendList.push(friend);
     });
     callback(friendList);
   });
@@ -205,73 +188,47 @@ const getFriends = async (
 /******************************** UPDATE *****************************************************/
 
 //update functions must incorporate db and auth functions
-/**
- * @description Update user profile information not in auth.currentUser
- * @param userId: string
- * @param profileData: ProfileInterface
- */
-const updateProfile = async (
-  userId: string,
-  profileData: ProfileUpdateInterface
-) => {
-  // const docSnap = await getDoc(docRef);
-  const docRef = doc(firestore, "users", `${userId}`);
-  const displayName = profileData.displayName;
-  const email = profileData.email;
-  const bio = profileData.bio;
-  if (displayName !== "" || displayName !== null) {
-    updateName(displayName);
-  }
-  if (email !== "" || email !== null) {
-    changeEmail(email);
-    await updateAllPosts(userId, email);
-  }
-  await updateDoc(docRef, { displayName: displayName, email: email, bio: bio });
-  // return docRef.update(user);
-};
-
 // /**
-//  * @description adds friend and update user
-//  * @param newFriend
-//  * @param userAdding
+//  * @description Update user profile information not in auth.currentUser
+//  * @param userId: string
+//  * @param profileData: ProfileInterface
 //  */
-// <<<<<<< HEAD
-// const getAllUsers = async () => {
-//   const totalUsers: AppUserInterface[] = [];
-//   const querySnapshot = await getDocs(collection(firestore, "users"));
-//   await querySnapshot.forEach((doc) => {
-//     totalUsers.push({
-//       uid: doc.id,
-//       displayName: doc.data().displayName,
-//       email: doc.data().email,
-//       avatarImage: doc.data().avatarImage,
-//       isVerified: doc.data().isVerified,
-//       photoURL: doc.data().photoURL,
-//       bio: doc.data().bio,
-//       friends: doc.data().friends,
-//       likes: doc.data().likes,
-//       interests: doc.data().interests,
-//     });
-//     // doc.data() is never undefined for query doc snapshots
-//     // console.log(doc.id, ' => ', doc.data());
-//   });
-//   return Promise.resolve(totalUsers)
+// const updateProfile = async (
+//   userId: string,
+//   profileData: ProfileUpdateInterface
+// ) => {
+//   // const docSnap = await getDoc(docRef);
+//   const docRef = doc(firestore, "users", `${userId}`);
+//   const displayName = profileData.displayName;
+//   const email = profileData.email;
+//   const bio = profileData.bio;
+//   if (displayName !== "" || displayName !== null) {
+//     updateName(displayName);
+//   }
+//   if (email !== "" || email !== null) {
+//     changeEmail(email);
+//     await updateAllPosts(userId, email);
+//   }
+//   await updateDoc(docRef, { displayName: displayName, email: email, bio: bio });
+//   // return docRef.update(user);
 // };
-//
-// // todo: shouldnt need this method anymore
-// // const getTotalUsernames = async () => {
-// //   const totalUsernames: string[] = [];
-// //   const querySnapshot = await getDocs(collection(firestore, "users"));
-// //   console.log(querySnapshot);
-// //   await querySnapshot.forEach((doc) => {
-// //     console.log(doc.data().username)
-// //     totalUsernames.push(doc.data().username);
-// //   });
-// //   return Promise.resolve(totalUsernames);
-// // }
-//
-// =======
-// >>>>>>> dev
+
+const updateBio = async (user: User | null, bio: string) => {
+  if (user !== null) {
+    const docRef = doc(firestore, "users", `${user.uid}`);
+    await updateDoc(docRef, { bio: bio });
+  }
+}
+
+const updateDisplayName = async (user: User | null, displayName: string) => {
+  if (user !== null) {
+    const docRef = doc(firestore, "users", `${user.uid}`);
+    await updateDoc(docRef, { displayName: displayName }).then(() => {
+      updateProfile(user, { displayName: displayName });
+    });
+  }
+}
+
 const addFriend = async (newFriend: string, userAdding: string) => {
   const friendsRef = doc(firestore, "users", userAdding);
 
@@ -304,9 +261,11 @@ export {
   getLiveFriends,
   getUserByUserId,
   getUserByEmail,
-  updateProfile,
+  // checkIfGoogleUserExists,
+  // updateProfile,
   deleteUserDoc,
   addFriend,
   removeFriend,
-  getFriends,
+  updateBio,
+  updateDisplayName
 };

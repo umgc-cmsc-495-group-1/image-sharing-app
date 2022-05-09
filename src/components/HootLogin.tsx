@@ -37,22 +37,29 @@ export default function HootLogin() {
     await login(email, password)
       .then(() => {
         setErrors([]);
+        setEmail("");
+        setPassword("");
         navigate("/feed");
       })
       .catch((err) => {
-        setErrors({
-          ...errors,
-          [err.message]: err.message,
-        });
+        if (err.code === "auth/user-not-found") {
+          setErrors(["User not found"]);
+        } else if (err.code === "auth/wrong-password") {
+          setErrors(["Correct Email and Password are required"]);
+        } else {
+          setErrors([err.message]);
+        }
         console.error(err);
       });
   };
 
   const handleGoogleSignin = async () => {
     await signInGooglePopup()
-      .then(() => {
-        setErrors([]);
-        navigate("/auth-loading");
+      .then((res) => {
+        if (res.cred !== null && res.exists) {
+          setErrors([]);
+          navigate("/explore");
+        }
       })
       .catch((err) => {
         setErrors({
@@ -71,6 +78,7 @@ export default function HootLogin() {
           flexDirection: "column",
           alignItems: "center",
         }}
+        role="login-page-container"
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
@@ -94,10 +102,12 @@ export default function HootLogin() {
                 onChange={(event) => {
                   setEmail(event.target.value);
                 }}
+                value={email}
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                aria-label="email-address"
+                role="email-login"
                 name="email"
                 autoComplete="email"
               />
@@ -107,10 +117,12 @@ export default function HootLogin() {
                 onChange={(event) => {
                   setPassword(event.target.value);
                 }}
+                value={password}
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                aria-label="password"
+                role="password-login"
                 type="password"
                 id="password"
                 autoComplete="new-password"
@@ -121,6 +133,10 @@ export default function HootLogin() {
             type="submit"
             fullWidth
             variant="contained"
+            aria-label="login-email"
+            name="login-email-password-submit"
+            id="login-email-password-submit"
+            role="login-email-password-submit"
             sx={{ mt: 3, mb: 2 }}
           >
             Login
@@ -129,6 +145,8 @@ export default function HootLogin() {
           <Button
             fullWidth
             variant="contained"
+            aria-label="login-google"
+            role="login-google-submit"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleGoogleSignin}
           >

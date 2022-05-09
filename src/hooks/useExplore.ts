@@ -1,36 +1,27 @@
-import { useState, useEffect } from "react";
-import { FeedPostType } from "../types/appTypes";
-import { getPublicFeedData } from "../data/photoData";
-import { AppUserInterface } from "../types/authentication";
-import { useCurrentUser } from "./useCurrentUser";
-import { mapUserPhotos } from "../utils/middleware";
+import {useEffect, useState} from "react";
+import {AppUserInterface} from "../types/authentication";
+import {getExplore} from "../data/photoData";
+import {FeedPostType} from "../types/appTypes";
+import {useCurrentUser} from "./useCurrentUser";
 
-/**
- * React Hook to get all photos in a collection
- * using the user's ID and friend list
- * @returns photos: DocumentData
- */
 
-// Sets as photoData
+async function getPhotos(user: AppUserInterface) {
+  const {totalPosts, size} = await getExplore(user)
+  return {totalPosts, size}
+}
+
+
 export const useExplore = () => {
-  const [posts, setPosts] = useState<FeedPostType[] | []>([]);
+  const [posts, setPosts] = useState<FeedPostType[]>([])
   const user: AppUserInterface = useCurrentUser();
-  // Load user's photo collection from Firestore db
-  useEffect(() => {
-    async function getPhotos() {
-      let usersPhotos: FeedPostType[] = await getPublicFeedData();
-      try {
-        mapUserPhotos(usersPhotos);
-      } catch (e) {
-        usersPhotos = [];
-        console.error(e);
-      }
-      setPosts(usersPhotos);
-    }
-    (async () => {
-      await getPhotos();
-    })();
-  }, [user]);
 
-  return posts;
-};
+  useEffect(() => {
+    return () => {
+      getPhotos(user).then(photos => {
+        setPosts(photos.totalPosts)
+      })
+    };
+  }, [posts, user]);
+
+  return posts
+}

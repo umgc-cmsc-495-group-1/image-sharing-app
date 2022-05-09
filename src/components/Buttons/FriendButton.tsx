@@ -1,0 +1,85 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import React, { useEffect, useState } from "react";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { addFriend, getLiveFriends, removeFriend } from "../../data/userData";
+
+type Props = {
+  uid: string;
+};
+
+export default function FriendButton(props: Props) {
+  const { uid } = props;
+  const currentUser = useCurrentUser();
+  const [friendsList, setFriendsList] = useState<Array<string>>([]);
+  const [isFriends, setIsFriends] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const unsubscribe = await getLiveFriends(currentUser.uid, setFriendsList);
+      return unsubscribe;
+    })()
+    // const unsubscribe = getLiveFriends(currentUser.uid, setFriendsList);
+    // return () => {
+    //   unsubscribe;
+    // };
+  }, [currentUser]);
+
+  useEffect(() => {
+    setIsFriends(friendsList.indexOf(uid) >= 0);
+  }, [friendsList, uid]);
+
+  const handleAddFriend = async () => {
+    await addFriend(uid, currentUser.uid).then(() => {
+      setIsFriends(true);
+    });
+
+  };
+
+  const handleRemoveFriend = async () => {
+    await removeFriend(uid, currentUser.uid).then(() => {
+      setIsFriends(false);
+      handleClose();
+    });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      {currentUser.uid != uid &&
+        (isFriends ? (
+          <IconButton onClick={() => setOpen(true)} role="add-friend">
+            <PersonRemoveIcon />
+          </IconButton>
+        ) : (
+          <IconButton onClick={handleAddFriend} role="add-friend">
+            <PersonAddIcon />
+          </IconButton>
+        ))}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{"Remove Friend Confirmation"}</DialogTitle>
+        <DialogContent>
+          Confirm you would like to remove user from your friends list
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleRemoveFriend} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}

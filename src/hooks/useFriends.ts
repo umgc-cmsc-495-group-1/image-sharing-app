@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getFriends } from "../data/userData";
+import { getLiveFriends } from "../data/userData";
 import { AppUserInterface } from "../types/authentication";
 import { useCurrentUser } from "./useCurrentUser";
 
@@ -10,23 +10,22 @@ import { useCurrentUser } from "./useCurrentUser";
 
 // Sets as photoData
 export const useFriends = () => {
-  const [friends, setFriends] = useState<AppUserInterface[] | []>([]);
+  const [friendsList, setFriendsList] = useState<Array<string>>([]);
   const user: AppUserInterface = useCurrentUser();
-  // const id: string = user.uid;
 
   useEffect(() => {
     async function getFriendList() {
-      // let friendList: AppUserInterface[];
       try {
-        await getFriends(user.friends, setFriends);
+        await getLiveFriends(user.uid, setFriendsList)
       } catch (e) {
-        //friendList = [];
         console.error(e);
       }
       // setFriends(friendList);
     }
-    getFriendList();
+    (async () => {
+      await getFriendList();
+    })();
   }, [user]);
 
-  return friends;
+  return friendsList;
 };

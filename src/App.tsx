@@ -2,20 +2,23 @@ import * as React from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Feed from "./components/Feed";
-import HootHome from "./components/HootHome";
+import HomePage from "./components/HomePage";
 import HootLogin from "./components/HootLogin";
 import { Navigation } from "./components/Navigation";
 import HootSignup from "./components/HootSignup";
 import Hoot404 from "./components/Hoot404";
 import HootUserSettings from "./components/HootUserSettings";
-import { Profile } from "./components/Profile";
+import Profile from "./components/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { EasterEgg } from "./components/EasterEgg";
 import { Friends } from "./components/Friends";
-import { Explore } from "./components/Explore";
+import Explore from "./components/Explore";
+import { LoadingBackdrop } from "./components/UploadFab/LoadingBackdrop";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsOfService from "./components/TermsOfService";
+import PostPage from "./components/Profile/PostPage";
 
 export default function App() {
-
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -23,7 +26,7 @@ export default function App() {
       children: [
         {
           index: true,
-          element: <HootHome />,
+          element: <HomePage />,
         },
         {
           path: "/login",
@@ -32,6 +35,14 @@ export default function App() {
         {
           path: "/signup",
           element: <HootSignup />,
+        },
+        {
+          path: "/privacy",
+          element: <PrivacyPolicy />,
+        },
+        {
+          path: "/terms-of-service",
+          element: <TermsOfService />,
         },
         {
           path: "/candy-mountain",
@@ -64,6 +75,15 @@ export default function App() {
                   element: <ProtectedRoute component={Friends} />,
                 },
               ],
+            },
+          ],
+        },
+        {
+          path: "/post",
+          children: [
+            {
+              path: ":pid",
+              element: <ProtectedRoute component={PostPage} />,
             },
           ],
         },
@@ -101,9 +121,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        {element}
-      </div>
+      <React.Suspense fallback={<LoadingBackdrop />}>
+        <div className="App">{element}</div>
+      </React.Suspense>
     </ThemeProvider>
   );
 }

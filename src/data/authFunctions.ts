@@ -1,5 +1,5 @@
-import { auth } from "../firebaseSetup";
-import { createUser, deleteUserDoc } from "./userData";
+import {auth} from "../firebaseSetup";
+import {createUser, deleteUserDoc} from "./userData";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -15,11 +15,12 @@ import {
 } from "firebase/auth";
 import {
   UserInterface,
-  GoogleUserType,
+  GoogleUserType, GoogleResponse,
 } from "../types/authentication";
 import { deleteAllPosts, deleteProfileImg } from "./photoData";
-const PASSWORD_REGEX =
-  /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
+import {PASSWORD_REGEX, sanitizeDisplayName} from "../utils/middleware";
+// const PASSWORD_REGEX =
+//   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!$#])[A-Za-z0-9!$#]{8,20}$/;
 
 /****************************************************************
  *
@@ -50,9 +51,15 @@ const signup = async (user: UserInterface) : Promise<UserCredential | undefined>
   let res;
   // data is empty, do not create user
   if (checkEmptyValues(user)) {
-    return Promise.reject("Required items are missing");
+    return Promise.reject({
+      code: "auth/empty-values",
+      message: "Required items are missing"
+    });
   } else if (!PASSWORD_REGEX.test(user.password)) {
-    return Promise.reject("Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #");
+    return Promise.reject({
+      code: "auth/weak-password",
+      message: "Please enter a password between 8 and 20 characters. You must have at least 1 Uppercase, 1 lowercase, 1 number and 1 special character. The only special characters allowed are: ! $ #"
+    });
   } else if (!checkEmptyValues(user) && PASSWORD_REGEX.test(user.password)) {
     // empty data checks have passed, create the user
     res = await createUserWithEmailAndPassword(auth, user.email, user.password)
@@ -102,7 +109,7 @@ const signInGoogleRedirect = async () => {
  *  Firestore, if it isn't a new user document should
  *  be created
  */
-const signInGooglePopup = async () => {
+const signInGooglePopup = async (): Promise<GoogleResponse> => {
   let googleUserInfo: GoogleUserType;
 
   const provider = new GoogleAuthProvider();
@@ -111,26 +118,29 @@ const signInGooglePopup = async () => {
   provider.setCustomParameters({
     prompt: "select_account",
   });
-  await signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      googleUserInfo = {
-        displayName: user.displayName || "",
-        email: user.email || "",
-        photoURL: user.photoURL || "",
-        isVerified: user.emailVerified || false,
-      };
-      createUser(user, googleUserInfo);
-
-      return Promise.resolve(googleUserInfo);
+  const userCredential = await signInWithPopup(auth, provider);
+  const userExists = userCredential.user.metadata.lastSignInTime === userCredential.user.metadata.creationTime;
+  if (!userExists) {
+    return Promise.resolve({
+      cred: userCredential,
+      exists: true
     })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`${errorCode}, ${errorMessage}`);
+  } else {
+    googleUserInfo = {
+      displayName: sanitizeDisplayName((userCredential.user.displayName !== null) ? userCredential.user.displayName : ""),
+      email: userCredential.user.email || "",
+      photoURL: userCredential.user.photoURL || "",
+      isVerified: userCredential.user.emailVerified || false,
+    };
+    await createUser(userCredential.user, googleUserInfo);
+    await updateProfile(userCredential.user, {
+      displayName: sanitizeDisplayName((userCredential.user.displayName !== null) ? userCredential.user.displayName : "")
     });
+    return Promise.resolve({
+      cred: userCredential,
+      exists: false
+    })
+  }
 };
 
 /******************************** LOG IN *****************************************************/
@@ -148,7 +158,7 @@ const login = async (email: string, password: string) => {
     })
     .catch((error) => {
       return Promise.reject({
-        status: error.code,
+        code: error.code,
         message: error.message
       });
     });

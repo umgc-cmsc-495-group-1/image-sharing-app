@@ -1,5 +1,11 @@
 import { User } from '@firebase/auth';
 import { UserInterestsType } from './interests';
+import {UserCredential} from "firebase/auth";
+
+export interface GoogleResponse {
+  cred: UserCredential;
+  exists: boolean;
+}
 
 export interface BaseUserInterface {
   displayName: string;
