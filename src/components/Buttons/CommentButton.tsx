@@ -101,6 +101,7 @@ function CommentSection(props: CommentSectionProps) {
             name="comment"
             label="Comment"
             id="comment"
+            autoComplete="off"
             sx={{ width: "1" }}
           />
           <IconButton type="submit">
